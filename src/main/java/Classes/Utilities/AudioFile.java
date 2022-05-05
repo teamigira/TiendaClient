@@ -11,9 +11,11 @@ package Classes.Utilities;
  */
 
 import static Classes.Utilities.OS.base_Url;
-import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
  
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -42,11 +44,11 @@ public class AudioFile implements LineListener {
      * Play a given audio file.
      * @param audioFilePath Path of the audio file.
      */
-    void play(AudioInputStream audioFilePath) {
-    //File audioFile = new File(audioFilePath);
+    void play(String audiopath) {
+    File audioFile = new File(audiopath);
  
         try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFilePath);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
  
             AudioFormat format = audioStream.getFormat();
  
@@ -101,31 +103,25 @@ public class AudioFile implements LineListener {
  
     }
  
-    public void Playme(String call) throws UnsupportedAudioFileException, IOException {
+    public void Playme(String call) throws URISyntaxException {
         
         AudioFile player = new AudioFile();
         switch(call){
-         case "info":
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classloader.getResourceAsStream("MP3/new-file.wav");
-        AudioInputStream sound = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
-        player.play((AudioInputStream) is);
+         case "success":
+         URL resource = getClass().getResource("/notification.wav");
+         File file = Paths.get(resource.toURI()).toFile(); // return a file
+         String filepath = Paths.get(resource.toURI()).toFile().getAbsolutePath();
+         String audioFilePath = base_Url+"MP3/notification_sound.wav";
+         player.play(filepath);
          break;
-         
          case "alert":
-             
-        ClassLoader classloaders = Thread.currentThread().getContextClassLoader();
-        InputStream iss = classloaders.getResourceAsStream("MP3/duplicates.wav");
-        AudioInputStream sounds = AudioSystem.getAudioInputStream(new BufferedInputStream(iss));
-        player.play((AudioInputStream) iss);
+         String audioFilePath2 = base_Url+"MP3/new-file.wav";
+         player.play(audioFilePath2);
          break;
-         case "danger":
-        ClassLoader classloader2 = Thread.currentThread().getContextClassLoader();
-        InputStream is2 = classloader2.getResourceAsStream("MP3/duplicates.wav");
-        AudioInputStream sound2 = AudioSystem.getAudioInputStream(new BufferedInputStream(is2));
-        player.play((AudioInputStream) is2);
-        
-         }                
+         case "failure":
+         String audioFilePath3 = base_Url+"MP3/duplicates.wav";
+         player.play(audioFilePath3);      
+        }
     }
  
 }
