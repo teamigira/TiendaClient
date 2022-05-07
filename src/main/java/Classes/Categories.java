@@ -8,6 +8,7 @@ package Classes;
 import Classes.AbstractClasses.Category;
 import Classes.AbstractClasses.Brands;
 import static Database.DBConnect.getConnection;
+import Database.DBConnection;
 import static com.nkanabo.Tienda.Main.app_version;
 import static com.nkanabo.Tienda.Main.product_key;
 import static com.nkanabo.Tienda.Utilities.date;
@@ -30,10 +31,10 @@ public class Categories {
 
 
     
-    public static Boolean addCategory(String categoryname) throws SQLException{
+    public static Boolean addCategory(String categoryname) throws SQLException, ClassNotFoundException{
       try {
-        Connection conn = getConnection();
-        Statement stmt = conn.createStatement();
+      Connection conna = DBConnection.getConnectionInstance().getConnection();
+     Statement stmt = conna.createStatement(); 
         // STEP 3: Execute a query 
         stmt = conn.createStatement();  
         String sql =
