@@ -5,7 +5,7 @@
     <map/>
     <node name="UserSettings">
       <map>
-        <entry key="role" value="administrator"/>
+        <entry key="sounds" value="true"/>
       </map>
     </node>
   </root>

@@ -19,11 +19,16 @@ import java.util.prefs.Preferences;
  */
 public class UserSettings {
     
+    Preferences myprefs = Preferences.userNodeForPackage(UserSettings.class);
+    
+    public void soundSettings(boolean value){
+         myprefs.put("sounds",String.valueOf(value));
+         System.out.println("is it set");
+    }
+    
     
    public void main() throws FileNotFoundException{
-    Preferences myprefs = Preferences.userNodeForPackage(UserSettings.class);
-    myprefs.put("role","administrator");
-    System.out.println(myprefs.get("role", "root"));
+    System.out.println(myprefs.get("sounds", "root"));
        try {
            myprefs.exportNode(new FileOutputStream("Preferences.xml"));
       
