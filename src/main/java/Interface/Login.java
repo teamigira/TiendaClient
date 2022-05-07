@@ -31,7 +31,7 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() throws URISyntaxException {
         initComponents();
-        URL resource = getClass().getResource("/images/icons8.jpg8");
+        URL resource = getClass().getResource("/images/icons8.jpg");
         File file = Paths.get(resource.toURI()).toFile(); // return a file
         String filepath = Paths.get(resource.toURI()).toFile().getAbsolutePath();
         ImageIcon icon = new ImageIcon(filepath);

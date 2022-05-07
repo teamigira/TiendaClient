@@ -110,8 +110,7 @@ public class AudioFile implements LineListener {
          case "success":
          URL resource = getClass().getResource("/notification.wav");
          File file = Paths.get(resource.toURI()).toFile(); // return a file
-         String filepath = Paths.get(resource.toURI()).toFile().getAbsolutePath();
-         String audioFilePath = base_Url+"MP3/notification_sound.wav";
+         String filepath = Paths.get(resource.toURI()).toFile().getAbsolutePath();;
          player.play(filepath);
          break;
          case "alert":
