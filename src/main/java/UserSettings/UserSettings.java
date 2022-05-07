@@ -5,6 +5,12 @@
  */
 package UserSettings;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
@@ -14,15 +20,18 @@ import java.util.prefs.Preferences;
 public class UserSettings {
     
     
-   public void main(String[] args){
+   public void main() throws FileNotFoundException{
     Preferences myprefs = Preferences.userNodeForPackage(UserSettings.class);
     myprefs.put("role","administrator");
-    
-//    try {
-//        myprefs.exportNode(new FileOutputStream("settings.xml"));
-//    } catch (Exception ex) {
-//        Logger.getLogger(UserSettings.class.getName()).log(Level.SEVERE, null, ex);
-//    }
+    System.out.println(myprefs.get("role", "root"));
+       try {
+           myprefs.exportNode(new FileOutputStream("Preferences.xml"));
+      
+       } catch (IOException ex) {
+           Logger.getLogger(UserSettings.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (BackingStoreException ex) {
+           Logger.getLogger(UserSettings.class.getName()).log(Level.SEVERE, null, ex);
+       }
    }
 }
 

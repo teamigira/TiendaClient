@@ -108,18 +108,22 @@ public class AudioFile implements LineListener {
         AudioFile player = new AudioFile();
         switch(call){
          case "success":
-         URL resource = getClass().getResource("/notification.wav");
+         URL resource = getClass().getResource("/sounds/success.wav");
          File file = Paths.get(resource.toURI()).toFile(); // return a file
          String filepath = Paths.get(resource.toURI()).toFile().getAbsolutePath();;
          player.play(filepath);
          break;
          case "alert":
-         String audioFilePath2 = base_Url+"MP3/new-file.wav";
-         player.play(audioFilePath2);
+         URL resource1 = getClass().getResource("/sounds/alert.wav");
+         File file1 = Paths.get(resource1.toURI()).toFile(); // return a file
+         String filepath1 = Paths.get(resource1.toURI()).toFile().getAbsolutePath();;
+         player.play(filepath1);
          break;
          case "failure":
-         String audioFilePath3 = base_Url+"MP3/duplicates.wav";
-         player.play(audioFilePath3);      
+         URL resource2 = getClass().getResource("/sounds/notification.wav");
+         File file2 = Paths.get(resource2.toURI()).toFile(); // return a file
+         String filepath2 = Paths.get(resource2.toURI()).toFile().getAbsolutePath();;
+         player.play(filepath2);      
         }
     }
  

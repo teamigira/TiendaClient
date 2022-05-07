@@ -7,11 +7,11 @@ package com.nkanabo.Tienda;
 
 import static Authentication.Auth.Login;
 import static Authentication.Auth.authenticateProduct;
-import static Authentication.Encrpytion.encrypt;
 import Database.DBConnection;
 import static Database.MasterData.Master;
 import Interface.launcher;
 import static Database.MasterTables.createTables;
+import UserSettings.UserSettings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -44,6 +44,10 @@ public class Main {
     
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException, URISyntaxException {
         
+        //Load user preferences
+            UserSettings pref = new UserSettings();
+            pref.main();
+            
          // Load Configuration file
          try(InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
             //props.load(resourceStream);

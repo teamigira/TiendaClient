@@ -294,6 +294,7 @@ public class UserInterface extends javax.swing.JFrame {
         datelabel = new javax.swing.JLabel();
         backdate = new com.toedter.calendar.JCalendar();
         jButton11 = new javax.swing.JButton();
+        jLabel39 = new javax.swing.JLabel();
         BrandPanel = new javax.swing.JPanel();
         insertBrand = new javax.swing.JButton();
         brandname = new javax.swing.JTextField();
@@ -807,6 +808,8 @@ public class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        jLabel39.setText("jLabel39");
+
         javax.swing.GroupLayout OrderPanelLayout = new javax.swing.GroupLayout(OrderPanel);
         OrderPanel.setLayout(OrderPanelLayout);
         OrderPanelLayout.setHorizontalGroup(
@@ -826,7 +829,9 @@ public class UserInterface extends javax.swing.JFrame {
                         .addGap(34, 34, 34)
                         .addComponent(jButton10)
                         .addGap(29, 29, 29)
-                        .addComponent(jButton11))
+                        .addComponent(jButton11)
+                        .addGap(59, 59, 59)
+                        .addComponent(jLabel39))
                     .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 1066, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(63, 63, 63)
                 .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -873,12 +878,17 @@ public class UserInterface extends javax.swing.JFrame {
                 .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(OrderPanelLayout.createSequentialGroup()
                         .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(15, 15, 15)
-                        .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(editorder)
-                            .addComponent(jButton10)
-                            .addComponent(jButton11))
+                        .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(OrderPanelLayout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jButton2)
+                                    .addComponent(editorder)
+                                    .addComponent(jButton10)
+                                    .addComponent(jButton11)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, OrderPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel39)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(OrderPanelLayout.createSequentialGroup()
@@ -2612,7 +2622,9 @@ if(Crudes.addBrand(brand_name)){
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_categorybtnActionPerformed
 
     private void categorybtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorybtn1ActionPerformed
@@ -3062,6 +3074,7 @@ if(Crudes.addBrand(brand_name)){
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel43;

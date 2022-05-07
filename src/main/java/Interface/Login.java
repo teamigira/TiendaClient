@@ -7,6 +7,7 @@ package Interface;
 
 import Authentication.Encrpytion;
 import Authentication.Sessions;
+import Classes.Utilities.AudioFile;
 import static Database.DBConnect.getConnection;
 import java.io.File;
 import java.net.URISyntaxException;
@@ -165,6 +166,8 @@ public class Login extends javax.swing.JFrame {
          } 
          else {
              errormsg.setText("Password incorrect! Try again");
+             AudioFile Aud = new AudioFile();
+             Aud.Playme("failure");
          }
         // STEP 5: Clean-up environment 
         rs.close();
