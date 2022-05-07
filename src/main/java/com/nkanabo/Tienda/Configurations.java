@@ -16,11 +16,11 @@ import java.util.Properties;
  * @author Nkanabo
  */
 
-public class Configurations {
+public class Configurations {      
     static Properties properties;
 
     public static Configurations getInstance(URL resource) {
-        //Properties.
+    //Properties.
         return ConfigurationsHolder.INSTANCE;
     }
 
@@ -43,20 +43,17 @@ public class Configurations {
     public String getSystemPath()
     {
         String property = System.getProperty("os.name");
-        if (property.equalsIgnoreCase("Windows")){
-            return properties.getProperty("window.system.path");
-        }
-            return properties.getProperty("unix.system.path");
+        if (property.equalsIgnoreCase("Windows"))
+            return properties.getProperty("window.system.path");         
+        return properties.getProperty("unix.system.path");
     }
     
     /**
      * Getting Database Location | path
      * @return 
      */
-
     public String getDBLocation()
     {
-        return System.getProperty("user.home")+"/Tienda/";
+            return System.getProperty("user.home");
     }
-    
    }
