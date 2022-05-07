@@ -33,8 +33,8 @@ public class Categories {
     
     public static Boolean addCategory(String categoryname) throws SQLException, ClassNotFoundException{
       try {
-      Connection conna = DBConnection.getConnectionInstance().getConnection();
-     Statement stmt = conna.createStatement(); 
+      Connection conn = DBConnection.getConnectionInstance().getConnection();
+     Statement stmt = conn.createStatement(); 
         // STEP 3: Execute a query 
         stmt = conn.createStatement();  
         String sql =
