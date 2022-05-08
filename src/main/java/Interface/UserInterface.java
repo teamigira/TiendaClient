@@ -43,6 +43,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -55,8 +56,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.NumberFormatter;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -285,7 +288,7 @@ public class UserInterface extends javax.swing.JFrame {
         zeroBtn1 = new javax.swing.JButton();
         zeroBtn = new javax.swing.JButton();
         nineBtn = new javax.swing.JButton();
-        jButton17 = new javax.swing.JButton();
+        saleproductbtn = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         SearchProductForm = new javax.swing.JTextArea();
         todays = new javax.swing.JLabel();
@@ -589,7 +592,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         ParentLayout.setLayout(new java.awt.CardLayout());
 
-        OrderPanel.setBackground(new java.awt.Color(255, 204, 204));
+        OrderPanel.setBackground(java.awt.Color.lightGray);
 
         jLabel8.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel8.setText("Search");
@@ -618,6 +621,11 @@ public class UserInterface extends javax.swing.JFrame {
         qntlabel.setText("Quantity");
 
         quantityfield.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        quantityfield.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                quantityfieldMouseExited(evt);
+            }
+        });
         quantityfield.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 quantityfieldKeyReleased(evt);
@@ -756,15 +764,15 @@ public class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        jButton17.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        jButton17.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton17.setText("Sale Product");
-        jButton17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButton17.setContentAreaFilled(false);
-        jButton17.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton17.addActionListener(new java.awt.event.ActionListener() {
+        saleproductbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        saleproductbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        saleproductbtn.setText("Sale Product");
+        saleproductbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        saleproductbtn.setContentAreaFilled(false);
+        saleproductbtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        saleproductbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton17ActionPerformed(evt);
+                saleproductbtnActionPerformed(evt);
             }
         });
 
@@ -857,7 +865,7 @@ public class UserInterface extends javax.swing.JFrame {
                     .addComponent(backdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(datelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(qntlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         OrderPanelLayout.setVerticalGroup(
@@ -907,7 +915,7 @@ public class UserInterface extends javax.swing.JFrame {
                             .addComponent(nineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(zeroBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -2533,7 +2541,9 @@ public class UserInterface extends javax.swing.JFrame {
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_nineBtnActionPerformed
 
-    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+    private void saleproductbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleproductbtnActionPerformed
+        saleproductbtn.setEnabled(false);
+        saleproductbtn.setText("Wait");
         try {
             // TODO add your handling code here:
             //this is the saling button
@@ -2563,7 +2573,9 @@ public class UserInterface extends javax.swing.JFrame {
         } catch (ParseException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton17ActionPerformed
+        saleproductbtn.setEnabled(true);
+        saleproductbtn.setText("Sale");
+    }//GEN-LAST:event_saleproductbtnActionPerformed
 
     private void brandnameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_brandnameKeyReleased
         // TODO add your handling code here:
@@ -2896,8 +2908,13 @@ if(Crudes.addBrand(brand_name)){
           // TODO add your handling code here:
         
         //Delete sales.
-      String input = JOptionPane.showInputDialog(this, "Search row");
-            for(int i=0; i < orderlist.size(); i++){
+        row = ordersTable.getSelectedRow();
+        column = ordersTable.getColumnCount();
+        String input = JOptionPane.showInputDialog(this, "Search row");
+            for(int i=0; i < row; i++){
+                for(int j=0; j < column; j++){
+                    
+                }
                 if(orderlist.get(i).product.equalsIgnoreCase(input)){
                   JOptionPane.showMessageDialog(searchLabelIcon,"Results","Search result",2);
                   SearchProductForm.setText(orderlist.get(i).product);
@@ -2942,6 +2959,17 @@ if(Crudes.addBrand(brand_name)){
         backdate.setVisible(true);
         LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
     }//GEN-LAST:event_jLabel39MouseClicked
+
+    private void quantityfieldMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_quantityfieldMouseExited
+        // TODO add your handling code here:
+        int x;
+         try {
+        x = Integer.parseInt(quantityfield.getText());
+        } catch (NumberFormatException nfe) {
+            quantityfield.setText("");
+             quantity = 0;
+        }
+    }//GEN-LAST:event_quantityfieldMouseExited
 
     /**
      */
@@ -3038,7 +3066,6 @@ if(Crudes.addBrand(brand_name)){
     private javax.swing.JButton insertBrand1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
@@ -3136,6 +3163,7 @@ if(Crudes.addBrand(brand_name)){
     private javax.swing.JLabel qntlabel;
     private javax.swing.JTextField quantityfield;
     private javax.swing.JTextField retailprice;
+    private javax.swing.JButton saleproductbtn;
     private javax.swing.JLabel searchLabelIcon;
     private javax.swing.JButton sevenBtn;
     private javax.swing.JButton sixBtn;

@@ -514,7 +514,7 @@
         <Container class="javax.swing.JPanel" name="OrderPanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="cc" red="ff" type="rgb"/>
+              <Color blue="c0" green="c0" id="lightGray" palette="1" red="c0" type="palette"/>
             </Property>
           </Properties>
           <Constraints>
@@ -582,7 +582,7 @@
                           <Component id="backdate" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="datelabel" alignment="0" min="-2" pref="144" max="-2" attributes="0"/>
                           <Component id="qntlabel" alignment="0" min="-2" pref="113" max="-2" attributes="0"/>
-                          <Component id="jButton17" min="-2" pref="160" max="-2" attributes="0"/>
+                          <Component id="saleproductbtn" min="-2" pref="160" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -644,7 +644,7 @@
                                   <Component id="zeroBtn1" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jButton17" min="-2" pref="65" max="-2" attributes="0"/>
+                              <Component id="saleproductbtn" min="-2" pref="65" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -708,6 +708,7 @@
                 </Property>
               </Properties>
               <Events>
+                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="quantityfieldMouseExited"/>
                 <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="quantityfieldKeyReleased"/>
               </Events>
             </Component>
@@ -986,7 +987,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nineBtnActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton17">
+            <Component class="javax.swing.JButton" name="saleproductbtn">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="69" green="69" id="Button.darkShadow" palette="3" red="69" type="palette"/>
@@ -1006,7 +1007,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton17ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saleproductbtnActionPerformed"/>
               </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane7">
