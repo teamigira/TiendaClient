@@ -2905,21 +2905,21 @@ if(Crudes.addBrand(brand_name)){
     private void searchLabelIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchLabelIconMouseClicked
         // TODO add your handling code here:
         // TODO add your handling code here:
-          // TODO add your handling code here:
+        // TODO add your handling code here:
         
         //Delete sales.
         row = ordersTable.getSelectedRow();
         column = ordersTable.getColumnCount();
         String input = JOptionPane.showInputDialog(this, "Search row");
-            for(int i=0; i < row; i++){
-                for(int j=0; j < column; j++){
-                    
-                }
-                if(orderlist.get(i).product.equalsIgnoreCase(input)){
-                  JOptionPane.showMessageDialog(searchLabelIcon,"Results","Search result",2);
-                  SearchProductForm.setText(orderlist.get(i).product);
-                  quantityfield.setText(String.valueOf(orderlist.get(i).quantity));
-                }            
+                //for(int i=0; i < row; i++){
+                for(int i=0; i < orderlist.size(); i++){
+                    if(orderlist.get(i).product.equalsIgnoreCase(input)){
+                        //Search the model
+                        JOptionPane.showMessageDialog(searchLabelIcon,"Results","Search result",2);
+                        System.out.println("results"+orderlist.get(i).product);//Print if found string
+                        SearchProductForm.setText(orderlist.get(i).product);
+                        quantityfield.setText(String.valueOf(orderlist.get(i).quantity));
+                    }          
         }
     }//GEN-LAST:event_searchLabelIconMouseClicked
 
