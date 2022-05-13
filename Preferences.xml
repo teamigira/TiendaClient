@@ -6,6 +6,7 @@
     <node name="UserSettings">
       <map>
         <entry key="sounds" value="true"/>
+        <entry key="product_key" value="0"/>
       </map>
     </node>
   </root>

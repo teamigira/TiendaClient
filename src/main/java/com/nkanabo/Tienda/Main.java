@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import UserSettings.UserSettings;
 
 /**
  *
@@ -31,6 +32,8 @@ public class Main {
      public static final int KeyExpiryDays = 1;
      public static String resourceName = "application.properties";
      public static ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+  
      Properties props = new Properties();
      
     /*
@@ -46,7 +49,7 @@ public class Main {
         
         //Load user preferences
             UserSettings pref = new UserSettings();
-            pref.main();
+            pref.UserSettings();
             
          // Load Configuration file
          try(InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
@@ -62,6 +65,7 @@ public class Main {
         } 
               
         try {  
+            
             createTables();
             Master();
         } catch (Exception ex) {
@@ -69,7 +73,9 @@ public class Main {
         }
       
       //returns true if authenticated.
-      if(authenticateProduct() == true){
+      UserSettings usS = new UserSettings();
+      usS.testKeys();
+      if(authenticateProduct() == true && usS.getKeysValidity() == true){
            Login();
           }
       else {

@@ -184,4 +184,8 @@ public class Orders {
         return true;
     }
     
+    public static void deleteRow(int row){
+        System.out.println("" + row);
+    }
+    
 }

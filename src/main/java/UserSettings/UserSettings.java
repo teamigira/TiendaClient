@@ -21,14 +21,29 @@ public class UserSettings {
     
     Preferences myprefs = Preferences.userNodeForPackage(UserSettings.class);
     
-    public void soundSettings(boolean value){
-         myprefs.put("sounds",String.valueOf(value));
-         System.out.println("is it set");
+     public void soundSettings(boolean value){
+         if(value == true){
+         myprefs.put("sounds", "true");
+         }
+         else  
+         myprefs.put("sounds", "false");
+    }
+     
+    public void testKeys(){
+          //myprefs.remove("sounds");
+          System.out.println("The current status" +myprefs.get("product_key", "root"));
+    }
+    
+    public boolean getKeysValidity(){
+        return myprefs.get("product_key", "root") != "0";          
+    }
+       
+    public void SetKey(){
+        myprefs.put("product_key", "0");
     }
     
     
-   public void main() throws FileNotFoundException{
-    System.out.println(myprefs.get("sounds", "root"));
+   public void UserSettings() throws FileNotFoundException{
        try {
            myprefs.exportNode(new FileOutputStream("Preferences.xml"));
       

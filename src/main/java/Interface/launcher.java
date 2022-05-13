@@ -8,6 +8,7 @@ package Interface;
 import static Authentication.Auth.Login;
 import static Authentication.Encrpytion.encrypt;
 import static Database.DBConnect.getConnection;
+import UserSettings.UserSettings;
 import static com.nkanabo.Tienda.Utilities.milliConverter;
 import java.io.File;
 import java.net.URISyntaxException;
@@ -17,7 +18,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.logging.Level;
@@ -191,7 +191,7 @@ public class launcher extends javax.swing.JFrame {
 
         long dateofExpiry = 0;
         try {
-             //60000 is one day into milliseconds
+            //60000 is one day into milliseconds
             dateofExpiry = milliConverter(String.valueOf(d1)) + 60000;
             Connection conn = getConnection();
             Statement stmt = conn.createStatement();
@@ -201,7 +201,7 @@ public class launcher extends javax.swing.JFrame {
             //STEP 4: Extract data from result set 
             if (rs.next()) {
                 response.setText("");
-                
+
                 //Retrieve by column name 
                 //Change to the next page after updating the
                 // activation status column
@@ -210,14 +210,14 @@ public class launcher extends javax.swing.JFrame {
                     String updatequery = "UPDATE app_key set activation_status='1',"
                             + "expire_date = '" + dateofExpiry + "'";
                     int rsu = stmt.executeUpdate(updatequery);
+                    UserSettings uS = new UserSettings();
+                    uS.SetKey();
                     this.dispose();
-                    UserInterface UI = new UserInterface();
-                    UI.UserIntfc();
                 } catch (SQLException se) {
                     se.printStackTrace();
                 }
-                    this.dispose();
-                    Login();
+                this.dispose();
+                Login();
             } else {
                 response.setText("Keys provided are invalid");
                 //prompt the user to enter the valid keys

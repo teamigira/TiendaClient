@@ -789,6 +789,7 @@ public class UserInterface extends javax.swing.JFrame {
         datelabel.setEnabled(false);
 
         searchLabelIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/searchicon.png"))); // NOI18N
+        searchLabelIcon.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         searchLabelIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 searchLabelIconMouseClicked(evt);
@@ -796,6 +797,7 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         deleteLabelIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/deleteicon.png"))); // NOI18N
+        deleteLabelIcon.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         deleteLabelIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 deleteLabelIconMouseClicked(evt);
@@ -803,6 +805,7 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         eraserLabelIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/erasericon.png"))); // NOI18N
+        eraserLabelIcon.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         eraserLabelIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 eraserLabelIconMouseClicked(evt);
@@ -810,6 +813,7 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         jLabel39.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/calendaricon.png"))); // NOI18N
+        jLabel39.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel39.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel39MouseClicked(evt);
@@ -2432,7 +2436,6 @@ public class UserInterface extends javax.swing.JFrame {
             ParentLayout.repaint();
             ParentLayout.revalidate();
             LoadSatffs();
-            System.out.println("Srilanka");
         } catch (ParseException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2916,7 +2919,6 @@ if(Crudes.addBrand(brand_name)){
                     if(orderlist.get(i).product.equalsIgnoreCase(input)){
                         //Search the model
                         JOptionPane.showMessageDialog(searchLabelIcon,"Results","Search result",2);
-                        System.out.println("results"+orderlist.get(i).product);//Print if found string
                         SearchProductForm.setText(orderlist.get(i).product);
                         quantityfield.setText(String.valueOf(orderlist.get(i).quantity));
                     }          
@@ -2928,11 +2930,12 @@ if(Crudes.addBrand(brand_name)){
          // TODO add your handling code here:
         
         //Delete sales.
-      int reply = JOptionPane.showConfirmDialog(this, "Delete row", "Confirm", JOptionPane.YES_NO_OPTION);
+      int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
       if (reply == JOptionPane.YES_OPTION) {
            ordersModel.removeRow(row);
             orderlist.remove(row);
             ordersModel.setRowCount(0);
+            Orders.deleteRow(row);
             for(int i=0; i < orderlist.size(); i++){
                 Object[] obj = {
                 orderlist.get(i).orderid,
