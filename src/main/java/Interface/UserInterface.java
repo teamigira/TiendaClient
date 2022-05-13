@@ -36,6 +36,7 @@ import Classes.Stocks;
 import static Classes.Stocks.listStocks;
 import Classes.AbstractClasses.Transfer;
 import Classes.Utilities.AudioFile;
+import com.nkanabo.Tienda.Utilities.*;
 import UserSettings.UserSettings;
 import static com.nkanabo.Tienda.Utilities.unique;
 import java.io.File;
@@ -43,7 +44,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -56,10 +56,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.NumberFormatter;
+import javax.swing.table.TableRowSorter;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -128,7 +128,9 @@ public class UserInterface extends javax.swing.JFrame {
     String[] allProducts;
     String[] nonStock;
     String[] productonly;
-    /**
+    
+   
+     /**
      * Creates new form UserInterface
      */
     public UserInterface() throws URISyntaxException {
@@ -210,9 +212,9 @@ public class UserInterface extends javax.swing.JFrame {
         //Roles
         
         //Permissions
-        
-        
         //Transfers
+        
+       
         
 
         this.setLocationRelativeTo(null);
@@ -2906,23 +2908,20 @@ if(Crudes.addBrand(brand_name)){
     }//GEN-LAST:event_soundSettingActionPerformed
 
     private void searchLabelIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchLabelIconMouseClicked
-        // TODO add your handling code here:
-        // TODO add your handling code here:
-        // TODO add your handling code here:
-        
-        //Delete sales.
+     
+        //Search engine.
         row = ordersTable.getSelectedRow();
         column = ordersTable.getColumnCount();
+//          Row sorters*/
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(ordersModel);
+        ordersTable.setRowSorter(sorter);
+        //End of row sorters
         String input = JOptionPane.showInputDialog(this, "Search row");
-                //for(int i=0; i < row; i++){
-                for(int i=0; i < orderlist.size(); i++){
-                    if(orderlist.get(i).product.equalsIgnoreCase(input)){
-                        //Search the model
-                        JOptionPane.showMessageDialog(searchLabelIcon,"Results","Search result",2);
-                        SearchProductForm.setText(orderlist.get(i).product);
-                        quantityfield.setText(String.valueOf(orderlist.get(i).quantity));
-                    }          
-        }
+         if (input.length() == 0) {
+               sorter.setRowFilter(null);
+            } else {
+               sorter.setRowFilter(RowFilter.regexFilter(input));
+            }
     }//GEN-LAST:event_searchLabelIconMouseClicked
 
     private void deleteLabelIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIconMouseClicked
@@ -2949,9 +2948,14 @@ if(Crudes.addBrand(brand_name)){
     }//GEN-LAST:event_deleteLabelIconMouseClicked
 
     private void eraserLabelIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserLabelIconMouseClicked
-        // TODO add your handling code here:
-        SearchProductForm.setText("");
-        quantityfield.setText("");
+        try {
+            // TODO add your handling code here:
+            SearchProductForm.setText("");
+            quantityfield.setText("");
+            loadJtableValues();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
                                     
     }//GEN-LAST:event_eraserLabelIconMouseClicked
 

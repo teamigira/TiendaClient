@@ -7,19 +7,20 @@
 package com.nkanabo.Tienda;
 
 import static com.nkanabo.Tienda.Main.KeyExpiryDays;
+import java.awt.Color;
+import java.awt.Component;
 import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;  
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import javax.swing.BorderFactory;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
@@ -122,6 +123,24 @@ public class Utilities {
     }
          
      
+     public static class HighlightRenderer extends DefaultTableCellRenderer {
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+
+        // everything as usual
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+        // added behavior
+        if(row == table.getSelectedRow()) {
+
+            // this will customize that kind of border that will be use to highlight a row
+            setBorder(BorderFactory.createMatteBorder(2, 1, 2, 1, Color.BLACK));
+        }
+
+        return this;
+    }
+}
      
      /**
       // 2015/09/27 15:07:53
