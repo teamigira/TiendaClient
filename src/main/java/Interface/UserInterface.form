@@ -536,8 +536,8 @@
                               <Component id="todays" min="-2" pref="206" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="searchLabelIcon" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="searchLabelIcon" min="-2" pref="60" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="deleteLabelIcon" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="eraserLabelIcon" min="-2" max="-2" attributes="0"/>
@@ -584,7 +584,7 @@
                           <Component id="qntlabel" alignment="0" min="-2" pref="113" max="-2" attributes="0"/>
                           <Component id="saleproductbtn" min="-2" pref="160" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="193" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1053,6 +1053,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="searchLabelIcon">
               <Properties>
+                <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/images/searchicon.png"/>
                 </Property>

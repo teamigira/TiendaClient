@@ -250,6 +250,7 @@ public class UserInterface extends javax.swing.JFrame {
         
         datelabel.setVisible(false);
         backdate.setVisible(false);
+        
       }
 
     /**
@@ -790,6 +791,7 @@ public class UserInterface extends javax.swing.JFrame {
         datelabel.setText("Date");
         datelabel.setEnabled(false);
 
+        searchLabelIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         searchLabelIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/searchicon.png"))); // NOI18N
         searchLabelIcon.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         searchLabelIcon.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -835,8 +837,8 @@ public class UserInterface extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(todays, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(OrderPanelLayout.createSequentialGroup()
-                        .addComponent(searchLabelIcon)
-                        .addGap(18, 18, 18)
+                        .addComponent(searchLabelIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteLabelIcon)
                         .addGap(18, 18, 18)
                         .addComponent(eraserLabelIcon)
@@ -872,7 +874,7 @@ public class UserInterface extends javax.swing.JFrame {
                     .addComponent(datelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(qntlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(193, Short.MAX_VALUE))
         );
         OrderPanelLayout.setVerticalGroup(
             OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2912,7 +2914,7 @@ if(Crudes.addBrand(brand_name)){
         //Search engine.
         row = ordersTable.getSelectedRow();
         column = ordersTable.getColumnCount();
-//          Row sorters*/
+        //Row sorters
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(ordersModel);
         ordersTable.setRowSorter(sorter);
         //End of row sorters
@@ -2950,6 +2952,9 @@ if(Crudes.addBrand(brand_name)){
     private void eraserLabelIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserLabelIconMouseClicked
         try {
             // TODO add your handling code here:
+            this.ordersTable.setAutoCreateRowSorter(false);
+            this.ordersTable.setAutoCreateRowSorter(true);
+            this.ordersTable.repaint();
             SearchProductForm.setText("");
             quantityfield.setText("");
             loadJtableValues();
