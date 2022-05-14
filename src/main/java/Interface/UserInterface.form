@@ -582,9 +582,13 @@
                           <Component id="backdate" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="datelabel" alignment="0" min="-2" pref="144" max="-2" attributes="0"/>
                           <Component id="qntlabel" alignment="0" min="-2" pref="113" max="-2" attributes="0"/>
-                          <Component id="saleproductbtn" min="-2" pref="160" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="saleproductbtn" min="-2" pref="160" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="saleproductbtnUpdate" min="-2" pref="160" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace pref="193" max="32767" attributes="0"/>
+                      <EmptySpace pref="130" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -610,7 +614,7 @@
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="searchLabelIcon" max="32767" attributes="0"/>
                                       <Component id="eraserLabelIcon" min="-2" max="-2" attributes="0"/>
-                                      <Component id="deleteLabelIcon" pref="0" max="32767" attributes="0"/>
+                                      <Component id="deleteLabelIcon" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
                               </Group>
@@ -644,10 +648,13 @@
                                   <Component id="zeroBtn1" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="saleproductbtn" min="-2" pref="65" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="saleproductbtn" alignment="3" min="-2" pref="65" max="-2" attributes="0"/>
+                                  <Component id="saleproductbtnUpdate" alignment="3" min="-2" pref="65" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="117" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1102,6 +1109,29 @@
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel39MouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="saleproductbtnUpdate">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="69" green="69" id="Button.darkShadow" palette="3" red="69" type="palette"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Calibri" size="18" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Update"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder/>
+                  </Border>
+                </Property>
+                <Property name="contentAreaFilled" type="boolean" value="false"/>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saleproductbtnUpdateActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

@@ -145,7 +145,7 @@ public class Orders {
     public static boolean deleteAll() throws ClassNotFoundException {
         try {
            Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+           Statement stmt = conna.createStatement();
 
             String updatequery
                     = "DELETE from sales_order_items";
@@ -179,6 +179,42 @@ public class Orders {
 
             // STEP 4: Clean-up environment 
            
+
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        return true;
+    }
+
+    public static boolean updateOrder(int order_id, String item_id, String product_id, long quantity, Double price, Double discount, String backdated) throws ParseException, ClassNotFoundException {
+        //To change body of generated methods, choose Tools | Templates
+        try {
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
+            // STEP 3: Execute a query 
+            //System.out.println(product_id.substring(0, product_id.indexOf('-')));
+            //product_id = (product_id.split(" - ", 2)[0]);
+            product_id = product_id.split(":")[1];
+
+            LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+
+            if (backdated != null) {
+                d1 = LocalDate.parse(backdated);
+            }
+
+            String today = "" + d1;
+
+            String sql
+             ="UPDATE sales_order_items SET quantity = '" + quantity + "', list_price = '"+price+"', discount='"+discount+"', date ='"+ milliConverter(today)+"' WHERE order_id = '" + order_id + "'";
+            int i = stmt.executeUpdate(sql);
+            if (i > 0) {
+                System.out.println(sql);
+            } else {
+                return false;
+            }
+
+            // STEP 4: Clean-up environment 
 
         } catch (SQLException se) {
             // Handle errors for JDBC 

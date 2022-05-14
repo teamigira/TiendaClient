@@ -301,6 +301,7 @@ public class UserInterface extends javax.swing.JFrame {
         deleteLabelIcon = new javax.swing.JLabel();
         eraserLabelIcon = new javax.swing.JLabel();
         jLabel39 = new javax.swing.JLabel();
+        saleproductbtnUpdate = new javax.swing.JButton();
         BrandPanel = new javax.swing.JPanel();
         insertBrand = new javax.swing.JButton();
         brandname = new javax.swing.JTextField();
@@ -824,6 +825,18 @@ public class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        saleproductbtnUpdate.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        saleproductbtnUpdate.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        saleproductbtnUpdate.setText("Update");
+        saleproductbtnUpdate.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        saleproductbtnUpdate.setContentAreaFilled(false);
+        saleproductbtnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        saleproductbtnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saleproductbtnUpdateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout OrderPanelLayout = new javax.swing.GroupLayout(OrderPanel);
         OrderPanel.setLayout(OrderPanelLayout);
         OrderPanelLayout.setHorizontalGroup(
@@ -873,8 +886,11 @@ public class UserInterface extends javax.swing.JFrame {
                     .addComponent(backdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(datelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(qntlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(193, Short.MAX_VALUE))
+                    .addGroup(OrderPanelLayout.createSequentialGroup()
+                        .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saleproductbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(130, Short.MAX_VALUE))
         );
         OrderPanelLayout.setVerticalGroup(
             OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -895,7 +911,7 @@ public class UserInterface extends javax.swing.JFrame {
                             .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(searchLabelIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(eraserLabelIcon)
-                                .addComponent(deleteLabelIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                                .addComponent(deleteLabelIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(jLabel39))
                         .addGap(28, 28, 28)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -923,8 +939,10 @@ public class UserInterface extends javax.swing.JFrame {
                             .addComponent(nineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(zeroBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(saleproductbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(117, Short.MAX_VALUE))
         );
 
         ParentLayout.add(OrderPanel, "card2");
@@ -3030,6 +3048,50 @@ if(Crudes.addBrand(brand_name)){
         }
     }//GEN-LAST:event_quantityfieldMouseExited
 
+    private void saleproductbtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleproductbtnUpdateActionPerformed
+        // Updating the values of order
+        //This is conditional to users (administrator's) configurations
+        saleproductbtnUpdate.setEnabled(false);
+        saleproductbtnUpdate.setText("Wait");
+        try {
+            // TODO add your handling code here:
+            //this is the saling button
+            /**
+             * All codes associating with selling comes here
+             */
+            
+            quantity = Integer.parseInt(quantityfield.getText());
+            int order_id = row;
+            String item_id = unique();
+            String product_id = SearchProductForm.getText();
+            Double price = 1.0;
+            Double discount = 0.00;
+            SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
+            String backdated = dcn.format(backdate.getDate());
+            
+            try {
+                if(Orders.updateOrder(order_id,item_id,product_id,quantity,price,discount,backdated)){
+                    Stocks.editStock(product_id,quantity);
+                    JOptionPane.showMessageDialog(this,"Succesfully edited");
+                    try {
+                        loadJtableValues();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UserPanel.class.getName())
+                                .log(Level.SEVERE, null, ex);
+                    }
+                }
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(UserInterface.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(UserInterface.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        saleproductbtnUpdate.setEnabled(true);
+        saleproductbtnUpdate.setText("Update");
+    }//GEN-LAST:event_saleproductbtnUpdateActionPerformed
+
     /**
      */
     
@@ -3225,6 +3287,7 @@ if(Crudes.addBrand(brand_name)){
     private javax.swing.JTextField quantityfield;
     private javax.swing.JTextField retailprice;
     private javax.swing.JButton saleproductbtn;
+    private javax.swing.JButton saleproductbtnUpdate;
     private javax.swing.JLabel searchLabelIcon;
     private javax.swing.JButton sevenBtn;
     private javax.swing.JButton sixBtn;
