@@ -11,7 +11,6 @@ import Database.DBConnection;
 import static Database.MasterData.Master;
 import Interface.launcher;
 import static Database.MasterTables.createTables;
-import UserSettings.UserSettings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;

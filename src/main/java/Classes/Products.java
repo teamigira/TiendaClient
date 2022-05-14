@@ -7,6 +7,7 @@ package Classes;
 
 import Classes.AbstractClasses.Product;
 import static Database.DBConnect.getConnection;
+import Database.DBConnection;
 import Interface.UserInterface;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -27,14 +28,13 @@ public class Products {
     int model_year,
     String expiry_date,
     double list_price,
-    double retail_price) throws URISyntaxException {
+    double retail_price) throws URISyntaxException, ClassNotFoundException {
       //To change body of generated methods, choose Tools | Templates
       
       try {
-       Connection conn = getConnection();
-       Statement stmt = conn.createStatement();
+           Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
          // STEP 3: Execute a query 
-         stmt = conn.createStatement();  
          String check;
          check="SELECT product_name FROM production_products"
                  + " WHERE product_name = '"+product_name+"'";
@@ -64,8 +64,6 @@ public class Products {
         }
           }
          // STEP 4: Clean-up environment 
-         stmt.close(); 
-         conn.close(); 
         
          
          
@@ -78,12 +76,11 @@ public class Products {
     
     
     public static Boolean editBrand(String id, String brandname)
-            throws SQLException{
+            throws SQLException, ClassNotFoundException{
       try {
-       Connection conn = getConnection();
-       Statement stmt = conn.createStatement();
+          Connection conna = DBConnection.getConnectionInstance().getConnection();
+          Statement stmt = conna.createStatement();
          // STEP 3: Execute a query 
-         stmt = conn.createStatement();
          
           String updatequery =
                   "UPDATE production_brands set brand_name='"+brandname+"'"
@@ -94,8 +91,6 @@ public class Products {
         } 
        
          // STEP 4: Clean-up environment
-         stmt.close(); 
-         conn.close(); 
         
          
          
@@ -107,12 +102,12 @@ public class Products {
     }
     
     
-    public static Boolean deleteBrand(int id) throws SQLException{
+    public static Boolean deleteBrand(int id) throws SQLException, ClassNotFoundException{
       try {
-       Connection conn = getConnection();
-       Statement stmt = conn.createStatement();
+         Connection conna = DBConnection.getConnectionInstance().getConnection();
+         Statement stmt = conna.createStatement();
          // STEP 3: Execute a query 
-         stmt = conn.createStatement();  
+         stmt = conna.createStatement();  
         
           String updatequery =
           "DELETE production_brands where brand_id='"+id+"'"; 
@@ -121,8 +116,6 @@ public class Products {
                 return false;
                 }
          // STEP 4: Clean-up environment 
-         stmt.close(); 
-         conn.close(); 
         
          
          
@@ -134,14 +127,14 @@ public class Products {
     
     }
     
-    public static ArrayList listProducts() throws SQLException{
+    public static ArrayList listProducts() throws SQLException, ClassNotFoundException{
         ArrayList<Product> list = new ArrayList<Product>();
         ArrayList rowValues = new ArrayList();
         try {
-        Connection conn = getConnection();
-        Statement stmt = conn.createStatement();
+           Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
          // STEP 3: Execute a query 
-         stmt = conn.createStatement();  
+         stmt = conna.createStatement();  
          String sqlquery = "SELECT * FROM production_products JOIN"
                  + " production_brands ON production_products.brand_id ="
                  + " production_brands.brand_id JOIN production_categories ON"
@@ -172,8 +165,6 @@ public class Products {
                     );           
          }
          // STEP 4: Clean-up environment 
-         stmt.close(); 
-         conn.close(); 
       } catch(SQLException se) { 
          // Handle errors for JDBC 
          se.printStackTrace(); 
@@ -183,15 +174,15 @@ public class Products {
     
     
     
-    public static ArrayList listStockProducts() throws SQLException{
+    public static ArrayList listStockProducts() throws SQLException, ClassNotFoundException{
               
         ArrayList<Product> list = new ArrayList<Product>();
         ArrayList rowValues = new ArrayList();
         try {
-        Connection conn = getConnection();
-        Statement stmt = conn.createStatement();
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
          // STEP 3: Execute a query 
-         stmt = conn.createStatement();  
+         stmt = conna.createStatement();  
          String sqlquery = "SELECT * FROM production_products JOIN"
                  + " production_brands ON production_products.brand_id ="
                  + " production_brands.brand_id JOIN production_categories ON"
@@ -225,8 +216,6 @@ public class Products {
                     );           
          }
          // STEP 4: Clean-up environment 
-         stmt.close(); 
-         conn.close(); 
       } catch(SQLException se) { 
          // Handle errors for JDBC 
          se.printStackTrace(); 
@@ -236,15 +225,15 @@ public class Products {
     
     
     
-    public static ArrayList listProductOnly() throws SQLException{
+    public static ArrayList listProductOnly() throws SQLException, ClassNotFoundException{
               
         ArrayList<Product> list = new ArrayList<Product>();
         ArrayList rowValues = new ArrayList();
         try {
-        Connection conn = getConnection();
-        Statement stmt = conn.createStatement();
+           Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
          // STEP 3: Execute a query 
-         stmt = conn.createStatement();  
+         stmt = conna.createStatement();  
          String sqlquery = "SELECT * FROM production_products JOIN"
                  + " production_brands ON production_products.brand_id ="
                  + " production_brands.brand_id JOIN production_categories ON"
@@ -276,8 +265,6 @@ public class Products {
                     );           
          }
          // STEP 4: Clean-up environment 
-         stmt.close(); 
-         conn.close(); 
       } catch(SQLException se) { 
          // Handle errors for JDBC 
          se.printStackTrace(); 

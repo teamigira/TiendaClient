@@ -39,7 +39,7 @@ public class DBConnection {
     /**
      * Database Location
      */
-    private Optional<String> url = Optional.of("~/TiendaDev");
+    private Optional<String> url = Optional.of("~/Tienda");
     
     private Connection connection = null;
     
@@ -72,7 +72,7 @@ public class DBConnection {
             }
             
             connection = DriverManager.getConnection(
-                    "jdbc:h2:"+url.get()+"/TiendaDev", 
+                    "jdbc:h2:"+url.get()+"/Tienda", 
                     username.get(), 
                     password.get()
             );
@@ -127,7 +127,7 @@ public class DBConnection {
      * 
      */
     public void migrate() {
-        String uri = "jdbc:h2:" + url.get()+"/TiendaDev";
+        String uri = "jdbc:h2:" + url.get()+"/Tienda";
         
         Flyway flyway = Flyway
                 .configure()

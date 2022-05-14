@@ -8,6 +8,7 @@ package Classes;
 import Classes.AbstractClasses.Staff;
 import static Authentication.Encrpytion.encrypt;
 import static Database.DBConnect.getConnection;
+import Database.DBConnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,13 +21,13 @@ import java.util.ArrayList;
  */
 public class Sales_Staffs {
     
-    public static boolean addStaff(String staff_name, String sur_name, String staff_email, int role){
+    public static boolean addStaff(String staff_name, String sur_name, String staff_email, int role) throws ClassNotFoundException{
         
         try {
-        Connection conn = getConnection();
-        Statement stmt = conn.createStatement();
+           Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
         // STEP 3: Execute a query 
-        stmt = conn.createStatement(); 
+        stmt = conna.createStatement(); 
         String password = "12345";
         password = encrypt(password);
         String sql =
@@ -40,8 +41,6 @@ public class Sales_Staffs {
         }
         
         // STEP 4: Clean-up environment 
-        stmt.close(); 
-        conn.close(); 
                  
       } catch(SQLException se) { 
          // Handle errors for JDBC 
@@ -50,14 +49,14 @@ public class Sales_Staffs {
         return true;
     }
    
-    public static ArrayList LoadStaffs(){
+    public static ArrayList LoadStaffs() throws ClassNotFoundException{
         ArrayList<Staff> list = new ArrayList<Staff>();
         ArrayList rowValues = new ArrayList();
         try {
-        Connection conn = getConnection();
-        Statement stmt = conn.createStatement();
+           Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
          // STEP 3: Execute a query 
-         stmt = conn.createStatement();  
+         stmt = conna.createStatement();  
          String sqlquery = "SELECT * FROM sales_staffs"; 
          ResultSet rs = stmt.executeQuery(sqlquery);
          while(rs.next()){
@@ -70,8 +69,6 @@ public class Sales_Staffs {
                    new Staff(firstname, lastname, email, roles));           
          }
          // STEP 4: Clean-up environment 
-         stmt.close(); 
-         conn.close(); 
       } catch(SQLException se) { 
          // Handle errors for JDBC 
          se.printStackTrace(); 

@@ -5,10 +5,8 @@
  */
 package Authentication;
 
-import static Database.DBConnect.getConnection;
+import Database.DBConnection;
 import Interface.Login;
-import Interface.UserInterface;
-import Interface.launcher;
 import static com.nkanabo.Tienda.Utilities.milliConverter;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -28,7 +26,7 @@ import java.util.logging.Logger;
 public class Auth {
            
  
-    public static boolean authenticateProduct() throws SQLException {
+    public static boolean authenticateProduct() throws SQLException, ClassNotFoundException {
         try {
             //if oriduct activation is null then
             //request for product activation
@@ -36,11 +34,13 @@ public class Auth {
             //request for log in
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
             long today = 0;
-//            String today = "";
+            
             today = milliConverter(String.valueOf(d1));
-//            today = String.valueOf(dateofExpiry);
-            Connection conn = getConnection();
-            Statement stmt = conn.createStatement();
+            
+             DBConnection dbc = DBConnection.getConnectionInstance();
+            Connection con = dbc.getConnection();
+                    Statement stmt = null;
+                    stmt = con.createStatement();
             String sql = "SELECT * FROM app_key"
                     + " where activation_status = 0 OR "
                     + "expire_date <= '"+ today +"'";
@@ -58,8 +58,6 @@ public class Auth {
             // STEP 5: Clean-up environment
             rs.close();
             // finally block used to close resources
-            stmt.close();
-            conn.close();
         } catch (ParseException ex) {
             Logger.getLogger(Auth.class.getName()).log(Level.SEVERE, null, ex);
         }

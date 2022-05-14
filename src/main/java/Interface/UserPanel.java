@@ -31,7 +31,7 @@ public class UserPanel extends javax.swing.JFrame {
     public long quantity;
     int row,column;
     
-    public UserPanel() {
+    public UserPanel() throws ClassNotFoundException {
         initComponents();
         this.pack();
         this.setLocationRelativeTo(null);
@@ -1115,7 +1115,11 @@ public class UserPanel extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UserPanel().setVisible(true);
+                try {
+                    new UserPanel().setVisible(true);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(UserPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 BrandPanel.setVisible(true);
             }
         });
@@ -1190,7 +1194,7 @@ public class UserPanel extends javax.swing.JFrame {
     private javax.swing.JButton zeroBtn1;
     // End of variables declaration//GEN-END:variables
 
-    public void loadJtableValues() throws SQLException {
+    public void loadJtableValues() throws SQLException, ClassNotFoundException {
             orderlist = listOrders();
             System.out.println(orderlist.size());
             for(int i=0; i < orderlist.size(); i++){

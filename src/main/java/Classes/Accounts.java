@@ -6,7 +6,7 @@
 package Classes;
 
 import Classes.AbstractClasses.Transfer;
-import static Database.DBConnect.getConnection;
+import Database.DBConnection;
 import static com.nkanabo.Tienda.Utilities.DateMilli;
 import static com.nkanabo.Tienda.Utilities.milliConverter;
 import java.sql.Connection;
@@ -25,66 +25,65 @@ import java.util.logging.Logger;
  * @author Nkanabo
  */
 public class Accounts {
-    
-    public static boolean addTransfer(String amount) {
-        
+
+    public static boolean addTransfer(String amount) throws ClassNotFoundException {
+
         try {
-        Connection conn = getConnection();
-        Statement stmt = conn.createStatement();
-        // STEP 3: Execute a query 
-        stmt = conn.createStatement();  
-        
-          LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
-        
-        
-        String today = String.valueOf(d1);
-        String sql =
-        "INSERT INTO accounts (amount,date)" + "VALUES ('"+amount+"','" + milliConverter(today)+ "')";
-        int i = stmt.executeUpdate(sql);
-        if (i > 0) {
-            System.out.println(sql);
-        } else {
-            return false;
-        }
-        // STEP 4: Clean-up environment 
-        stmt.close(); 
-        conn.close(); 
-      } catch(SQLException se) { 
-         // Handle errors for JDBC 
-         se.printStackTrace(); 
-      } catch (ParseException ex) { 
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
+            // STEP 3: Execute a query 
+            stmt = conna.createStatement();
+
+            LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+
+            String today = String.valueOf(d1);
+            String sql
+                    = "INSERT INTO accounts (amount,date)" + "VALUES ('" + amount + "','" + milliConverter(today) + "')";
+            int i = stmt.executeUpdate(sql);
+            if (i > 0) {
+                System.out.println(sql);
+            } else {
+                return false;
+            }
+            // STEP 4: Clean-up environment 
+            stmt.close();
+            conna.close();
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        } catch (ParseException ex) {
             Logger.getLogger(Accounts.class.getName()).log(Level.SEVERE, null, ex);
         }
         return true;
     }
 
-    public static ArrayList getTransfers() {
+    public static ArrayList getTransfers() throws ClassNotFoundException {
         ArrayList<Transfer> list = new ArrayList<Transfer>();
         ArrayList rowValues = new ArrayList();
         try {
-        Connection conn = getConnection();
-        Statement stmt = conn.createStatement();
-         // STEP 3: Execute a query 
-         stmt = conn.createStatement();  
-         String sqlquery = "SELECT * FROM accounts"; 
-         ResultSet rs = stmt.executeQuery(sqlquery);
-         while(rs.next()){
-           String amount = rs.getString("amount");
-           String date = rs.getString("date");
-           String collector = rs.getString("collected_by");
-           Double total = 0.0;
-           String ddate = DateMilli(date);
-             System.out.println(""+ddate);
-           list.add(
-                   new Transfer(amount, ddate, collector, total));           
-         }
-         // STEP 4: Clean-up environment 
-         stmt.close(); 
-         conn.close(); 
-      } catch(SQLException se) { 
-         // Handle errors for JDBC 
-         se.printStackTrace(); 
-      } 
-      return list; 
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
+            // STEP 3: Execute a query 
+            stmt = conna.createStatement();
+            String sqlquery = "SELECT * FROM accounts";
+            ResultSet rs = stmt.executeQuery(sqlquery);
+            while (rs.next()) {
+                String amount = rs.getString("amount");
+                String date = rs.getString("date");
+                String collector = rs.getString("collected_by");
+                Double total = 0.0;
+                String ddate = DateMilli(date);
+                System.out.println("" + ddate);
+                list.add(
+                        new Transfer(amount, ddate, collector, total));
+            }
+            // STEP 4: Clean-up environment 
+            stmt.close();
+            conna.close();
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        return list;
     }
 }

@@ -133,7 +133,7 @@ public class UserInterface extends javax.swing.JFrame {
      /**
      * Creates new form UserInterface
      */
-    public UserInterface() throws URISyntaxException {
+    public UserInterface() throws URISyntaxException, ClassNotFoundException {
         initComponents();
         
         URL resource = getClass().getResource("/images/icons8.jpg");
@@ -2169,7 +2169,7 @@ public class UserInterface extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     
-        public void loadJtableValues() throws SQLException {
+        public void loadJtableValues() throws SQLException, ClassNotFoundException {
              ordersModel.setRowCount(0);
             orderlist = listOrders();
             for(int i=0; i < orderlist.size(); i++){
@@ -2183,7 +2183,7 @@ public class UserInterface extends javax.swing.JFrame {
             }
     }
         
-        public void loadBrandsJtableValues() throws SQLException {
+        public void loadBrandsJtableValues() throws SQLException, ClassNotFoundException {
             brandsModel.setRowCount(0);
             brandlist = listBrands();
             allBrands = new String[brandlist.size()];
@@ -2196,7 +2196,7 @@ public class UserInterface extends javax.swing.JFrame {
             }
     }
         
-        public void LoadCategories() throws SQLException {
+        public void LoadCategories() throws SQLException, ClassNotFoundException {
             categoryModel.setRowCount(0);
             categorylist = listCategories();
             allCats = new String[categorylist.size()];
@@ -2209,7 +2209,7 @@ public class UserInterface extends javax.swing.JFrame {
             }
     }
            
-    private void LoadProducts() {
+    private void LoadProducts() throws ClassNotFoundException {
         productModel.setRowCount(0);
         try {
             productlist = listProducts();
@@ -2232,7 +2232,7 @@ public class UserInterface extends javax.swing.JFrame {
             }
     }
     
-    public void LoadStockProducts(){
+    public void LoadStockProducts() throws ClassNotFoundException{
         try {
             stockproductlist = listStockProducts();
         } catch (SQLException ex) {
@@ -2247,7 +2247,7 @@ public class UserInterface extends javax.swing.JFrame {
             }
     }
     
-    public void LoadProductsOnly() throws SQLException{
+    public void LoadProductsOnly() throws SQLException, ClassNotFoundException{
             productsonly = listProductOnly();
             productonly = new String[productsonly.size()];
             for(int i=0; i < productsonly.size(); i++){
@@ -2257,7 +2257,7 @@ public class UserInterface extends javax.swing.JFrame {
             }   
     }
             
-    public void LoadStocks(){          
+    public void LoadStocks() throws ClassNotFoundException{          
           stockModel.setRowCount(0);
           stocklist = listStocks();  
             for(int i=0; i < stocklist.size(); i++){
@@ -2269,7 +2269,7 @@ public class UserInterface extends javax.swing.JFrame {
             }
     }
     
-    public void LoadDailySalesReport() throws ParseException{
+    public void LoadDailySalesReport() throws ParseException, ClassNotFoundException{
         dailySalesModel.setRowCount(0);
         dailyreportlist = listDailyReport();
         
@@ -2294,7 +2294,7 @@ public class UserInterface extends javax.swing.JFrame {
      }
     }
     
-    public void LoadweeklyReport() throws ParseException{
+    public void LoadweeklyReport() throws ParseException, ClassNotFoundException{
         weeklyModel.setRowCount(0);
         weeklyreportlist = listWeeklyReport();
         tinvest1.setText("Tsh "+weeklyreportlist.get(weeklyreportlist.size()-1).totalinvestment);
@@ -2313,7 +2313,7 @@ public class UserInterface extends javax.swing.JFrame {
         }
     }
     
-    public void LoadmonthlyReport() throws ParseException{
+    public void LoadmonthlyReport() throws ParseException, ClassNotFoundException{
         monthlyModel.setRowCount(0);
         monthlyreportlist = listMonthlyReport(); 
         tinvest2.setText("Tsh "+monthlyreportlist.get(monthlyreportlist.size()-1).totalinvestment);
@@ -2332,7 +2332,7 @@ public class UserInterface extends javax.swing.JFrame {
         }
     }
     
-    public void LoaddatedReport(String dt) throws ParseException{
+    public void LoaddatedReport(String dt) throws ParseException, ClassNotFoundException{
         datedModel.setRowCount(0);
         datedreportlist = DatedReport(dt);
         totalreturns.setText("Tsh "+datedreportlist.get(datedreportlist.size()-1).totalreturns);
@@ -2350,7 +2350,7 @@ public class UserInterface extends javax.swing.JFrame {
         }
     }
         
-        public void LoadSatffs() throws ParseException{
+        public void LoadSatffs() throws ParseException, ClassNotFoundException{
         StaffsModel.setRowCount(0);
         staffslist = LoadStaffs();
         if(staffslist.isEmpty()){
@@ -2370,7 +2370,7 @@ public class UserInterface extends javax.swing.JFrame {
        }
         
         
-       public void LoadTransfers() throws ParseException{
+       public void LoadTransfers() throws ParseException, ClassNotFoundException{
         TransferModel.setRowCount(0);
         transferedlist = getTransfers();
         
@@ -2405,6 +2405,8 @@ public class UserInterface extends javax.swing.JFrame {
             
         } catch (SQLException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_OrderbtnActionPerformed
 
@@ -2415,6 +2417,8 @@ public class UserInterface extends javax.swing.JFrame {
             LoadCategories();
             LoadCategories();
              } catch (SQLException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
             ParentLayout.removeAll();
@@ -2441,6 +2445,8 @@ public class UserInterface extends javax.swing.JFrame {
             ParentLayout.revalidate();
             LoadSatffs();
         } catch (ParseException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_staffButtonActionPerformed
@@ -2568,14 +2574,18 @@ public class UserInterface extends javax.swing.JFrame {
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
             String backdated = dcn.format(backdate.getDate());
             
-            if(Orders.addOrder(order_id,item_id,product_id,quantity,price,discount,backdated)){
-                Stocks.editStock(product_id,quantity);
-                JOptionPane.showMessageDialog(this,"Succesfully");
-                try {
-                    loadJtableValues();
-                } catch (SQLException ex) {
-                    Logger.getLogger(UserPanel.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                if(Orders.addOrder(order_id,item_id,product_id,quantity,price,discount,backdated)){
+                    Stocks.editStock(product_id,quantity);
+                    JOptionPane.showMessageDialog(this,"Succesfully");
+                    try {
+                        loadJtableValues();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UserPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (ParseException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
@@ -2601,6 +2611,8 @@ if(Crudes.addBrand(brand_name)){
 }
         } catch (SQLException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_insertBrandActionPerformed
 
@@ -2613,6 +2625,8 @@ if(Crudes.addBrand(brand_name)){
         try {
             LoadDailySalesReport();
         } catch (ParseException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton7ActionPerformed
@@ -2650,15 +2664,19 @@ if(Crudes.addBrand(brand_name)){
         Double retail_price = Double.parseDouble(retailprice.getText());
                 
         try {
-            if(Products.addProduct(product_name,
-                    brand_id,
-                    category_id,
-                    model_year,
-                    expiry_date,
-                    list_price,
-                    retail_price)){
-                JOptionPane.showMessageDialog(this,"Succesfully");
-                LoadProducts();
+            try {
+                if(Products.addProduct(product_name,
+                        brand_id,
+                        category_id,
+                        model_year,
+                        expiry_date,
+                        list_price,
+                        retail_price)){
+                    JOptionPane.showMessageDialog(this,"Succesfully");
+                    LoadProducts();
+                }
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (URISyntaxException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
@@ -2694,19 +2712,23 @@ if(Crudes.addBrand(brand_name)){
     }//GEN-LAST:event_retailpriceActionPerformed
 
     private void insertBrand1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertBrand1ActionPerformed
-        // TODO add your handling code here:
-                    
-        String productname = ProductsOnly.getSelectedItem().toString();
-        int productquantity =  Integer.parseInt(StockQuantity.getText());
-        
-        if(Stocks.addStock(productname,productquantity)){
-            JOptionPane.showMessageDialog(this,"Succesfully");
-            LoadStocks();
-            try {
-                LoadProductsOnly();
-            } catch (SQLException ex) {
-                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            // TODO add your handling code here:
+            
+            String productname = ProductsOnly.getSelectedItem().toString();
+            int productquantity =  Integer.parseInt(StockQuantity.getText());
+            
+            if(Stocks.addStock(productname,productquantity)){
+                JOptionPane.showMessageDialog(this,"Succesfully");
+                LoadStocks();
+                try {
+                    LoadProductsOnly();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_insertBrand1ActionPerformed
 
@@ -2729,8 +2751,12 @@ if(Crudes.addBrand(brand_name)){
     }//GEN-LAST:event_ordersTableMouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        Orders.deleteAll();
+        try {
+            // TODO add your handling code here:
+            Orders.deleteAll();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
         JOptionPane.showMessageDialog(this,"Succesfully");
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -2743,6 +2769,8 @@ if(Crudes.addBrand(brand_name)){
         try {
             LoadDailySalesReport();
         } catch (ParseException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
@@ -2757,6 +2785,8 @@ if(Crudes.addBrand(brand_name)){
             LoadweeklyReport();
         } catch (ParseException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
@@ -2769,6 +2799,8 @@ if(Crudes.addBrand(brand_name)){
         try {
             LoadmonthlyReport();
         } catch (ParseException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jMenuItem5ActionPerformed
@@ -2794,33 +2826,39 @@ if(Crudes.addBrand(brand_name)){
             LoaddatedReport(backdated);
         } catch (ParseException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void categorybtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorybtn2ActionPerformed
-        // TODO add your handling code here:
-        //Save to the staffs table.
-        
-        String product_name = productname.getText();
-        String staff_name = staffname.getText();
-        String sur_name = surname.getText();
-        String staff_email = email.getText();
-        int role = staff_role.getSelectedIndex();
-                
-        if(Sales_Staffs.addStaff(
-            staff_name,
-            sur_name,
-            staff_email,
-            role)){
-            JOptionPane.showMessageDialog(this,"Succesfully");
-              try {
-                  LoadSatffs();
-              } catch (ParseException ex) {
-                  Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-              }
+        try {
+            // TODO add your handling code here:
+            //Save to the staffs table.
+            
+            String product_name = productname.getText();
+            String staff_name = staffname.getText();
+            String sur_name = surname.getText();
+            String staff_email = email.getText();
+            int role = staff_role.getSelectedIndex();
+            
+            if(Sales_Staffs.addStaff(
+                    staff_name,
+                    sur_name,
+                    staff_email,
+                    role)){
+                JOptionPane.showMessageDialog(this,"Succesfully");
+                try {
+                    LoadSatffs();
+                } catch (ParseException ex) {
+                    Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            clearUserFields();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-      clearUserFields();
     }//GEN-LAST:event_categorybtn2ActionPerformed
 
     public void clearUserFields(){
@@ -2848,6 +2886,8 @@ if(Crudes.addBrand(brand_name)){
             LoadTransfers();
         } catch (ParseException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
@@ -2864,17 +2904,21 @@ if(Crudes.addBrand(brand_name)){
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void categorybtn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorybtn3ActionPerformed
-        // TODO add your handling code here:
-       String transfer_amounts;
-       transfer_amounts = transferamount.getText();
-             if(Accounts.addTransfer(transfer_amounts)){
-           try {
-               JOptionPane.showMessageDialog(this,"Succesfully");
-               LoadTransfers();
-           } catch (ParseException ex) {
-               Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-           }
+        try {
+            // TODO add your handling code here:
+            String transfer_amounts;
+            transfer_amounts = transferamount.getText();
+            if(Accounts.addTransfer(transfer_amounts)){
+                try {
+                    JOptionPane.showMessageDialog(this,"Succesfully");
+                    LoadTransfers();
+                } catch (ParseException ex) {
+                    Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_categorybtn3ActionPerformed
 
     private void transferamountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transferamountActionPerformed
@@ -2927,23 +2971,24 @@ if(Crudes.addBrand(brand_name)){
     }//GEN-LAST:event_searchLabelIconMouseClicked
 
     private void deleteLabelIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIconMouseClicked
-        // TODO add your handling code here:
-         // TODO add your handling code here:
-        
-        //Delete sales.
-      int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
-      if (reply == JOptionPane.YES_OPTION) {
-           ordersModel.removeRow(row);
+       //Delete sales.
+        int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            ordersModel.removeRow(row);
             orderlist.remove(row);
             ordersModel.setRowCount(0);
-            Orders.deleteRow(row);
-            for(int i=0; i < orderlist.size(); i++){
+            try {
+                Orders.deleteRow(row);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            for (int i = 0; i < orderlist.size(); i++) {
                 Object[] obj = {
-                orderlist.get(i).orderid,
-                orderlist.get(i).product,
-                orderlist.get(i).quantity,
-                orderlist.get(i).listprice,
-                orderlist.get(i).discount};
+                    orderlist.get(i).orderid,
+                    orderlist.get(i).product,
+                    orderlist.get(i).quantity,
+                    orderlist.get(i).listprice,
+                    orderlist.get(i).discount};
                 ordersModel.addRow(obj);
             }
         }
@@ -2959,6 +3004,8 @@ if(Crudes.addBrand(brand_name)){
             quantityfield.setText("");
             loadJtableValues();
         } catch (SQLException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
                                     
@@ -3026,6 +3073,8 @@ if(Crudes.addBrand(brand_name)){
                 try {
                     new UserInterface().setVisible(true);
                 } catch (URISyntaxException ex) {
+                    Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
                     Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
