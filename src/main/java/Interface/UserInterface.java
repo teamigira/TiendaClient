@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Interface;
 
 import static Authentication.Sessions.LoggedUser;
@@ -39,6 +38,8 @@ import Classes.Utilities.AudioFile;
 import com.nkanabo.Tienda.Utilities.*;
 import UserSettings.UserSettings;
 import static com.nkanabo.Tienda.Utilities.unique;
+import java.awt.Color;
+import static java.awt.Color.blue;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -56,6 +57,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
@@ -66,83 +68,77 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  *
  * @author Nkanabo
  */
-
 public class UserInterface extends javax.swing.JFrame {
-    
+
     ArrayList<Order> orderlist;
-    String headers[]= {"Order Id","Product","Quantity", "List price", "Discount"};
+    String headers[] = {"Order Id", "Product", "Quantity", "List price", "Discount"};
     DefaultTableModel ordersModel;
     //Brands
     ArrayList<Brands> brandlist;
-    String brandheaders[]= {"Brand Id","Brand Name"};
+    String brandheaders[] = {"Brand Id", "Brand Name"};
     DefaultTableModel brandsModel;
     //end of brands
     //Categories
     ArrayList<Category> categorylist;
-    String categoryheader[] = {"category_id","category_name"};
+    String categoryheader[] = {"category_id", "category_name"};
     DefaultTableModel categoryModel;
     //End of categories
-    
+
     //Products
     ArrayList<Product> productlist; //Products with 0 stock
     ArrayList<Product> stockproductlist; //products that has stock>0
     ArrayList<Product> productsonly; //products with no stock
-    String productheader[] = {"Product","Brand","Category","Model","Expire Date","Price","Retail"};
+    String productheader[] = {"Product", "Brand", "Category", "Model", "Expire Date", "Price", "Retail"};
     DefaultTableModel productModel;
     //End of products
-    
-        //Products
+
+    //Products
     ArrayList<Stock> stocklist;
-    String stockheader[] = {"Product","Quantity"};
+    String stockheader[] = {"Product", "Quantity"};
     DefaultTableModel stockModel;
     //End of products
-    
+
     DefaultTableModel dailySalesModel;
-    String dailyreportheader[] = {"Product Name","Retail Price","List Price","Profit","quantity","date"};
-    ArrayList<DailyReport>  dailyreportlist;
-    
-    
+    String dailyreportheader[] = {"Product Name", "Retail Price", "List Price", "Profit", "quantity", "date"};
+    ArrayList<DailyReport> dailyreportlist;
+
     DefaultTableModel StaffsModel;
-    String staffsheader[] = {"First Name","Last Name","Email","Role"};
-    ArrayList<Staff>  staffslist;
-    
-    
+    String staffsheader[] = {"First Name", "Last Name", "Email", "Role"};
+    ArrayList<Staff> staffslist;
+
     DefaultTableModel TransferModel;
-    String transferheader[] = {"Amount","Date","Collected by"};
-    ArrayList<Transfer>  transferedlist;
-    
+    String transferheader[] = {"Amount", "Date", "Collected by"};
+    ArrayList<Transfer> transferedlist;
+
     DefaultTableModel weeklyModel;
     ArrayList<DailyReport> weeklyreportlist;
-    
+
     DefaultTableModel monthlyModel;
     ArrayList<DailyReport> monthlyreportlist;
-    
+
     DefaultTableModel datedModel;
     ArrayList<DailyReport> datedreportlist;
-    
 
     public long quantity;
-    int row,column;
+    int row, column;
     String[] allBrands;
     String[] allCats;
     String[] allProducts;
     String[] nonStock;
     String[] productonly;
-    
-   
-     /**
+
+    /**
      * Creates new form UserInterface
      */
     public UserInterface() throws URISyntaxException, ClassNotFoundException {
         initComponents();
-        
+
         URL resource = getClass().getResource("/images/icons8.jpg");
         File file = Paths.get(resource.toURI()).toFile(); // return a file
         String filepath = Paths.get(resource.toURI()).toFile().getAbsolutePath();
         ImageIcon icon = new ImageIcon(filepath);
         setIconImage(icon.getImage());
-        
-        
+
         usernameLabel.setText(LoggedUser);
         this.pack();
         String today = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -151,72 +147,64 @@ public class UserInterface extends javax.swing.JFrame {
         this.setVisible(true);
         this.setExtendedState(UserPanel.MAXIMIZED_BOTH);
         orderlist = new ArrayList<>();
-        ordersModel = new DefaultTableModel(headers,0);
+        ordersModel = new DefaultTableModel(headers, 0);
         ordersTable.setModel(ordersModel);
-        
+
         //Brands
         brandlist = new ArrayList<>();
-        brandsModel = new DefaultTableModel(brandheaders,0);
+        brandsModel = new DefaultTableModel(brandheaders, 0);
         brandsTable.setModel(brandsModel);
-        
+
         //End of Brands
-        
-        
         //Categories
         categorylist = new ArrayList<>();
-        categoryModel = new DefaultTableModel(categoryheader,0);
+        categoryModel = new DefaultTableModel(categoryheader, 0);
         categoryTable.setModel(categoryModel);
         //End of categories
-        
+
         //Categories
         productlist = new ArrayList<>();
         stockproductlist = new ArrayList<>();
         productsonly = new ArrayList<>();
-        productModel = new DefaultTableModel(productheader,0);
+        productModel = new DefaultTableModel(productheader, 0);
         productsTable.setModel(productModel);
         //End of categories
-        
-       //Stocks
+
+        //Stocks
         stocklist = new ArrayList<>();
-        stockModel = new DefaultTableModel(stockheader,0);
+        stockModel = new DefaultTableModel(stockheader, 0);
         stocksTable.setModel(stockModel);
         //End of categories
-        
+
         dailyreportlist = new ArrayList<>();
-        dailySalesModel = new DefaultTableModel(dailyreportheader,0);
+        dailySalesModel = new DefaultTableModel(dailyreportheader, 0);
         dailySalesTable.setModel(dailySalesModel);
-        
+
         weeklyreportlist = new ArrayList<>();
-        weeklyModel = new DefaultTableModel(dailyreportheader,0);
+        weeklyModel = new DefaultTableModel(dailyreportheader, 0);
         weeklyreporttable.setModel(weeklyModel);
-        
-                
+
         monthlyreportlist = new ArrayList<>();
-        monthlyModel = new DefaultTableModel(dailyreportheader,0);
+        monthlyModel = new DefaultTableModel(dailyreportheader, 0);
         monthlyreporttable.setModel(monthlyModel);
-        
-             
+
         datedreportlist = new ArrayList<>();
-        datedModel = new DefaultTableModel(dailyreportheader,0);
+        datedModel = new DefaultTableModel(dailyreportheader, 0);
         datedreporttable.setModel(datedModel);
-        
+
         //Staffs
         staffslist = new ArrayList<>();
-        StaffsModel = new DefaultTableModel(staffsheader,0);
+        StaffsModel = new DefaultTableModel(staffsheader, 0);
         staffTable.setModel(StaffsModel);
-       
+
         //Transfers
         transferedlist = new ArrayList<>();
-        TransferModel = new DefaultTableModel(transferheader,0);
+        TransferModel = new DefaultTableModel(transferheader, 0);
         transferedCash.setModel(TransferModel);
         //Roles
-        
+
         //Permissions
         //Transfers
-        
-       
-        
-
         this.setLocationRelativeTo(null);
         try {
             loadJtableValues();
@@ -226,32 +214,32 @@ public class UserInterface extends javax.swing.JFrame {
             LoadStockProducts();
             LoadProductsOnly();
             LoadStocks();
-            } catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(UserPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         DefaultComboBoxModel model = new DefaultComboBoxModel(allBrands);
         brands.setModel(model);
-        
+
         DefaultComboBoxModel catsmodel = new DefaultComboBoxModel(allCats);
         categories.setModel(catsmodel);
 
         DefaultComboBoxModel prodsmodel = new DefaultComboBoxModel(productonly);
         ProductsOnly.setModel(prodsmodel);
-        
+
         List list = Arrays.asList(allProducts);
         List productions = Arrays.asList(productonly);
-        
+
         AutoCompleteDecorator.decorate(brands);
         AutoCompleteDecorator.decorate(categories);
         AutoCompleteDecorator.decorate(ProductsOnly);
-        AutoCompleteDecorator.decorate(SearchProductForm, list,true);
+        AutoCompleteDecorator.decorate(SearchProductForm, list, true);
 //      //AutoCompleteDecorator.decorate(ProductName, productions,true);
-        
+
         datelabel.setVisible(false);
         backdate.setVisible(false);
-        
-      }
+
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -264,14 +252,14 @@ public class UserInterface extends javax.swing.JFrame {
 
         MenuPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        Brandsbtn = new javax.swing.JButton();
         Orderbtn = new javax.swing.JButton();
         prdbtn = new javax.swing.JButton();
         stocksbtn = new javax.swing.JButton();
         CategoryBtn = new javax.swing.JButton();
         staffButton = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
+        reportsbtn = new javax.swing.JButton();
+        Config = new javax.swing.JButton();
         usernameLabel = new javax.swing.JLabel();
         ParentLayout = new javax.swing.JPanel();
         OrderPanel = new javax.swing.JPanel();
@@ -444,15 +432,15 @@ public class UserInterface extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel1.setText("Nkanabo Microsystems");
 
-        jButton1.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        jButton1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton1.setText("Brands");
-        jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButton1.setContentAreaFilled(false);
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        Brandsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        Brandsbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        Brandsbtn.setText("Brands");
+        Brandsbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Brandsbtn.setContentAreaFilled(false);
+        Brandsbtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Brandsbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                BrandsbtnActionPerformed(evt);
             }
         });
 
@@ -516,27 +504,27 @@ public class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        jButton7.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        jButton7.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton7.setText("Reports");
-        jButton7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButton7.setContentAreaFilled(false);
-        jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        reportsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        reportsbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        reportsbtn.setText("Reports");
+        reportsbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        reportsbtn.setContentAreaFilled(false);
+        reportsbtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        reportsbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                reportsbtnActionPerformed(evt);
             }
         });
 
-        jButton8.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        jButton8.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton8.setText("Config");
-        jButton8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButton8.setContentAreaFilled(false);
-        jButton8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        Config.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        Config.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        Config.setText("Config");
+        Config.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Config.setContentAreaFilled(false);
+        Config.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Config.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                ConfigActionPerformed(evt);
             }
         });
 
@@ -548,47 +536,56 @@ public class UserInterface extends javax.swing.JFrame {
         MenuPanelLayout.setHorizontalGroup(
             MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MenuPanelLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(MenuPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40))
+                .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(MenuPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(MenuPanelLayout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(Brandsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(Config, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(MenuPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                        .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40))
+                    .addGroup(MenuPanelLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(reportsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         MenuPanelLayout.setVerticalGroup(
             MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MenuPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(MenuPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Brandsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Config, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(MenuPanelLayout.createSequentialGroup()
+                        .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reportsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -2186,47 +2183,52 @@ public class UserInterface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-        public void loadJtableValues() throws SQLException, ClassNotFoundException {
-             ordersModel.setRowCount(0);
-            orderlist = listOrders();
-            for(int i=0; i < orderlist.size(); i++){
-                Object[] obj = {
+    public void loadJtableValues() throws SQLException, ClassNotFoundException {
+        ordersModel.setRowCount(0);
+        orderlist = listOrders();
+        for (int i = 0; i < orderlist.size(); i++) {
+            Object[] obj = {
                 orderlist.get(i).orderid,
                 orderlist.get(i).product,
                 orderlist.get(i).quantity,
                 orderlist.get(i).listprice,
                 orderlist.get(i).discount};
-                ordersModel.addRow(obj);
-            }
+            ordersModel.addRow(obj);
+        }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-        
-        public void loadBrandsJtableValues() throws SQLException, ClassNotFoundException {
-            brandsModel.setRowCount(0);
-            brandlist = listBrands();
-            allBrands = new String[brandlist.size()];
-            for(int i=0; i < brandlist.size(); i++){
-                allBrands[i] = brandlist.get(i).brand_name;
-                Object[] obj = {
+
+    public void loadBrandsJtableValues() throws SQLException, ClassNotFoundException {
+        brandsModel.setRowCount(0);
+        brandlist = listBrands();
+        allBrands = new String[brandlist.size()];
+        for (int i = 0; i < brandlist.size(); i++) {
+            allBrands[i] = brandlist.get(i).brand_name;
+            Object[] obj = {
                 brandlist.get(i).brand_id,
                 brandlist.get(i).brand_name};
-                brandsModel.addRow(obj);
-            }
+            brandsModel.addRow(obj);
+        }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-        
-        public void LoadCategories() throws SQLException, ClassNotFoundException {
-            categoryModel.setRowCount(0);
-            categorylist = listCategories();
-            allCats = new String[categorylist.size()];
-            for(int i=0; i < categorylist.size(); i++){
-                allCats[i] = categorylist.get(i).category_name; 
-                Object[] obj = {
+
+    public void LoadCategories() throws SQLException, ClassNotFoundException {
+        categoryModel.setRowCount(0);
+        categorylist = listCategories();
+        allCats = new String[categorylist.size()];
+        for (int i = 0; i < categorylist.size(); i++) {
+            allCats[i] = categorylist.get(i).category_name;
+            Object[] obj = {
                 categorylist.get(i).category_id,
                 categorylist.get(i).category_name};
-                categoryModel.addRow(obj);
-            }
+            categoryModel.addRow(obj);
+        }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-           
+
     private void LoadProducts() throws ClassNotFoundException {
         productModel.setRowCount(0);
         try {
@@ -2235,9 +2237,9 @@ public class UserInterface extends javax.swing.JFrame {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
         nonStock = new String[productlist.size()];
-            for(int i=0; i < productlist.size(); i++){
-                nonStock[i] = productlist.get(i).product_name + " - Tsh "+  productlist.get(i).list_price + " : " + productlist.get(i).productid;
-                Object[] obj = {
+        for (int i = 0; i < productlist.size(); i++) {
+            nonStock[i] = productlist.get(i).product_name + " - Tsh " + productlist.get(i).list_price + " : " + productlist.get(i).productid;
+            Object[] obj = {
                 productlist.get(i).product_name,
                 productlist.get(i).brand_id,
                 productlist.get(i).category_id,
@@ -2245,80 +2247,89 @@ public class UserInterface extends javax.swing.JFrame {
                 productlist.get(i).expiry_date,
                 productlist.get(i).list_price,
                 productlist.get(i).retail_price
-                };
-                productModel.addRow(obj);
-            }
+            };
+            productModel.addRow(obj);
+        }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-    
-    public void LoadStockProducts() throws ClassNotFoundException{
+
+    public void LoadStockProducts() throws ClassNotFoundException {
         try {
             stockproductlist = listStockProducts();
         } catch (SQLException ex) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, 
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
         allProducts = new String[stockproductlist.size()];
-            for(int i=0; i < stockproductlist.size(); i++){
-            allProducts[i] = stockproductlist.get(i).product_name + " - Tsh "+ 
-                    stockproductlist.get(i).list_price + " : " +
-                    stockproductlist.get(i).productid;
-            }
+        for (int i = 0; i < stockproductlist.size(); i++) {
+            allProducts[i] = stockproductlist.get(i).product_name + " - Tsh "
+                    + stockproductlist.get(i).list_price + " : "
+                    + stockproductlist.get(i).productid;
+        }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-    
-    public void LoadProductsOnly() throws SQLException, ClassNotFoundException{
-            productsonly = listProductOnly();
-            productonly = new String[productsonly.size()];
-            for(int i=0; i < productsonly.size(); i++){
-                productonly[i] = productsonly.get(i).product_name + " - Tsh "
-                        +  productsonly.get(i).list_price + " : "
-                        + productsonly.get(i).productid;
-            }   
+
+    public void LoadProductsOnly() throws SQLException, ClassNotFoundException {
+        productsonly = listProductOnly();
+        productonly = new String[productsonly.size()];
+        for (int i = 0; i < productsonly.size(); i++) {
+            productonly[i] = productsonly.get(i).product_name + " - Tsh "
+                    + productsonly.get(i).list_price + " : "
+                    + productsonly.get(i).productid;
+        }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-            
-    public void LoadStocks() throws ClassNotFoundException{          
-          stockModel.setRowCount(0);
-          stocklist = listStocks();  
-            for(int i=0; i < stocklist.size(); i++){
-                Object[] obj = {
+
+    public void LoadStocks() throws ClassNotFoundException {
+        stockModel.setRowCount(0);
+        stocklist = listStocks();
+        for (int i = 0; i < stocklist.size(); i++) {
+            Object[] obj = {
                 stocklist.get(i).product_id,
                 stocklist.get(i).quantity
-                };
-                stockModel.addRow(obj);
-            }
+            };
+            stockModel.addRow(obj);
+        }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-    
-    public void LoadDailySalesReport() throws ParseException, ClassNotFoundException{
+
+    public void LoadDailySalesReport() throws ParseException, ClassNotFoundException {
         dailySalesModel.setRowCount(0);
         dailyreportlist = listDailyReport();
-        
-        if(dailyreportlist.isEmpty()){
-            
-        }
-        else {
-        tinvest.setText("Tsh "+dailyreportlist.get(dailyreportlist.size()-1).totalinvestment);
-        totalreturns.setText("Tsh "+dailyreportlist.get(dailyreportlist.size()-1).totalreturns);
-        profit.setText("Tsh "+dailyreportlist.get(dailyreportlist.size()-1).superprofit);
-        for(int i=0; i < dailyreportlist.size(); i++){
-            Object[] obj = {
-                dailyreportlist.get(i).productname,
-                dailyreportlist.get(i).retailprice,
-                dailyreportlist.get(i).listprice,
-                dailyreportlist.get(i).profit,
-                dailyreportlist.get(i).quantity,
-                dailyreportlist.get(i).date
+
+        if (dailyreportlist.isEmpty()) {
+
+        } else {
+            tinvest.setText("Tsh " + dailyreportlist.get(dailyreportlist.size() - 1).totalinvestment);
+            totalreturns.setText("Tsh " + dailyreportlist.get(dailyreportlist.size() - 1).totalreturns);
+            profit.setText("Tsh " + dailyreportlist.get(dailyreportlist.size() - 1).superprofit);
+            for (int i = 0; i < dailyreportlist.size(); i++) {
+                Object[] obj = {
+                    dailyreportlist.get(i).productname,
+                    dailyreportlist.get(i).retailprice,
+                    dailyreportlist.get(i).listprice,
+                    dailyreportlist.get(i).profit,
+                    dailyreportlist.get(i).quantity,
+                    dailyreportlist.get(i).date
                 };
                 dailySalesModel.addRow(obj);
+            }
         }
-     }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-    
-    public void LoadweeklyReport() throws ParseException, ClassNotFoundException{
+
+    public void LoadweeklyReport() throws ParseException, ClassNotFoundException {
         weeklyModel.setRowCount(0);
         weeklyreportlist = listWeeklyReport();
-        tinvest1.setText("Tsh "+weeklyreportlist.get(weeklyreportlist.size()-1).totalinvestment);
-        totalreturns1.setText("Tsh "+weeklyreportlist.get(weeklyreportlist.size()-1).totalreturns);
-        profit1.setText("Tsh "+weeklyreportlist.get(weeklyreportlist.size()-1).superprofit);
-        for(int i=0; i < weeklyreportlist.size(); i++){
+        tinvest1.setText("Tsh " + weeklyreportlist.get(weeklyreportlist.size() - 1).totalinvestment);
+        totalreturns1.setText("Tsh " + weeklyreportlist.get(weeklyreportlist.size() - 1).totalreturns);
+        profit1.setText("Tsh " + weeklyreportlist.get(weeklyreportlist.size() - 1).superprofit);
+        for (int i = 0; i < weeklyreportlist.size(); i++) {
             Object[] obj = {
                 weeklyreportlist.get(i).productname,
                 weeklyreportlist.get(i).retailprice,
@@ -2326,18 +2337,20 @@ public class UserInterface extends javax.swing.JFrame {
                 weeklyreportlist.get(i).profit,
                 weeklyreportlist.get(i).quantity,
                 weeklyreportlist.get(i).date
-                };
-                weeklyModel.addRow(obj);
+            };
+            weeklyModel.addRow(obj);
         }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-    
-    public void LoadmonthlyReport() throws ParseException, ClassNotFoundException{
+
+    public void LoadmonthlyReport() throws ParseException, ClassNotFoundException {
         monthlyModel.setRowCount(0);
-        monthlyreportlist = listMonthlyReport(); 
-        tinvest2.setText("Tsh "+monthlyreportlist.get(monthlyreportlist.size()-1).totalinvestment);
-        totalreturns2.setText("Tsh "+monthlyreportlist.get(monthlyreportlist.size()-1).totalreturns);
-        profit2.setText("Tsh "+monthlyreportlist.get(monthlyreportlist.size()-1).superprofit);
-        for(int i=0; i < monthlyreportlist.size(); i++){
+        monthlyreportlist = listMonthlyReport();
+        tinvest2.setText("Tsh " + monthlyreportlist.get(monthlyreportlist.size() - 1).totalinvestment);
+        totalreturns2.setText("Tsh " + monthlyreportlist.get(monthlyreportlist.size() - 1).totalreturns);
+        profit2.setText("Tsh " + monthlyreportlist.get(monthlyreportlist.size() - 1).superprofit);
+        for (int i = 0; i < monthlyreportlist.size(); i++) {
             Object[] obj = {
                 monthlyreportlist.get(i).productname,
                 monthlyreportlist.get(i).retailprice,
@@ -2345,17 +2358,19 @@ public class UserInterface extends javax.swing.JFrame {
                 monthlyreportlist.get(i).profit,
                 monthlyreportlist.get(i).quantity,
                 monthlyreportlist.get(i).date
-                };
-                monthlyModel.addRow(obj);
+            };
+            monthlyModel.addRow(obj);
         }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-    
-    public void LoaddatedReport(String dt) throws ParseException, ClassNotFoundException{
+
+    public void LoaddatedReport(String dt) throws ParseException, ClassNotFoundException {
         datedModel.setRowCount(0);
         datedreportlist = DatedReport(dt);
-        totalreturns.setText("Tsh "+datedreportlist.get(datedreportlist.size()-1).totalreturns);
-        profit.setText("Tsh "+datedreportlist.get(datedreportlist.size()-1).superprofit);
-        for(int i=0; i < datedreportlist.size(); i++){
+        totalreturns.setText("Tsh " + datedreportlist.get(datedreportlist.size() - 1).totalreturns);
+        profit.setText("Tsh " + datedreportlist.get(datedreportlist.size() - 1).superprofit);
+        for (int i = 0; i < datedreportlist.size(); i++) {
             Object[] obj = {
                 datedreportlist.get(i).productname,
                 datedreportlist.get(i).retailprice,
@@ -2363,91 +2378,192 @@ public class UserInterface extends javax.swing.JFrame {
                 datedreportlist.get(i).profit,
                 datedreportlist.get(i).quantity,
                 datedreportlist.get(i).date
-                };
-                datedModel.addRow(obj);
+            };
+            datedModel.addRow(obj);
         }
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }
-        
-        public void LoadSatffs() throws ParseException, ClassNotFoundException{
+
+    public void LoadSatffs() throws ParseException, ClassNotFoundException {
         StaffsModel.setRowCount(0);
         staffslist = LoadStaffs();
-        if(staffslist.isEmpty()){
-            
-        }
-        else{
-             for(int i=0; i < staffslist.size(); i++){
-            Object[] obj = {
-                staffslist.get(i).staff_name,
-                staffslist.get(i).sur_name,
-                staffslist.get(i).staff_email,
-                staffslist.get(i).role
+        if (staffslist.isEmpty()) {
+
+        } else {
+            for (int i = 0; i < staffslist.size(); i++) {
+                Object[] obj = {
+                    staffslist.get(i).staff_name,
+                    staffslist.get(i).sur_name,
+                    staffslist.get(i).staff_email,
+                    staffslist.get(i).role
                 };
                 StaffsModel.addRow(obj);
-         }
+            }
         }
-       }
-        
-        
-       public void LoadTransfers() throws ParseException, ClassNotFoundException{
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
+    }
+
+    public void LoadTransfers() throws ParseException, ClassNotFoundException {
         TransferModel.setRowCount(0);
         transferedlist = getTransfers();
-        
-        for(int i=0; i < transferedlist.size(); i++){
+
+        for (int i = 0; i < transferedlist.size(); i++) {
             Object[] obj = {
                 transferedlist.get(i).amount,
                 transferedlist.get(i).date,
                 transferedlist.get(i).collector,
                 transferedlist.get(i).total
-                };
-                TransferModel.addRow(obj);
+            };
+            TransferModel.addRow(obj);
         }
-       }
-    
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
+    }
+
+    private void destroyAll() {
+        prdbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        Orderbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        stocksbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        Brandsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        CategoryBtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        staffButton.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        reportsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        Config.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+    }
+
+    private void activeButton(String btn) {
+
+        ParentLayout.removeAll();
+        switch (btn) {
+            case "orders": {
+                //Undoing all others
+                destroyAll();
+                Orderbtn.setContentAreaFilled(false);
+                Orderbtn.setOpaque(true);
+                Orderbtn.setBackground(new Color(138, 43, 226));
+                ParentLayout.repaint();
+                ParentLayout.revalidate();
+                break;
+            }
+            case "products": {
+                //Undoing all others
+                destroyAll();
+                prdbtn.setContentAreaFilled(false);
+                prdbtn.setOpaque(true);
+                prdbtn.setBackground(new Color(138, 43, 226));
+                ParentLayout.repaint();
+                ParentLayout.revalidate();
+                break;
+            }
+
+            case "stocksbtn": {
+                destroyAll();
+                stocksbtn.setContentAreaFilled(false);
+                stocksbtn.setOpaque(true);
+                stocksbtn.setBackground(new Color(138, 43, 226));
+                ParentLayout.repaint();
+                ParentLayout.revalidate();
+                break;
+            }
+            case "Brandsbtn": {
+                destroyAll();
+                Brandsbtn.setContentAreaFilled(false);
+                Brandsbtn.setOpaque(true);
+                Brandsbtn.setBackground(new Color(138, 43, 226));
+                ParentLayout.repaint();
+                ParentLayout.revalidate();
+                break;
+            }
+            
+            case "CategoryBtn": {
+                destroyAll();
+                CategoryBtn.setContentAreaFilled(false);
+                CategoryBtn.setOpaque(true);
+                CategoryBtn.setBackground(new Color(138, 43, 226));
+                ParentLayout.repaint();
+                ParentLayout.revalidate();
+                break;
+            }
+            
+            case "staffButton": {
+                destroyAll();
+                staffButton.setContentAreaFilled(false);
+                staffButton.setOpaque(true);
+                staffButton.setBackground(new Color(138, 43, 226));
+                ParentLayout.repaint();
+                ParentLayout.revalidate();
+                break;
+            }
+            
+            case "Config": {
+                destroyAll();
+                Config.setContentAreaFilled(false);
+                Config.setOpaque(true);
+                Config.setBackground(new Color(138, 43, 226));
+                break;
+            }
+            
+            case "reportsbtn": {
+                destroyAll();
+                reportsbtn.setContentAreaFilled(false);
+                reportsbtn.setOpaque(true);
+                reportsbtn.setBackground(new Color(138, 43, 226));
+                break; 
+            }
+            default:
+                System.out.println("No clear btn choosed");
+        }
+    }
+
+    private void BrandsbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrandsbtnActionPerformed
         // TODO add your handling code here:
+        activeButton("Brandsbtn");
         ParentLayout.removeAll();
         ParentLayout.add(BrandPanel);
         ParentLayout.repaint();
         ParentLayout.revalidate();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_BrandsbtnActionPerformed
 
     private void OrderbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OrderbtnActionPerformed
+
         // TODO add your handling code here:
-         ParentLayout.removeAll();
+        activeButton("orders");
+        ParentLayout.removeAll();
         ParentLayout.add(OrderPanel);
         ParentLayout.repaint();
         ParentLayout.revalidate();
         try {
             loadJtableValues();
             LoadStockProducts();
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).
+                    log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_OrderbtnActionPerformed
 
     private void prdbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prdbtnActionPerformed
+        activeButton("products");
         try {
             // TODO add your handling code here:
             loadBrandsJtableValues();
             LoadCategories();
             LoadCategories();
-             } catch (SQLException ex) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
-            ParentLayout.removeAll();
-            ParentLayout.add(ProductsPanel);
-            ParentLayout.repaint();
-            ParentLayout.revalidate();
-       
+        ParentLayout.removeAll();
+        ParentLayout.add(ProductsPanel);
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
+
     }//GEN-LAST:event_prdbtnActionPerformed
 
     private void stocksbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stocksbtnActionPerformed
         // TODO add your handling code here:
+        activeButton("stocksbtn");
         ParentLayout.removeAll();
         ParentLayout.add(StockPanel);
         ParentLayout.repaint();
@@ -2455,6 +2571,7 @@ public class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_stocksbtnActionPerformed
 
     private void staffButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_staffButtonActionPerformed
+       activeButton("staffButton");
         try {
             // TODO add your handling code here:
             ParentLayout.removeAll();
@@ -2471,6 +2588,7 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void CategoryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CategoryBtnActionPerformed
         // TODO add your handling code here:
+        activeButton("CategoryBtn");
         ParentLayout.removeAll();
         ParentLayout.add(CategoryPanel);
         ParentLayout.repaint();
@@ -2495,7 +2613,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         int i = 2;
         long k = Integer.valueOf(String.valueOf(quantity) + String.valueOf(i));
-        quantity=k;
+        quantity = k;
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_twoBtnActionPerformed
 
@@ -2504,7 +2622,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         int i = 3;
         long k = Integer.valueOf(String.valueOf(quantity) + String.valueOf(i));
-        quantity=k;
+        quantity = k;
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_threeBtnActionPerformed
 
@@ -2512,7 +2630,7 @@ public class UserInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
         int i = 4;
         long k = Integer.valueOf(String.valueOf(quantity) + String.valueOf(i));
-        quantity=k;
+        quantity = k;
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_fourBtnActionPerformed
 
@@ -2520,7 +2638,7 @@ public class UserInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
         int c = 5;
         long k = Integer.valueOf(String.valueOf(quantity) + String.valueOf(c));
-        quantity=k;
+        quantity = k;
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_fiveBtnActionPerformed
 
@@ -2528,7 +2646,7 @@ public class UserInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
         int i = 6;
         long k = Integer.valueOf(String.valueOf(quantity) + String.valueOf(i));
-        quantity=k;
+        quantity = k;
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_sixBtnActionPerformed
 
@@ -2537,7 +2655,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         int i = 7;
         long k = Integer.valueOf(String.valueOf(quantity) + String.valueOf(i));
-        quantity=k;
+        quantity = k;
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_sevenBtnActionPerformed
 
@@ -2546,7 +2664,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         int i = 8;
         long k = Integer.valueOf(String.valueOf(quantity) + String.valueOf(i));
-        quantity=k;
+        quantity = k;
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_eightBtnActionPerformed
 
@@ -2560,7 +2678,7 @@ public class UserInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
         int i = 0;
         long k = Integer.valueOf(String.valueOf(quantity) + String.valueOf(i));
-        quantity=k;
+        quantity = k;
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_zeroBtnActionPerformed
 
@@ -2568,7 +2686,7 @@ public class UserInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
         int i = 9;
         long k = Integer.valueOf(String.valueOf(quantity) + String.valueOf(i));
-        quantity=k;
+        quantity = k;
         quantityfield.setText(String.valueOf(k));
     }//GEN-LAST:event_nineBtnActionPerformed
 
@@ -2581,7 +2699,7 @@ public class UserInterface extends javax.swing.JFrame {
             /**
              * All codes associating with selling comes here
              */
-            
+
             quantity = Integer.parseInt(quantityfield.getText());
             String order_id = unique();
             String item_id = unique();
@@ -2591,11 +2709,11 @@ public class UserInterface extends javax.swing.JFrame {
             Double discount = 0.00;
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
             String backdated = dcn.format(backdate.getDate());
-            
+
             try {
-                if(Orders.addOrder(order_id,item_id,product_id,quantity,price,discount,backdated)){
-                    Stocks.editStock(product_id,quantity);
-                    JOptionPane.showMessageDialog(this,"Succesfully");
+                if (Orders.addOrder(order_id, item_id, product_id, quantity, price, discount, backdated)) {
+                    Stocks.editStock(product_id, quantity);
+                    JOptionPane.showMessageDialog(this, "Succesfully");
                     try {
                         loadJtableValues();
                     } catch (SQLException ex) {
@@ -2619,14 +2737,14 @@ public class UserInterface extends javax.swing.JFrame {
     private void insertBrandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertBrandActionPerformed
         try {
             // TODO add your handling code here:
-            
+
 //        String brand_id = unique();
-String brand_name = brandname.getText();
-if(Crudes.addBrand(brand_name)){
-    JOptionPane.showMessageDialog(this,"Succesfully");
-        loadBrandsJtableValues();
-   
-}
+            String brand_name = brandname.getText();
+            if (Crudes.addBrand(brand_name)) {
+                JOptionPane.showMessageDialog(this, "Succesfully");
+                loadBrandsJtableValues();
+
+            }
         } catch (SQLException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -2634,8 +2752,9 @@ if(Crudes.addBrand(brand_name)){
         }
     }//GEN-LAST:event_insertBrandActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void reportsbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsbtnActionPerformed
         // TODO add your handling code here:
+        activeButton("reportsbtn");
         ParentLayout.removeAll();
         ParentLayout.add(ReportsPanel);
         ParentLayout.repaint();
@@ -2647,7 +2766,7 @@ if(Crudes.addBrand(brand_name)){
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_reportsbtnActionPerformed
 
     private void categorynameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_categorynameKeyReleased
         // TODO add your handling code here:
@@ -2655,42 +2774,42 @@ if(Crudes.addBrand(brand_name)){
 
     private void categorybtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorybtnActionPerformed
         // TODO add your handling code here:
-           try {
+        try {
             // TODO add your handling code here:
             //String brand_id = unique();
             String category_name = categoryname.getText();
-            if(Categories.addCategory(category_name)){
-            JOptionPane.showMessageDialog(this,"Succesfully");
-            LoadCategories();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
+            if (Categories.addCategory(category_name)) {
+                JOptionPane.showMessageDialog(this, "Succesfully");
+                LoadCategories();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_categorybtnActionPerformed
 
     private void categorybtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorybtn1ActionPerformed
         // TODO add your handling code here:
-        
+
         String product_name = productname.getText();
-        int brand_id = brands.getSelectedIndex()+1;
-        int category_id = categories.getSelectedIndex()+1;
+        int brand_id = brands.getSelectedIndex() + 1;
+        int category_id = categories.getSelectedIndex() + 1;
         int model_year = Integer.parseInt(model.getText());
         String expiry_date = expiredate.getText();
         Double list_price = Double.parseDouble(listprice.getText());
         Double retail_price = Double.parseDouble(retailprice.getText());
-                
+
         try {
             try {
-                if(Products.addProduct(product_name,
+                if (Products.addProduct(product_name,
                         brand_id,
                         category_id,
                         model_year,
                         expiry_date,
                         list_price,
-                        retail_price)){
-                    JOptionPane.showMessageDialog(this,"Succesfully");
+                        retail_price)) {
+                    JOptionPane.showMessageDialog(this, "Succesfully");
                     LoadProducts();
                 }
             } catch (ClassNotFoundException ex) {
@@ -2699,11 +2818,11 @@ if(Crudes.addBrand(brand_name)){
         } catch (URISyntaxException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-      clearFields();
+
+        clearFields();
     }//GEN-LAST:event_categorybtn1ActionPerformed
 
-    public void clearFields(){
+    public void clearFields() {
         productname.setText("");
         categories.getEditor().setItem("");
         brands.getEditor().setItem("");
@@ -2712,7 +2831,7 @@ if(Crudes.addBrand(brand_name)){
         retailprice.setText("");
         listprice.setText("");
     }
-    
+
     private void modelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_modelKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_modelKeyReleased
@@ -2732,12 +2851,12 @@ if(Crudes.addBrand(brand_name)){
     private void insertBrand1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertBrand1ActionPerformed
         try {
             // TODO add your handling code here:
-            
+
             String productname = ProductsOnly.getSelectedItem().toString();
-            int productquantity =  Integer.parseInt(StockQuantity.getText());
-            
-            if(Stocks.addStock(productname,productquantity)){
-                JOptionPane.showMessageDialog(this,"Succesfully");
+            int productquantity = Integer.parseInt(StockQuantity.getText());
+
+            if (Stocks.addStock(productname, productquantity)) {
+                JOptionPane.showMessageDialog(this, "Succesfully");
                 LoadStocks();
                 try {
                     LoadProductsOnly();
@@ -2750,15 +2869,16 @@ if(Crudes.addBrand(brand_name)){
         }
     }//GEN-LAST:event_insertBrand1ActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void ConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigActionPerformed
         // TODO add your handling code here:
+        activeButton("Config");
         ParentLayout.removeAll();
         ParentLayout.add(ConfigPanel);
         ParentLayout.repaint();
         ParentLayout.revalidate();
-    }//GEN-LAST:event_jButton8ActionPerformed
+    }//GEN-LAST:event_ConfigActionPerformed
 
-    
+
     private void ordersTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ordersTableMouseClicked
         // TODO add your handling code here:
         row = ordersTable.getSelectedRow();
@@ -2775,15 +2895,15 @@ if(Crudes.addBrand(brand_name)){
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
-        JOptionPane.showMessageDialog(this,"Succesfully");
+        JOptionPane.showMessageDialog(this, "Succesfully");
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-            ParentLayout.removeAll();
-            ParentLayout.add(ReportsPanel);
-            ParentLayout.repaint();
-            ParentLayout.revalidate();
+        ParentLayout.removeAll();
+        ParentLayout.add(ReportsPanel);
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
         try {
             LoadDailySalesReport();
         } catch (ParseException ex) {
@@ -2810,10 +2930,10 @@ if(Crudes.addBrand(brand_name)){
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
-            ParentLayout.removeAll();
-            ParentLayout.add(MonthlyReport);
-            ParentLayout.repaint();
-            ParentLayout.revalidate();
+        ParentLayout.removeAll();
+        ParentLayout.add(MonthlyReport);
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
         try {
             LoadmonthlyReport();
         } catch (ParseException ex) {
@@ -2825,15 +2945,15 @@ if(Crudes.addBrand(brand_name)){
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         // TODO add your handling code here:
-            ParentLayout.removeAll();
-            ParentLayout.add(DatedReport);
-            ParentLayout.repaint();
-            ParentLayout.revalidate();
+        ParentLayout.removeAll();
+        ParentLayout.add(DatedReport);
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void datedrepMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datedrepMouseExited
         // TODO add your handling code here:
-      
+
     }//GEN-LAST:event_datedrepMouseExited
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
@@ -2853,33 +2973,33 @@ if(Crudes.addBrand(brand_name)){
         try {
             // TODO add your handling code here:
             //Save to the staffs table.
-            
+
             String product_name = productname.getText();
             String staff_name = staffname.getText();
             String sur_name = surname.getText();
             String staff_email = email.getText();
             int role = staff_role.getSelectedIndex();
-            
-            if(Sales_Staffs.addStaff(
+
+            if (Sales_Staffs.addStaff(
                     staff_name,
                     sur_name,
                     staff_email,
-                    role)){
-                JOptionPane.showMessageDialog(this,"Succesfully");
+                    role)) {
+                JOptionPane.showMessageDialog(this, "Succesfully");
                 try {
                     LoadSatffs();
                 } catch (ParseException ex) {
                     Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             clearUserFields();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_categorybtn2ActionPerformed
 
-    public void clearUserFields(){
+    public void clearUserFields() {
         staffname.setText("");
         surname.setText("");
         email.setText("");
@@ -2895,11 +3015,11 @@ if(Crudes.addBrand(brand_name)){
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // TODO add your handling code here:
-            ParentLayout.removeAll();
-            ParentLayout.add(CashTransfers);
-            ParentLayout.repaint();
-            ParentLayout.revalidate();
-            
+        ParentLayout.removeAll();
+        ParentLayout.add(CashTransfers);
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
+
         try {
             LoadTransfers();
         } catch (ParseException ex) {
@@ -2926,9 +3046,9 @@ if(Crudes.addBrand(brand_name)){
             // TODO add your handling code here:
             String transfer_amounts;
             transfer_amounts = transferamount.getText();
-            if(Accounts.addTransfer(transfer_amounts)){
+            if (Accounts.addTransfer(transfer_amounts)) {
                 try {
-                    JOptionPane.showMessageDialog(this,"Succesfully");
+                    JOptionPane.showMessageDialog(this, "Succesfully");
                     LoadTransfers();
                 } catch (ParseException ex) {
                     Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
@@ -2959,20 +3079,18 @@ if(Crudes.addBrand(brand_name)){
         UserSettings us = new UserSettings();
         try {
             Af.Playme("success");
-            if("Play Notification Sounds".equals(a)){
-             us.soundSettings(true);   
-            }
-            else
-            {
+            if ("Play Notification Sounds".equals(a)) {
+                us.soundSettings(true);
+            } else {
                 us.soundSettings(false);
             }
         } catch (URISyntaxException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-        }  
+        }
     }//GEN-LAST:event_soundSettingActionPerformed
 
     private void searchLabelIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchLabelIconMouseClicked
-     
+
         //Search engine.
         row = ordersTable.getSelectedRow();
         column = ordersTable.getColumnCount();
@@ -2981,15 +3099,15 @@ if(Crudes.addBrand(brand_name)){
         ordersTable.setRowSorter(sorter);
         //End of row sorters
         String input = JOptionPane.showInputDialog(this, "Search row");
-         if (input.length() == 0) {
-               sorter.setRowFilter(null);
-            } else {
-               sorter.setRowFilter(RowFilter.regexFilter(input));
-            }
+        if (input.length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter(input));
+        }
     }//GEN-LAST:event_searchLabelIconMouseClicked
 
     private void deleteLabelIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIconMouseClicked
-       //Delete sales.
+        //Delete sales.
         int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             ordersModel.removeRow(row);
@@ -3026,12 +3144,12 @@ if(Crudes.addBrand(brand_name)){
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
-                                    
+
     }//GEN-LAST:event_eraserLabelIconMouseClicked
 
     private void jLabel39MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel39MouseClicked
         // TODO add your handling code here:
-         // this is the back dating button:
+        // this is the back dating button:
         datelabel.setVisible(true);
         backdate.setVisible(true);
         LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
@@ -3040,11 +3158,11 @@ if(Crudes.addBrand(brand_name)){
     private void quantityfieldMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_quantityfieldMouseExited
         // TODO add your handling code here:
         int x;
-         try {
-        x = Integer.parseInt(quantityfield.getText());
+        try {
+            x = Integer.parseInt(quantityfield.getText());
         } catch (NumberFormatException nfe) {
             quantityfield.setText("");
-             quantity = 0;
+            quantity = 0;
         }
     }//GEN-LAST:event_quantityfieldMouseExited
 
@@ -3059,7 +3177,7 @@ if(Crudes.addBrand(brand_name)){
             /**
              * All codes associating with selling comes here
              */
-            
+
             quantity = Integer.parseInt(quantityfield.getText());
             int order_id = row;
             String item_id = unique();
@@ -3068,11 +3186,11 @@ if(Crudes.addBrand(brand_name)){
             Double discount = 0.00;
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
             String backdated = dcn.format(backdate.getDate());
-            
+
             try {
-                if(Orders.updateOrder(order_id,item_id,product_id,quantity,price,discount,backdated)){
-                    Stocks.editStock(product_id,quantity);
-                    JOptionPane.showMessageDialog(this,"Succesfully edited");
+                if (Orders.updateOrder(order_id, item_id, product_id, quantity, price, discount, backdated)) {
+                    Stocks.editStock(product_id, quantity);
+                    JOptionPane.showMessageDialog(this, "Succesfully edited");
                     try {
                         loadJtableValues();
                     } catch (SQLException ex) {
@@ -3094,18 +3212,17 @@ if(Crudes.addBrand(brand_name)){
 
     /**
      */
-    
     public static void PlayNotification(String type) {
-     AudioFile Af = new AudioFile();
+        AudioFile Af = new AudioFile();
         try {
             Af.Playme(type);
         } catch (URISyntaxException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-        }    
+        }
     }
-    
+
     public static void UserIntfc() {
-        
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -3145,9 +3262,11 @@ if(Crudes.addBrand(brand_name)){
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel BrandPanel;
+    private javax.swing.JButton Brandsbtn;
     private javax.swing.JPanel CashTransfers;
     private javax.swing.JButton CategoryBtn;
     private javax.swing.JPanel CategoryPanel;
+    private javax.swing.JButton Config;
     private javax.swing.JPanel ConfigPanel;
     private javax.swing.JPanel DatedReport;
     private javax.swing.JPanel MenuPanel;
@@ -3187,11 +3306,8 @@ if(Crudes.addBrand(brand_name)){
     private javax.swing.JButton fourBtn;
     private javax.swing.JButton insertBrand;
     private javax.swing.JButton insertBrand1;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -3285,6 +3401,7 @@ if(Crudes.addBrand(brand_name)){
     private javax.swing.JLabel profit3;
     private javax.swing.JLabel qntlabel;
     private javax.swing.JTextField quantityfield;
+    private javax.swing.JButton reportsbtn;
     private javax.swing.JTextField retailprice;
     private javax.swing.JButton saleproductbtn;
     private javax.swing.JButton saleproductbtnUpdate;
@@ -3317,5 +3434,5 @@ if(Crudes.addBrand(brand_name)){
     private javax.swing.JButton zeroBtn;
     private javax.swing.JButton zeroBtn1;
     // End of variables declaration//GEN-END:variables
- 
+
 }
