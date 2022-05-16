@@ -9,3 +9,5 @@ There are atleast 4 modules. Currently
 2. Product Management
 3. Stock Management
 4. Report
+
+The system dependencies are located in POM, critical dependency being H2 database.
