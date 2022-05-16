@@ -238,6 +238,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         datelabel.setVisible(false);
         backdate.setVisible(false);
+        productid.setVisible(false);
 
     }
 
@@ -258,8 +259,8 @@ public class UserInterface extends javax.swing.JFrame {
         stocksbtn = new javax.swing.JButton();
         CategoryBtn = new javax.swing.JButton();
         staffButton = new javax.swing.JButton();
-        reportsbtn = new javax.swing.JButton();
-        Config = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         usernameLabel = new javax.swing.JLabel();
         ParentLayout = new javax.swing.JPanel();
         OrderPanel = new javax.swing.JPanel();
@@ -290,6 +291,7 @@ public class UserInterface extends javax.swing.JFrame {
         eraserLabelIcon = new javax.swing.JLabel();
         jLabel39 = new javax.swing.JLabel();
         saleproductbtnUpdate = new javax.swing.JButton();
+        productid = new javax.swing.JTextField();
         BrandPanel = new javax.swing.JPanel();
         insertBrand = new javax.swing.JButton();
         brandname = new javax.swing.JTextField();
@@ -434,6 +436,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         Brandsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         Brandsbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        Brandsbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-brands-64.png"))); // NOI18N
         Brandsbtn.setText("Brands");
         Brandsbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         Brandsbtn.setContentAreaFilled(false);
@@ -446,6 +449,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         Orderbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         Orderbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        Orderbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-shopping-cart-promotion-64.png"))); // NOI18N
         Orderbtn.setText("Orders");
         Orderbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         Orderbtn.setContentAreaFilled(false);
@@ -458,6 +462,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         prdbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         prdbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        prdbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-products-64.png"))); // NOI18N
         prdbtn.setText("Products");
         prdbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         prdbtn.setContentAreaFilled(false);
@@ -470,6 +475,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         stocksbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         stocksbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        stocksbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-stocks-64.png"))); // NOI18N
         stocksbtn.setText("Stocks");
         stocksbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         stocksbtn.setContentAreaFilled(false);
@@ -482,6 +488,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         CategoryBtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         CategoryBtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        CategoryBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-sorting-64.png"))); // NOI18N
         CategoryBtn.setText("Categories");
         CategoryBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         CategoryBtn.setContentAreaFilled(false);
@@ -494,6 +501,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         staffButton.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         staffButton.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        staffButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-staff-64.png"))); // NOI18N
         staffButton.setText("Staff");
         staffButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         staffButton.setContentAreaFilled(false);
@@ -504,27 +512,29 @@ public class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        reportsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        reportsbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        reportsbtn.setText("Reports");
-        reportsbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        reportsbtn.setContentAreaFilled(false);
-        reportsbtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        reportsbtn.addActionListener(new java.awt.event.ActionListener() {
+        jButton7.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        jButton7.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-reports-64.png"))); // NOI18N
+        jButton7.setText("Reports");
+        jButton7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jButton7.setContentAreaFilled(false);
+        jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                reportsbtnActionPerformed(evt);
+                jButton7ActionPerformed(evt);
             }
         });
 
-        Config.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        Config.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        Config.setText("Config");
-        Config.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        Config.setContentAreaFilled(false);
-        Config.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        Config.addActionListener(new java.awt.event.ActionListener() {
+        jButton8.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        jButton8.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-configurations-64.png"))); // NOI18N
+        jButton8.setText("Config");
+        jButton8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jButton8.setContentAreaFilled(false);
+        jButton8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConfigActionPerformed(evt);
+                jButton8ActionPerformed(evt);
             }
         });
 
@@ -536,56 +546,47 @@ public class UserInterface extends javax.swing.JFrame {
         MenuPanelLayout.setHorizontalGroup(
             MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MenuPanelLayout.createSequentialGroup()
-                .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(MenuPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(MenuPanelLayout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Brandsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21)
-                        .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Config, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(MenuPanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
-                        .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40))
-                    .addGroup(MenuPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(reportsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(26, 26, 26)
+                .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(Brandsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21)
+                .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(MenuPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
         );
         MenuPanelLayout.setVerticalGroup(
             MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MenuPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(MenuPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Brandsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Config, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(MenuPanelLayout.createSequentialGroup()
-                        .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(reportsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Brandsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -834,6 +835,8 @@ public class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        productid.setText("199");
+
         javax.swing.GroupLayout OrderPanelLayout = new javax.swing.GroupLayout(OrderPanel);
         OrderPanel.setLayout(OrderPanelLayout);
         OrderPanelLayout.setHorizontalGroup(
@@ -880,7 +883,10 @@ public class UserInterface extends javax.swing.JFrame {
                                     .addComponent(fourBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(eightBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(zeroBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(backdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(OrderPanelLayout.createSequentialGroup()
+                        .addComponent(backdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(productid, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(datelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(qntlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(OrderPanelLayout.createSequentialGroup()
@@ -915,7 +921,9 @@ public class UserInterface extends javax.swing.JFrame {
                     .addGroup(OrderPanelLayout.createSequentialGroup()
                         .addComponent(backdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(qntlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(qntlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(productid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(quantityfield, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -939,7 +947,7 @@ public class UserInterface extends javax.swing.JFrame {
                         .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(saleproductbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(117, Short.MAX_VALUE))
+                .addContainerGap(152, Short.MAX_VALUE))
         );
 
         ParentLayout.add(OrderPanel, "card2");
@@ -2423,14 +2431,22 @@ public class UserInterface extends javax.swing.JFrame {
     }
 
     private void destroyAll() {
-        prdbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        Orderbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        stocksbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        Brandsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        CategoryBtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        staffButton.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        reportsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        Config.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        prdbtn.setBackground(javax.swing.UIManager
+                .getDefaults().getColor("Button.darkShadow"));
+        Orderbtn.setBackground(javax.swing.UIManager
+                .getDefaults().getColor("Button.darkShadow"));
+        stocksbtn.setBackground(javax.swing.UIManager.getDefaults()
+                .getColor("Button.darkShadow"));
+        Brandsbtn.setBackground(javax.swing.UIManager.getDefaults()
+                .getColor("Button.darkShadow"));
+        CategoryBtn.setBackground(javax.swing.UIManager.getDefaults()
+                .getColor("Button.darkShadow"));
+        staffButton.setBackground(javax.swing.UIManager.getDefaults()
+                .getColor("Button.darkShadow"));
+        jButton7.setBackground(javax.swing.UIManager.getDefaults()
+                .getColor("Button.darkShadow"));
+        jButton8.setBackground(javax.swing.UIManager.getDefaults()
+                .getColor("Button.darkShadow"));
     }
 
     private void activeButton(String btn) {
@@ -2442,7 +2458,7 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 Orderbtn.setContentAreaFilled(false);
                 Orderbtn.setOpaque(true);
-                Orderbtn.setBackground(new Color(138, 43, 226));
+                Orderbtn.setBackground(new Color(97,160,204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
@@ -2452,7 +2468,7 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 prdbtn.setContentAreaFilled(false);
                 prdbtn.setOpaque(true);
-                prdbtn.setBackground(new Color(138, 43, 226));
+                prdbtn.setBackground(new Color(97,160,204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
@@ -2462,7 +2478,7 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 stocksbtn.setContentAreaFilled(false);
                 stocksbtn.setOpaque(true);
-                stocksbtn.setBackground(new Color(138, 43, 226));
+                stocksbtn.setBackground(new Color(97,160,204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
@@ -2471,7 +2487,7 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 Brandsbtn.setContentAreaFilled(false);
                 Brandsbtn.setOpaque(true);
-                Brandsbtn.setBackground(new Color(138, 43, 226));
+                Brandsbtn.setBackground(new Color(97,160,204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
@@ -2481,7 +2497,7 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 CategoryBtn.setContentAreaFilled(false);
                 CategoryBtn.setOpaque(true);
-                CategoryBtn.setBackground(new Color(138, 43, 226));
+                CategoryBtn.setBackground(new Color(97,160,204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
@@ -2491,7 +2507,7 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 staffButton.setContentAreaFilled(false);
                 staffButton.setOpaque(true);
-                staffButton.setBackground(new Color(138, 43, 226));
+                staffButton.setBackground(new Color(97,160,204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
@@ -2499,17 +2515,17 @@ public class UserInterface extends javax.swing.JFrame {
             
             case "Config": {
                 destroyAll();
-                Config.setContentAreaFilled(false);
-                Config.setOpaque(true);
-                Config.setBackground(new Color(138, 43, 226));
+                jButton8.setContentAreaFilled(false);
+                jButton8.setOpaque(true);
+                jButton8.setBackground(new Color(97,160,204));
                 break;
             }
             
             case "reportsbtn": {
                 destroyAll();
-                reportsbtn.setContentAreaFilled(false);
-                reportsbtn.setOpaque(true);
-                reportsbtn.setBackground(new Color(138, 43, 226));
+                jButton7.setContentAreaFilled(false);
+                jButton7.setOpaque(true);
+                jButton7.setBackground(new Color(97,160,204));
                 break; 
             }
             default:
@@ -2597,7 +2613,13 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void quantityfieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_quantityfieldKeyReleased
         // TODO add your handling code here:
-        quantity = Integer.parseInt(quantityfield.getText());
+        try{
+        String q = quantityfield.getText();
+        quantity = Integer.parseInt(q);
+        }
+        catch(NumberFormatException pe){
+            System.out.println("No number provided");
+        }
     }//GEN-LAST:event_quantityfieldKeyReleased
 
     private void oneBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneBtnActionPerformed
@@ -2704,7 +2726,6 @@ public class UserInterface extends javax.swing.JFrame {
             String order_id = unique();
             String item_id = unique();
             String product_id = SearchProductForm.getText();
-            String product = SearchProductForm.getText();
             Double price = 1.0;
             Double discount = 0.00;
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
@@ -2752,7 +2773,7 @@ public class UserInterface extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_insertBrandActionPerformed
 
-    private void reportsbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsbtnActionPerformed
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
         activeButton("reportsbtn");
         ParentLayout.removeAll();
@@ -2766,7 +2787,7 @@ public class UserInterface extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_reportsbtnActionPerformed
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     private void categorynameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_categorynameKeyReleased
         // TODO add your handling code here:
@@ -2869,23 +2890,28 @@ public class UserInterface extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_insertBrand1ActionPerformed
 
-    private void ConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigActionPerformed
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
         activeButton("Config");
         ParentLayout.removeAll();
         ParentLayout.add(ConfigPanel);
         ParentLayout.repaint();
         ParentLayout.revalidate();
-    }//GEN-LAST:event_ConfigActionPerformed
+    }//GEN-LAST:event_jButton8ActionPerformed
 
 
     private void ordersTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ordersTableMouseClicked
-        // TODO add your handling code here:
+        // codes to get the items out of orders clicked row:
+        
         row = ordersTable.getSelectedRow();
         column = ordersTable.getColumnCount();
-        SearchProductForm.setText(ordersModel.getValueAt(row, 1).toString());
         quantityfield.setText(ordersModel.getValueAt(row, 2).toString());
-//        String productname = ordersModel.getValueAt(row, 2).toString();
+        
+            //SearchProductForm.setText(ordersModel.getValueAt(row, 0).toString());
+            //Set the contents of the JTextArea.
+            SearchProductForm.setText(ordersModel.getValueAt(row, 1).toString());
+            SearchProductForm.setLineWrap(true);
+            SearchProductForm.setWrapStyleWord(true);
     }//GEN-LAST:event_ordersTableMouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -3172,14 +3198,9 @@ public class UserInterface extends javax.swing.JFrame {
         saleproductbtnUpdate.setEnabled(false);
         saleproductbtnUpdate.setText("Wait");
         try {
-            // TODO add your handling code here:
-            //this is the saling button
-            /**
-             * All codes associating with selling comes here
-             */
-
+            
             quantity = Integer.parseInt(quantityfield.getText());
-            int order_id = row;
+            int order_id = Integer.parseInt(productid.getText());
             String item_id = unique();
             String product_id = SearchProductForm.getText();
             Double price = 1.0;
@@ -3189,7 +3210,7 @@ public class UserInterface extends javax.swing.JFrame {
 
             try {
                 if (Orders.updateOrder(order_id, item_id, product_id, quantity, price, discount, backdated)) {
-                    Stocks.editStock(product_id, quantity);
+//                    Stocks.editStockFromOrdersEd(product_id, quantity);
                     JOptionPane.showMessageDialog(this, "Succesfully edited");
                     try {
                         loadJtableValues();
@@ -3266,7 +3287,6 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JPanel CashTransfers;
     private javax.swing.JButton CategoryBtn;
     private javax.swing.JPanel CategoryPanel;
-    private javax.swing.JButton Config;
     private javax.swing.JPanel ConfigPanel;
     private javax.swing.JPanel DatedReport;
     private javax.swing.JPanel MenuPanel;
@@ -3308,6 +3328,8 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JButton insertBrand1;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -3393,6 +3415,7 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JButton oneBtn;
     private javax.swing.JTable ordersTable;
     private javax.swing.JButton prdbtn;
+    private javax.swing.JTextField productid;
     private javax.swing.JTextField productname;
     private javax.swing.JTable productsTable;
     private javax.swing.JLabel profit;
@@ -3401,7 +3424,6 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel profit3;
     private javax.swing.JLabel qntlabel;
     private javax.swing.JTextField quantityfield;
-    private javax.swing.JButton reportsbtn;
     private javax.swing.JTextField retailprice;
     private javax.swing.JButton saleproductbtn;
     private javax.swing.JButton saleproductbtnUpdate;

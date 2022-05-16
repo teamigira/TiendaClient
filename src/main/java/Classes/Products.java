@@ -149,8 +149,7 @@ public class Products {
            String model = rs.getString("model_year");
            String expiry_date = rs.getString("expiry_date");
            String list_price = rs.getString("list_price");
-           String retail_price = rs.getString("retail_price");         
-                 System.out.println(""+product_name+category_name);   
+           String retail_price = rs.getString("retail_price");        
            list.add(
            new Product(
            productid,

@@ -165,7 +165,6 @@ public class Orders {
     }
 
     public static boolean deleteRow(int row) throws ClassNotFoundException {
-        System.out.println("" + row);
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
@@ -193,9 +192,6 @@ public class Orders {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query 
-            //System.out.println(product_id.substring(0, product_id.indexOf('-')));
-            //product_id = (product_id.split(" - ", 2)[0]);
-            product_id = product_id.split(":")[1];
 
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
 
@@ -206,7 +202,7 @@ public class Orders {
             String today = "" + d1;
 
             String sql
-             ="UPDATE sales_order_items SET quantity = '" + quantity + "', list_price = '"+price+"', discount='"+discount+"', date ='"+ milliConverter(today)+"' WHERE order_id = '" + order_id + "'";
+             ="UPDATE sales_order_items SET quantity = '" + quantity + "', list_price = '"+price+"', discount='"+discount+"' WHERE order_id = '" + order_id + "'";
             int i = stmt.executeUpdate(sql);
             if (i > 0) {
                 System.out.println(sql);

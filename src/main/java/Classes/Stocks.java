@@ -97,4 +97,30 @@ public class Stocks {
         }
         return list;
     }
+    
+     public static boolean editStockFromOrdersEd(int product_id, long quantity) throws ClassNotFoundException {
+  
+        try {
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
+            // STEP 3: Execute a query 
+            stmt = conna.createStatement();
+
+            String sql
+                    = "UPDATE production_stocks SET quantity = quantity-" + quantity + " WHERE product_id='" + product_id + "'";
+            int i = stmt.executeUpdate(sql);
+            if (i > 0) {
+                System.out.println(sql);
+            } else {
+                return false;
+            }
+
+            // STEP 4: Clean-up environment
+
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        return true;
+    }
 }
