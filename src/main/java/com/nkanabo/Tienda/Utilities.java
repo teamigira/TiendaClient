@@ -47,6 +47,15 @@ public class Utilities {
      *
      */
    
+    public static int IntegerConverter(String z) {
+        Integer s=0;
+        try {
+            s = Integer.parseInt(z);
+        } catch (NumberFormatException pe) {
+            System.out.println("No number provided");
+        }
+        return s;
+    }
     
     public static void Notifications(String type, String message){
 //        JOptionPane.showMessageDialog(new HomeFrame, "Hello Java");

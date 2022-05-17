@@ -35,11 +35,10 @@ import Classes.Stocks;
 import static Classes.Stocks.listStocks;
 import Classes.AbstractClasses.Transfer;
 import Classes.Utilities.AudioFile;
-import com.nkanabo.Tienda.Utilities.*;
 import UserSettings.UserSettings;
+import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import static com.nkanabo.Tienda.Utilities.unique;
 import java.awt.Color;
-import static java.awt.Color.blue;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -57,7 +56,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
@@ -201,10 +199,7 @@ public class UserInterface extends javax.swing.JFrame {
         transferedlist = new ArrayList<>();
         TransferModel = new DefaultTableModel(transferheader, 0);
         transferedCash.setModel(TransferModel);
-        //Roles
 
-        //Permissions
-        //Transfers
         this.setLocationRelativeTo(null);
         try {
             loadJtableValues();
@@ -229,7 +224,6 @@ public class UserInterface extends javax.swing.JFrame {
 
         List list = Arrays.asList(allProducts);
         List productions = Arrays.asList(productonly);
-
         AutoCompleteDecorator.decorate(brands);
         AutoCompleteDecorator.decorate(categories);
         AutoCompleteDecorator.decorate(ProductsOnly);
@@ -435,9 +429,9 @@ public class UserInterface extends javax.swing.JFrame {
         jLabel1.setText("Nkanabo Microsystems");
 
         Brandsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        Brandsbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        Brandsbtn.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         Brandsbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-brands-64.png"))); // NOI18N
-        Brandsbtn.setText("Brands");
+        Brandsbtn.setText("BRANDS");
         Brandsbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         Brandsbtn.setContentAreaFilled(false);
         Brandsbtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -448,9 +442,9 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         Orderbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        Orderbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        Orderbtn.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         Orderbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-shopping-cart-promotion-64.png"))); // NOI18N
-        Orderbtn.setText("Orders");
+        Orderbtn.setText("ORDERS");
         Orderbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         Orderbtn.setContentAreaFilled(false);
         Orderbtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -461,9 +455,9 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         prdbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        prdbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        prdbtn.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         prdbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-products-64.png"))); // NOI18N
-        prdbtn.setText("Products");
+        prdbtn.setText("PRODUCTS");
         prdbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         prdbtn.setContentAreaFilled(false);
         prdbtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -474,9 +468,9 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         stocksbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        stocksbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        stocksbtn.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         stocksbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-stocks-64.png"))); // NOI18N
-        stocksbtn.setText("Stocks");
+        stocksbtn.setText("STOCKS");
         stocksbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         stocksbtn.setContentAreaFilled(false);
         stocksbtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -487,9 +481,9 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         CategoryBtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        CategoryBtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        CategoryBtn.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         CategoryBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-sorting-64.png"))); // NOI18N
-        CategoryBtn.setText("Categories");
+        CategoryBtn.setText("CATEGORIES");
         CategoryBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         CategoryBtn.setContentAreaFilled(false);
         CategoryBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -500,9 +494,9 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         staffButton.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        staffButton.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        staffButton.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         staffButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-staff-64.png"))); // NOI18N
-        staffButton.setText("Staff");
+        staffButton.setText("STAFF");
         staffButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         staffButton.setContentAreaFilled(false);
         staffButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -513,9 +507,9 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         jButton7.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        jButton7.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jButton7.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-reports-64.png"))); // NOI18N
-        jButton7.setText("Reports");
+        jButton7.setText("REPORTS");
         jButton7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton7.setContentAreaFilled(false);
         jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -526,9 +520,9 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         jButton8.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        jButton8.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jButton8.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-configurations-64.png"))); // NOI18N
-        jButton8.setText("Config");
+        jButton8.setText("CONFIG");
         jButton8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton8.setContentAreaFilled(false);
         jButton8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -538,7 +532,7 @@ public class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        usernameLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        usernameLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         usernameLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(153, 153, 153), new java.awt.Color(153, 153, 153)));
 
         javax.swing.GroupLayout MenuPanelLayout = new javax.swing.GroupLayout(MenuPanel);
@@ -547,22 +541,22 @@ public class UserInterface extends javax.swing.JFrame {
             MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MenuPanelLayout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(Brandsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Brandsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
             .addGroup(MenuPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -577,16 +571,16 @@ public class UserInterface extends javax.swing.JFrame {
                 .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(stocksbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Brandsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(staffButton, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CategoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -596,11 +590,11 @@ public class UserInterface extends javax.swing.JFrame {
 
         OrderPanel.setBackground(java.awt.Color.lightGray);
 
-        jLabel8.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         jLabel8.setText("Search");
 
         ordersTable.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        ordersTable.setFont(new java.awt.Font("Calibri Light", 1, 14)); // NOI18N
+        ordersTable.setFont(new java.awt.Font("Calibri Light", 1, 18)); // NOI18N
         ordersTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -619,7 +613,7 @@ public class UserInterface extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(ordersTable);
 
-        qntlabel.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        qntlabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         qntlabel.setText("Quantity");
 
         quantityfield.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
@@ -767,7 +761,7 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         saleproductbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        saleproductbtn.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        saleproductbtn.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         saleproductbtn.setText("Sale Product");
         saleproductbtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         saleproductbtn.setContentAreaFilled(false);
@@ -779,11 +773,11 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         SearchProductForm.setColumns(20);
-        SearchProductForm.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        SearchProductForm.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         SearchProductForm.setRows(5);
         jScrollPane7.setViewportView(SearchProductForm);
 
-        todays.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        todays.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         todays.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         datelabel.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
@@ -824,7 +818,7 @@ public class UserInterface extends javax.swing.JFrame {
         });
 
         saleproductbtnUpdate.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        saleproductbtnUpdate.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        saleproductbtnUpdate.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         saleproductbtnUpdate.setText("Update");
         saleproductbtnUpdate.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         saleproductbtnUpdate.setContentAreaFilled(false);
@@ -835,7 +829,7 @@ public class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        productid.setText("199");
+        productid.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout OrderPanelLayout = new javax.swing.GroupLayout(OrderPanel);
         OrderPanel.setLayout(OrderPanelLayout);
@@ -947,7 +941,7 @@ public class UserInterface extends javax.swing.JFrame {
                         .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(saleproductbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(152, Short.MAX_VALUE))
+                .addContainerGap(102, Short.MAX_VALUE))
         );
 
         ParentLayout.add(OrderPanel, "card2");
@@ -1568,7 +1562,7 @@ public class UserInterface extends javax.swing.JFrame {
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(247, Short.MAX_VALUE))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
 
         ParentLayout.add(ConfigPanel, "card2");
@@ -2458,7 +2452,7 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 Orderbtn.setContentAreaFilled(false);
                 Orderbtn.setOpaque(true);
-                Orderbtn.setBackground(new Color(97,160,204));
+                Orderbtn.setBackground(new Color(97, 160, 204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
@@ -2468,7 +2462,7 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 prdbtn.setContentAreaFilled(false);
                 prdbtn.setOpaque(true);
-                prdbtn.setBackground(new Color(97,160,204));
+                prdbtn.setBackground(new Color(97, 160, 204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
@@ -2478,7 +2472,7 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 stocksbtn.setContentAreaFilled(false);
                 stocksbtn.setOpaque(true);
-                stocksbtn.setBackground(new Color(97,160,204));
+                stocksbtn.setBackground(new Color(97, 160, 204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
@@ -2487,46 +2481,46 @@ public class UserInterface extends javax.swing.JFrame {
                 destroyAll();
                 Brandsbtn.setContentAreaFilled(false);
                 Brandsbtn.setOpaque(true);
-                Brandsbtn.setBackground(new Color(97,160,204));
+                Brandsbtn.setBackground(new Color(97, 160, 204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
             }
-            
+
             case "CategoryBtn": {
                 destroyAll();
                 CategoryBtn.setContentAreaFilled(false);
                 CategoryBtn.setOpaque(true);
-                CategoryBtn.setBackground(new Color(97,160,204));
+                CategoryBtn.setBackground(new Color(97, 160, 204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
             }
-            
+
             case "staffButton": {
                 destroyAll();
                 staffButton.setContentAreaFilled(false);
                 staffButton.setOpaque(true);
-                staffButton.setBackground(new Color(97,160,204));
+                staffButton.setBackground(new Color(97, 160, 204));
                 ParentLayout.repaint();
                 ParentLayout.revalidate();
                 break;
             }
-            
+
             case "Config": {
                 destroyAll();
                 jButton8.setContentAreaFilled(false);
                 jButton8.setOpaque(true);
-                jButton8.setBackground(new Color(97,160,204));
+                jButton8.setBackground(new Color(97, 160, 204));
                 break;
             }
-            
+
             case "reportsbtn": {
                 destroyAll();
                 jButton7.setContentAreaFilled(false);
                 jButton7.setOpaque(true);
-                jButton7.setBackground(new Color(97,160,204));
-                break; 
+                jButton7.setBackground(new Color(97, 160, 204));
+                break;
             }
             default:
                 System.out.println("No clear btn choosed");
@@ -2587,7 +2581,7 @@ public class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_stocksbtnActionPerformed
 
     private void staffButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_staffButtonActionPerformed
-       activeButton("staffButton");
+        activeButton("staffButton");
         try {
             // TODO add your handling code here:
             ParentLayout.removeAll();
@@ -2613,13 +2607,8 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void quantityfieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_quantityfieldKeyReleased
         // TODO add your handling code here:
-        try{
-        String q = quantityfield.getText();
-        quantity = Integer.parseInt(q);
-        }
-        catch(NumberFormatException pe){
-            System.out.println("No number provided");
-        }
+        quantity = IntegerConverter(quantityfield.getText());
+
     }//GEN-LAST:event_quantityfieldKeyReleased
 
     private void oneBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneBtnActionPerformed
@@ -2716,11 +2705,6 @@ public class UserInterface extends javax.swing.JFrame {
         saleproductbtn.setEnabled(false);
         saleproductbtn.setText("Wait");
         try {
-            // TODO add your handling code here:
-            //this is the saling button
-            /**
-             * All codes associating with selling comes here
-             */
 
             quantity = Integer.parseInt(quantityfield.getText());
             String order_id = unique();
@@ -2902,16 +2886,16 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void ordersTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ordersTableMouseClicked
         // codes to get the items out of orders clicked row:
-        
+
         row = ordersTable.getSelectedRow();
         column = ordersTable.getColumnCount();
         quantityfield.setText(ordersModel.getValueAt(row, 2).toString());
-        
-            //SearchProductForm.setText(ordersModel.getValueAt(row, 0).toString());
-            //Set the contents of the JTextArea.
-            SearchProductForm.setText(ordersModel.getValueAt(row, 1).toString());
-            SearchProductForm.setLineWrap(true);
-            SearchProductForm.setWrapStyleWord(true);
+        productid.setText(ordersModel.getValueAt(row, 0).toString());
+        //SearchProductForm.setText(ordersModel.getValueAt(row, 0).toString());
+        //Set the contents of the JTextArea.
+        SearchProductForm.setText(ordersModel.getValueAt(row, 1).toString());
+        SearchProductForm.setLineWrap(true);
+        SearchProductForm.setWrapStyleWord(true);
     }//GEN-LAST:event_ordersTableMouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -3193,25 +3177,24 @@ public class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_quantityfieldMouseExited
 
     private void saleproductbtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleproductbtnUpdateActionPerformed
-        // Updating the values of order
-        //This is conditional to users (administrator's) configurations
-        saleproductbtnUpdate.setEnabled(false);
+
+        //Updating the values of order
+        //This is conditional to users (administrator's) configurations]]
         saleproductbtnUpdate.setText("Wait");
+        saleproductbtnUpdate.setEnabled(false);
         try {
-            
             quantity = Integer.parseInt(quantityfield.getText());
-            int order_id = Integer.parseInt(productid.getText());
+            int order_id = IntegerConverter(productid.getText());
             String item_id = unique();
             String product_id = SearchProductForm.getText();
             Double price = 1.0;
             Double discount = 0.00;
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
             String backdated = dcn.format(backdate.getDate());
-
             try {
+                System.out.println("not yet updated" + product_id);
                 if (Orders.updateOrder(order_id, item_id, product_id, quantity, price, discount, backdated)) {
-//                    Stocks.editStockFromOrdersEd(product_id, quantity);
-                    JOptionPane.showMessageDialog(this, "Succesfully edited");
+                    //Stocks.editStockFromOrdersEd(product_id, quantity);
                     try {
                         loadJtableValues();
                     } catch (SQLException ex) {
