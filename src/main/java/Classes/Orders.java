@@ -207,6 +207,8 @@ public class Orders {
             if (i > 0) {
                 System.out.println(sql);
             } else {
+                JOptionPane.showMessageDialog(null, "There was a problem item "+sql+" not found",
+                        "ERROR", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
 

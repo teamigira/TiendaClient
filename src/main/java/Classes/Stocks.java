@@ -7,6 +7,7 @@ package Classes;
 
 import Classes.AbstractClasses.Stock;
 import Database.DBConnection;
+import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -98,16 +99,18 @@ public class Stocks {
         return list;
     }
     
-     public static boolean editStockFromOrdersEd(int product_id, long quantity) throws ClassNotFoundException {
+     public static boolean editStockFromOrdersEd(String product_id, long quantity) throws ClassNotFoundException {
   
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-
+        String id;
+        id = product_id.split(":")[1];
+        int productCode = IntegerConverter(id);
             String sql
-                    = "UPDATE production_stocks SET quantity = quantity-" + quantity + " WHERE product_id='" + product_id + "'";
+                    = "UPDATE production_stocks SET quantity = quantity-" + quantity + " WHERE product_id='" + productCode + "'";
             int i = stmt.executeUpdate(sql);
             if (i > 0) {
                 System.out.println(sql);

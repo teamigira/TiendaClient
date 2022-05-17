@@ -34,39 +34,39 @@ public class Auth {
             //request for log in
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
             long today = 0;
-            
+
             today = milliConverter(String.valueOf(d1));
-            
-             DBConnection dbc = DBConnection.getConnectionInstance();
+
+            DBConnection dbc = DBConnection.getConnectionInstance();
             Connection con = dbc.getConnection();
-                    Statement stmt = null;
-                    stmt = con.createStatement();
+            Statement stmt = null;
+            stmt = con.createStatement();
             String sql = "SELECT * FROM app_key"
                     + " where activation_status = 0 OR "
-                    + "expire_date <= '"+ today +"'";
+                    + "expire_date <= '" + today + "'";
             ResultSet rs = stmt.executeQuery(sql);
             //STEP 4: Extract data from result set
-            if(rs.next()) {
+            if (rs.next()) {
                 //Retrieve by column name
-                String id  = rs.getString("product_id");
+                String id = rs.getString("product_id");
                 int sts = rs.getInt("activation_status");
                 String expire_date = rs.getString("expire_date");
                 return false;
                 // response
             }
-            
+
             // STEP 5: Clean-up environment
             rs.close();
             // finally block used to close resources
         } catch (ParseException ex) {
             Logger.getLogger(Auth.class.getName()).log(Level.SEVERE, null, ex);
         }
-         
-            return true;
-       }
-    
-     public static void Login() throws URISyntaxException {
-       Login lg = new Login();
-       lg.login();  
+
+        return true;
+    }
+
+    public static void Login() throws URISyntaxException {
+        Login lg = new Login();
+        lg.login();
     }
 }

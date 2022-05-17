@@ -3188,9 +3188,10 @@ public class UserInterface extends javax.swing.JFrame {
 
         //Updating the values of order
         //This is conditional to users (administrator's) configurations]]
-       
+        
         saleproductbtnUpdate.setEnabled(false);
         saleproductbtnUpdate.setText("Wait");
+        
         try {
             quantity = Integer.parseInt(quantityfield.getText());
             int order_id = IntegerConverter(productid.getText());
@@ -3202,7 +3203,8 @@ public class UserInterface extends javax.swing.JFrame {
             String backdated = dcn.format(backdate.getDate());
             try {
                 if (Orders.updateOrder(order_id, item_id, product_id, quantity, price, discount, backdated)) {
-                    //Stocks.editStockFromOrdersEd(product_id, quantity);
+                    Stocks.editStockFromOrdersEd(product_id, quantity);
+                    System.out.println("kila kitu kimekuwa sawa");
                     try {
                         loadJtableValues();
                     } catch (SQLException ex) {
