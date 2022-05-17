@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import static com.nkanabo.Tienda.Utilities.milliConverter;
 import java.text.ParseException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -165,20 +166,21 @@ public class Orders {
     }
 
     public static boolean deleteRow(int row) throws ClassNotFoundException {
+       
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
 
             String updatequery
-                    = "DELETE from sales_order_items where order_id='"+row+"'";
+                    = "DELETE from sales_order_items where order_id = '" + row + "'";
             int rsu = stmt.executeUpdate(updatequery);
             if (rsu != 1) {
+                JOptionPane.showMessageDialog(null, "There was a problem item "+row+" not found",
+                        "ERROR", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
 
             // STEP 4: Clean-up environment 
-           
-
         } catch (SQLException se) {
             // Handle errors for JDBC 
             se.printStackTrace();
@@ -205,7 +207,6 @@ public class Orders {
             if (i > 0) {
                 System.out.println(sql);
             } else {
-                System.out.println("4");
                 return false;
             }
 

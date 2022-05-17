@@ -3119,22 +3119,30 @@ public class UserInterface extends javax.swing.JFrame {
     private void deleteLabelIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIconMouseClicked
         //Delete sales.
         int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
+
         if (reply == JOptionPane.YES_OPTION) {
-            ordersModel.removeRow(row);
-            orderlist.remove(row);
-            ordersModel.setRowCount(0);
+
             try {
-                Orders.deleteRow(row);
+                row = ordersTable.getSelectedRow();
+                column = ordersTable.getColumnCount();
+                int orderId = IntegerConverter(ordersModel.getValueAt(row, 0).toString());
+                Orders.deleteRow(orderId);
+                ordersModel.removeRow(row);
+                orderlist.remove(row);
+                ordersModel.setRowCount(0);
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UserInterface.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
+
             for (int i = 0; i < orderlist.size(); i++) {
                 Object[] obj = {
                     orderlist.get(i).orderid,
                     orderlist.get(i).product,
                     orderlist.get(i).quantity,
                     orderlist.get(i).listprice,
-                    orderlist.get(i).discount};
+                    orderlist.get(i).discount
+                };
                 ordersModel.addRow(obj);
             }
         }
@@ -3180,8 +3188,9 @@ public class UserInterface extends javax.swing.JFrame {
 
         //Updating the values of order
         //This is conditional to users (administrator's) configurations]]
-        saleproductbtnUpdate.setText("Wait");
+       
         saleproductbtnUpdate.setEnabled(false);
+        saleproductbtnUpdate.setText("Wait");
         try {
             quantity = Integer.parseInt(quantityfield.getText());
             int order_id = IntegerConverter(productid.getText());
@@ -3192,7 +3201,6 @@ public class UserInterface extends javax.swing.JFrame {
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
             String backdated = dcn.format(backdate.getDate());
             try {
-                System.out.println("not yet updated" + product_id);
                 if (Orders.updateOrder(order_id, item_id, product_id, quantity, price, discount, backdated)) {
                     //Stocks.editStockFromOrdersEd(product_id, quantity);
                     try {

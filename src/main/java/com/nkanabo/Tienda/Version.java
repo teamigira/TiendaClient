@@ -26,7 +26,6 @@ public class Version {
         try {
             Version();
         } catch (SQLException ex) {
-        System.out.println(ex + "VersionControl");
         }
         
     }
@@ -53,7 +52,6 @@ public class Version {
     catch(SQLException e){
         System.out.println(e);
     }
-            
         return null;
     }
     
