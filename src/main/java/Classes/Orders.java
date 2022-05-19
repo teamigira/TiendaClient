@@ -7,6 +7,7 @@ package Classes;
 
 import Classes.AbstractClasses.Order;
 import Database.DBConnection;
+import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -193,13 +194,16 @@ public class Orders {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
-            // STEP 3: Execute a query
-            product_id = product_id.split(":")[1];
+//            // STEP 3: Execute a query
+              String id;
+              id = product_id.split(":")[1];
+              int productCode = IntegerConverter(product_id);
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
 
             if (backdated != null) {
                 d1 = LocalDate.parse(backdated);
             }
+            
             String today = "" + d1;
             String sql
              ="UPDATE sales_order_items SET quantity = '" + quantity + "', list_price = '"+ price +"', discount = '" + discount + "' WHERE order_id = '" + order_id + "'";

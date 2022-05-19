@@ -28,6 +28,8 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 
 public final class Utilities {
+    
+    private static Integer s = 0;
 
     public Utilities() throws ParseException {
         this.setExpire();
@@ -48,11 +50,10 @@ public final class Utilities {
      * @return
      */
     public static int IntegerConverter(String z) {
-        Integer s = 0;
         try {
-            s = Integer.parseInt(z);
+            s = Integer.valueOf(z);
         } catch (NumberFormatException pe) {
-            System.out.println("No number provided");
+            System.out.println(pe);
         }
         return s;
     }
