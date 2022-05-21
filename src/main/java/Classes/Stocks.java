@@ -101,25 +101,26 @@ public class Stocks {
         return list;
     }
     
-    public static boolean editStockFromOrdersEd(int order_id, String product_id, long quantity) throws ClassNotFoundException {
+    public static boolean editStockFromOrdersEd(int order_id, String product_id, long quantity)
+            throws ClassNotFoundException {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             String id;
             id = product_id.split(":")[1];
-            System.out.println("ID ni hii" +id);
-            int productCode = IntegerConverter(id);
-            System.out.println("Converted Id" + productCode);
-            String sqlquery = "SELECT quantity FROM sales_order_items where product_id = '" + productCode + "' AND order_id='" + order_id + "'";
-            System.out.println(sqlquery);
-            ResultSet rs = stmt.executeQuery(sqlquery);
-            if (rs.next()) {
-                String Sales_Quantity = rs.getString("quantity");
-                Sales = IntegerConverter(Sales_Quantity);
+            int productCode = IntegerConverter(id.trim());
+                        
+            String sqlquery = "SELECT * FROM sales_order_items where product_id = " 
+                    + productCode + " AND order_id=" + order_id + "";
+                    ResultSet rst = stmt.executeQuery(sqlquery);
+            while (rst.next()) {
+                String Sales_Quantity = rst.getString("quantity");
+                Sales = IntegerConverter(Sales_Quantity.trim());
+                System.out.println("Mauzo yalikuwa" + Sales_Quantity);
             }
             try {
             String sql
-                    = "UPDATE production_stocks SET quantity = 25 WHERE product_id='" + productCode + "'";
+                    = "UPDATE production_stocks SET quantity = quantity+"+Sales+"-"+quantity+" WHERE product_id='" + productCode + "'";
             int i = stmt.executeUpdate(sql);
              if (i > 0) {
                 System.out.println("Success "+sql);

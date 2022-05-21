@@ -50,10 +50,15 @@ public final class Utilities {
      * @return
      */
     public static int IntegerConverter(String z) {
-        try {
-            s = Integer.valueOf(z);
-        } catch (NumberFormatException pe) {
-            System.out.println(pe);
+        if (z != null) {
+            try {
+                return Integer.parseInt(z);
+            } catch (NumberFormatException pe) {
+                System.out.println(pe);
+            }
+        }
+        else {
+            System.out.println("no value provided.");
         }
         return s;
     }
@@ -122,7 +127,6 @@ public final class Utilities {
     }
 
     public static String DateMilli(String milliSeconds) {
-
         long milliSecond = Long.parseLong(milliSeconds);
         DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
         Date date = new Date(milliSecond);

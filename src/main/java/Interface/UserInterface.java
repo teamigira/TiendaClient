@@ -3185,7 +3185,7 @@ public class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_quantityfieldMouseExited
 
     private void saleproductbtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleproductbtnUpdateActionPerformed
-
+ 
         // Updating the values of order
         // This is conditional to users (administrator's) configurations]]
         saleproductbtnUpdate.setEnabled(false);
@@ -3201,9 +3201,8 @@ public class UserInterface extends javax.swing.JFrame {
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
             String backdated = dcn.format(backdate.getDate());
             try {
+                Stocks.editStockFromOrdersEd(order_id, product_id, quantity);
                 if (Orders.updateOrder(order_id, item_id, product_id, quantity, price, discount, backdated)) {
-                    Stocks.editStockFromOrdersEd(order_id, product_id, quantity);
-                    System.out.println("kila kitu kimekuwa sawa");
                     try {
                         loadJtableValues();
                     } catch (SQLException ex) {
