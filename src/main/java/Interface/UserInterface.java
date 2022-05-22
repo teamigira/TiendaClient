@@ -322,6 +322,10 @@ public class UserInterface extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         listprice = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
+        jLabel40 = new javax.swing.JLabel();
+        eraserLabelIcon1 = new javax.swing.JLabel();
+        deleteLabelIcon1 = new javax.swing.JLabel();
+        searchLabelIcon1 = new javax.swing.JLabel();
         StaffPanel = new javax.swing.JPanel();
         categorybtn2 = new javax.swing.JButton();
         jLabel42 = new javax.swing.JLabel();
@@ -1211,6 +1215,39 @@ public class UserInterface extends javax.swing.JFrame {
 
         jLabel21.setText("List Price");
 
+        jLabel40.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/calendaricon.png"))); // NOI18N
+        jLabel40.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel40.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel40MouseClicked(evt);
+            }
+        });
+
+        eraserLabelIcon1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/erasericon.png"))); // NOI18N
+        eraserLabelIcon1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        eraserLabelIcon1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                eraserLabelIcon1MouseClicked(evt);
+            }
+        });
+
+        deleteLabelIcon1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/deleteicon.png"))); // NOI18N
+        deleteLabelIcon1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        deleteLabelIcon1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deleteLabelIcon1MouseClicked(evt);
+            }
+        });
+
+        searchLabelIcon1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        searchLabelIcon1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/searchicon.png"))); // NOI18N
+        searchLabelIcon1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        searchLabelIcon1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchLabelIcon1MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout ProductsPanelLayout = new javax.swing.GroupLayout(ProductsPanel);
         ProductsPanel.setLayout(ProductsPanelLayout);
         ProductsPanelLayout.setHorizontalGroup(
@@ -1219,7 +1256,16 @@ public class UserInterface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(ProductsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(searchLabelIcon1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteLabelIcon1)
+                        .addGap(18, 18, 18)
+                        .addComponent(eraserLabelIcon1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel40)))
                 .addGap(18, 18, 18)
                 .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1239,15 +1285,25 @@ public class UserInterface extends javax.swing.JFrame {
                         .addComponent(retailprice, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(expiredate, javax.swing.GroupLayout.Alignment.LEADING))
                     .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(246, Short.MAX_VALUE))
         );
         ProductsPanelLayout.setVerticalGroup(
             ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ProductsPanelLayout.createSequentialGroup()
                 .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ProductsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6)
+                        .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(ProductsPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProductsPanelLayout.createSequentialGroup()
+                                .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(searchLabelIcon1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(eraserLabelIcon1)
+                                        .addComponent(deleteLabelIcon1))
+                                    .addComponent(jLabel40))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(ProductsPanelLayout.createSequentialGroup()
                         .addContainerGap()
@@ -3126,7 +3182,9 @@ public class UserInterface extends javax.swing.JFrame {
                 row = ordersTable.getSelectedRow();
                 column = ordersTable.getColumnCount();
                 int orderId = IntegerConverter(ordersModel.getValueAt(row, 0).toString());
-                Orders.deleteRow(orderId);
+                int quantity = IntegerConverter(ordersModel.getValueAt(row, 2).toString());
+                
+                Orders.deleteRow(orderId,quantity);
                 ordersModel.removeRow(row);
                 orderlist.remove(row);
                 ordersModel.setRowCount(0);
@@ -3222,6 +3280,35 @@ public class UserInterface extends javax.swing.JFrame {
         saleproductbtnUpdate.setText("Update");
     }//GEN-LAST:event_saleproductbtnUpdateActionPerformed
 
+    private void jLabel40MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel40MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel40MouseClicked
+
+    private void eraserLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserLabelIcon1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_eraserLabelIcon1MouseClicked
+
+    private void deleteLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIcon1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteLabelIcon1MouseClicked
+
+    private void searchLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchLabelIcon1MouseClicked
+        // Product search button:
+           //Search engine.
+        row = productsTable.getSelectedRow();
+        column = productsTable.getColumnCount();
+        //Row sorters
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(productModel);
+        productsTable.setRowSorter(sorter);
+        //End of row sorters
+        String input = JOptionPane.showInputDialog(this, "Search row");
+        if (input.length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter(input));
+        }
+    }//GEN-LAST:event_searchLabelIcon1MouseClicked
+
     public static void PlayNotification(String type) {
         AudioFile Af = new AudioFile();
         try {
@@ -3307,9 +3394,11 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JTable datedreporttable;
     private javax.swing.JLabel datelabel;
     private javax.swing.JLabel deleteLabelIcon;
+    private javax.swing.JLabel deleteLabelIcon1;
     private javax.swing.JButton eightBtn;
     private javax.swing.JTextField email;
     private javax.swing.JLabel eraserLabelIcon;
+    private javax.swing.JLabel eraserLabelIcon1;
     private javax.swing.JTextField expiredate;
     private javax.swing.JButton fiveBtn;
     private javax.swing.JButton fourBtn;
@@ -3354,6 +3443,7 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel44;
@@ -3417,6 +3507,7 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JButton saleproductbtn;
     private javax.swing.JButton saleproductbtnUpdate;
     private javax.swing.JLabel searchLabelIcon;
+    private javax.swing.JLabel searchLabelIcon1;
     private javax.swing.JButton sevenBtn;
     private javax.swing.JButton sixBtn;
     private javax.swing.JRadioButton soundSetting;

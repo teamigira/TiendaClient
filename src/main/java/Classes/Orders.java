@@ -6,6 +6,7 @@
 package Classes;
 
 import Classes.AbstractClasses.Order;
+import static Classes.Stocks.Sales;
 import Database.DBConnection;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import java.sql.Connection;
@@ -166,14 +167,26 @@ public class Orders {
         return true;
     }
 
-    public static boolean deleteRow(int row) throws ClassNotFoundException {
-       
+    public static boolean deleteRow(int row, int quantity) throws ClassNotFoundException {
+        int productCode = 0;
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
-
+            String filterProduct
+                    = "Select product_id from sales_order_items where order_id = '" + row + "'";
+             ResultSet rst = stmt.executeQuery(filterProduct);
+            while (rst.next()) {
+                productCode = IntegerConverter(rst.getString("product_id"));
+            }
+            
             String updatequery
                     = "DELETE from sales_order_items where order_id = '" + row + "'";
+            
+            String sql
+                    = "UPDATE production_stocks SET quantity = quantity+"+quantity+" WHERE product_id='" + productCode + "'";
+            int i = stmt.executeUpdate(sql);
+          
+             
             int rsu = stmt.executeUpdate(updatequery);
             if (rsu != 1) {
                 JOptionPane.showMessageDialog(null, "There was a problem item "+row+" not found",

@@ -50,9 +50,10 @@ public final class Utilities {
      * @return
      */
     public static int IntegerConverter(String z) {
+       
         if (z != null) {
             try {
-                return Integer.parseInt(z);
+                return Integer.parseInt(z.trim());
             } catch (NumberFormatException pe) {
                 System.out.println(pe);
             }

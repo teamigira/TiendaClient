@@ -116,7 +116,6 @@ public class Stocks {
             while (rst.next()) {
                 String Sales_Quantity = rst.getString("quantity");
                 Sales = IntegerConverter(Sales_Quantity.trim());
-                System.out.println("Mauzo yalikuwa" + Sales_Quantity);
             }
             try {
             String sql
