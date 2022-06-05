@@ -10,7 +10,7 @@ package Classes.AbstractClasses;
  * @author Nkanabo
  */
 public class Brands {
-      public int id;
+        public int id;
         public int brand_id;
         public String brand_name ;
         

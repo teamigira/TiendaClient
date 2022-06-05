@@ -23,6 +23,7 @@ public class Crudes {
 
     public static Boolean addBrand(String brandname) throws SQLException, ClassNotFoundException {
         try {
+            
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query 
@@ -37,9 +38,6 @@ public class Crudes {
                 return false;
             }
 
-            // STEP 4: Clean-up environment 
-            stmt.close();
-            conna.close();
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
