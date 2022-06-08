@@ -38,6 +38,7 @@ import Classes.Utilities.AudioFile;
 import UserSettings.UserSettings;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import static com.nkanabo.Tienda.Utilities.unique;
+import Classes.Utilities.StockThread;
 import java.awt.Color;
 import java.io.File;
 import java.net.URISyntaxException;
@@ -130,7 +131,8 @@ public class UserInterface extends javax.swing.JFrame {
      */
     public UserInterface() throws URISyntaxException, ClassNotFoundException {
         initComponents();
-
+        StockThread th = new StockThread();
+        th.main();
         URL resource = getClass().getResource("/images/icons8.jpg");
         File file = Paths.get(resource.toURI()).toFile(); // return a file
         String filepath = Paths.get(resource.toURI()).toFile().getAbsolutePath();
@@ -2625,7 +2627,18 @@ public class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_prdbtnActionPerformed
 
     private void stocksbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stocksbtnActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            LoadProductsOnly();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        DefaultComboBoxModel prodsmodel = new DefaultComboBoxModel(productonly);
+//        prodsmodel.removeAllElements();
+        ProductsOnly.setModel(prodsmodel);
+        AutoCompleteDecorator.decorate(ProductsOnly);
         activeButton("stocksbtn");
         ParentLayout.removeAll();
         ParentLayout.add(StockPanel);
@@ -2849,11 +2862,11 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void categorybtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorybtn1ActionPerformed
         // TODO add your handling code here:
-
         String product_name = productname.getText();
         int brand_id = brands.getSelectedIndex() + 1;
         int category_id = categories.getSelectedIndex() + 1;
-        int model_year = producttype.getSelectedIndex();
+        int model = producttype.getSelectedIndex();
+        int qty = IntegerConverter(prdqty.getText());
         SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
         String backdated = dcn.format(expiredate.getDate());
         Double list_price = Double.parseDouble(listprice.getText());
@@ -2864,10 +2877,11 @@ public class UserInterface extends javax.swing.JFrame {
                 if (Products.addProduct(product_name,
                         brand_id,
                         category_id,
-                        model_year,
+                        model,
                         backdated,
                         list_price,
-                        retail_price)) {
+                        retail_price,
+                        qty)) {
                     JOptionPane.showMessageDialog(this, "Succesfully");
                     LoadProducts();
                 }
@@ -3331,7 +3345,7 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void searchLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchLabelIcon1MouseClicked
         // Product search button:
-           //Search engine.
+        //Search engine.
         row = productsTable.getSelectedRow();
         column = productsTable.getColumnCount();
         //Row sorters
@@ -3347,8 +3361,9 @@ public class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_searchLabelIcon1MouseClicked
 
     private void producttypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_producttypeItemStateChanged
-        //If the item is changed:
-        
+        //If the item is changed.
+        int v =  producttype.getSelectedIndex();
+        System.out.println("this is the index selected" + v);
     }//GEN-LAST:event_producttypeItemStateChanged
 
     public static void PlayNotification(String type) {
