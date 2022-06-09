@@ -223,8 +223,8 @@ public class UserInterface extends javax.swing.JFrame {
 
         DefaultComboBoxModel prodsmodel = new DefaultComboBoxModel(productonly);
         ProductsOnly.setModel(prodsmodel);
-        
-        String[] unittypes = {"Set","Unit"};
+
+        String[] unittypes = {"Set", "Unit"};
         DefaultComboBoxModel unittype = new DefaultComboBoxModel(unittypes);
         producttype.setModel(unittype);
 
@@ -233,13 +233,11 @@ public class UserInterface extends javax.swing.JFrame {
         AutoCompleteDecorator.decorate(brands);
         AutoCompleteDecorator.decorate(categories);
         AutoCompleteDecorator.decorate(ProductsOnly);
-        AutoCompleteDecorator.decorate(SearchProductForm, list, true);
-//      //AutoCompleteDecorator.decorate(ProductName, productions,true);
-
+        AutoCompleteDecorator.decorate(SearchProductForm, list, false);
+        //AutoCompleteDecorator.decorate(ProductName, productions,true);
         datelabel.setVisible(false);
         backdate.setVisible(false);
         productid.setVisible(false);
-
     }
 
     /**
@@ -2593,7 +2591,6 @@ public class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_BrandsbtnActionPerformed
 
     private void OrderbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OrderbtnActionPerformed
-
         // TODO add your handling code here:
         activeButton("orders");
         ParentLayout.removeAll();
@@ -2603,11 +2600,15 @@ public class UserInterface extends javax.swing.JFrame {
         try {
             loadJtableValues();
             LoadStockProducts();
-
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(UserInterface.class.getName()).
-                    log(Level.SEVERE, null, ex);
         }
+        catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).
+            log(Level.SEVERE, null, ex);
+        }
+        
+        List list = Arrays.asList(allProducts);
+        System.out.println("" + list);
+        AutoCompleteDecorator.decorate(SearchProductForm, list, false);
     }//GEN-LAST:event_OrderbtnActionPerformed
 
     private void prdbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prdbtnActionPerformed
@@ -2635,8 +2636,8 @@ public class UserInterface extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         DefaultComboBoxModel prodsmodel = new DefaultComboBoxModel(productonly);
-//        prodsmodel.removeAllElements();
         ProductsOnly.setModel(prodsmodel);
         AutoCompleteDecorator.decorate(ProductsOnly);
         activeButton("stocksbtn");
@@ -2951,13 +2952,11 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void ordersTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ordersTableMouseClicked
         // codes to get the items out of orders clicked row:
-
         row = ordersTable.getSelectedRow();
         column = ordersTable.getColumnCount();
         quantityfield.setText(ordersModel.getValueAt(row, 2).toString());
         productid.setText(ordersModel.getValueAt(row, 0).toString());
-        //SearchProductForm.setText(ordersModel.getValueAt(row, 0).toString());
-        //Set the contents of the JTextArea.
+        
         SearchProductForm.setText(ordersModel.getValueAt(row, 1).toString());
         SearchProductForm.setLineWrap(true);
         SearchProductForm.setWrapStyleWord(true);
@@ -3192,8 +3191,8 @@ public class UserInterface extends javax.swing.JFrame {
                 column = ordersTable.getColumnCount();
                 int orderId = IntegerConverter(ordersModel.getValueAt(row, 0).toString());
                 int quantity = IntegerConverter(ordersModel.getValueAt(row, 2).toString());
-                
-                Orders.deleteRow(orderId,quantity);
+
+                Orders.deleteRow(orderId, quantity);
                 ordersModel.removeRow(row);
                 orderlist.remove(row);
                 ordersModel.setRowCount(0);
@@ -3252,7 +3251,7 @@ public class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_quantityfieldMouseExited
 
     private void saleproductbtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleproductbtnUpdateActionPerformed
- 
+
         // Updating the values of order
         // This is conditional to users (administrator's) configurations]]
         saleproductbtnUpdate.setEnabled(false);
@@ -3291,7 +3290,7 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void eraserLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserLabelIcon1MouseClicked
         // Button that clears the search filter
-          try {
+        try {
             // TODO add your handling code here:
             this.productsTable.setAutoCreateRowSorter(false);
             this.productsTable.setAutoCreateRowSorter(true);
@@ -3302,13 +3301,13 @@ public class UserInterface extends javax.swing.JFrame {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        
+
     }//GEN-LAST:event_eraserLabelIcon1MouseClicked
 
     private void deleteLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIcon1MouseClicked
         // Button to delete the specific product
-        
-         //Delete sales.
+
+        //Delete sales.
         int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
 
         if (reply == JOptionPane.YES_OPTION) {
@@ -3327,19 +3326,19 @@ public class UserInterface extends javax.swing.JFrame {
 
             for (int i = 0; i < productlist.size(); i++) {
                 Object[] obj = {
-                productlist.get(i).productid,
-                productlist.get(i).product_name,
-                productlist.get(i).brand_id,
-                productlist.get(i).category_id,
-                productlist.get(i).model_year,
-                productlist.get(i).expiry_date,
-                productlist.get(i).list_price,
-                productlist.get(i).retail_price
+                    productlist.get(i).productid,
+                    productlist.get(i).product_name,
+                    productlist.get(i).brand_id,
+                    productlist.get(i).category_id,
+                    productlist.get(i).model_year,
+                    productlist.get(i).expiry_date,
+                    productlist.get(i).list_price,
+                    productlist.get(i).retail_price
                 };
                 productModel.addRow(obj);
             }
             ParentLayout.repaint();
-        ParentLayout.revalidate();
+            ParentLayout.revalidate();
         }
     }//GEN-LAST:event_deleteLabelIcon1MouseClicked
 
@@ -3362,7 +3361,7 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void producttypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_producttypeItemStateChanged
         //If the item is changed.
-        int v =  producttype.getSelectedIndex();
+        int v = producttype.getSelectedIndex();
         System.out.println("this is the index selected" + v);
     }//GEN-LAST:event_producttypeItemStateChanged
 
