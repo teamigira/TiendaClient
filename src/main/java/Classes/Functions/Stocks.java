@@ -187,10 +187,10 @@ public class Stocks {
                 String c = rs.getString("product_id");
                 Notifications.notify(a,b,c);
             }
-            // STEP 4: Clean-up environment 
+            // STEP 4: Clean-up environment
         } catch (SQLException se) {
-            // Handle errors for JDBC 
-            se.printStackTrace();
+              // Handle errors for JDBC
+
         }
     }
 }

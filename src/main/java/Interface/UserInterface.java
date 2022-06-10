@@ -7,32 +7,32 @@ package Interface;
 
 import static Authentication.Sessions.LoggedUser;
 import Classes.AbstractClasses.DailyReport;
-import Classes.Accounts;
-import static Classes.Accounts.getTransfers;
+import Classes.Functions.Accounts;
+import static Classes.Functions.Accounts.getTransfers;
 import Classes.AbstractClasses.Brands;
-import Classes.Categories;
-import static Classes.Categories.listBrands;
-import static Classes.Categories.listCategories;
+import Classes.Functions.Categories;
+import static Classes.Functions.Categories.listBrands;
+import static Classes.Functions.Categories.listCategories;
 import Classes.AbstractClasses.Category;
-import Classes.Crudes;
+import Classes.Functions.Crudes;
 import Classes.AbstractClasses.Order;
-import Classes.Orders;
-import static Classes.Orders.listOrders;
+import Classes.Functions.Orders;
+import static Classes.Functions.Orders.listOrders;
 import Classes.AbstractClasses.Product;
-import Classes.Products;
-import static Classes.Products.listProductOnly;
-import static Classes.Products.listProducts;
-import static Classes.Products.listStockProducts;
-import static Classes.Reports.DatedReport;
-import static Classes.Reports.listDailyReport;
-import static Classes.Reports.listMonthlyReport;
-import static Classes.Reports.listWeeklyReport;
+import Classes.Functions.Products;
+import static Classes.Functions.Products.listProductOnly;
+import static Classes.Functions.Products.listProducts;
+import static Classes.Functions.Products.listStockProducts;
+import static Classes.Functions.Reports.DatedReport;
+import static Classes.Functions.Reports.listDailyReport;
+import static Classes.Functions.Reports.listMonthlyReport;
+import static Classes.Functions.Reports.listWeeklyReport;
 import Classes.AbstractClasses.Staff;
-import Classes.Sales_Staffs;
-import static Classes.Sales_Staffs.LoadStaffs;
+import Classes.Functions.Sales_Staffs;
+import static Classes.Functions.Sales_Staffs.LoadStaffs;
 import Classes.AbstractClasses.Stock;
-import Classes.Stocks;
-import static Classes.Stocks.listStocks;
+import Classes.Functions.Stocks;
+import static Classes.Functions.Stocks.listStocks;
 import Classes.AbstractClasses.Transfer;
 import Classes.Utilities.AudioFile;
 import UserSettings.UserSettings;
@@ -69,6 +69,8 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  */
 public class UserInterface extends javax.swing.JFrame {
 
+    static UserInterface Instance;
+    
     ArrayList<Order> orderlist;
     String headers[] = {"Order Id", "Product", "Quantity", "List price", "Discount"};
     DefaultTableModel ordersModel;
@@ -238,6 +240,7 @@ public class UserInterface extends javax.swing.JFrame {
         datelabel.setVisible(false);
         backdate.setVisible(false);
         productid.setVisible(false);
+        EmailnotificationLabel.setVisible(false);
     }
 
     /**
@@ -260,6 +263,7 @@ public class UserInterface extends javax.swing.JFrame {
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         usernameLabel = new javax.swing.JLabel();
+        EmailnotificationLabel = new javax.swing.JLabel();
         ParentLayout = new javax.swing.JPanel();
         OrderPanel = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
@@ -410,6 +414,13 @@ public class UserInterface extends javax.swing.JFrame {
         jScrollPane13 = new javax.swing.JScrollPane();
         transferedCash = new javax.swing.JTable();
         jLabel53 = new javax.swing.JLabel();
+        Emails = new javax.swing.JPanel();
+        categorybtn4 = new javax.swing.JButton();
+        transferamount1 = new javax.swing.JTextField();
+        jLabel54 = new javax.swing.JLabel();
+        jScrollPane14 = new javax.swing.JScrollPane();
+        transferedCash1 = new javax.swing.JTable();
+        jLabel56 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
@@ -544,6 +555,14 @@ public class UserInterface extends javax.swing.JFrame {
         usernameLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         usernameLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(153, 153, 153), new java.awt.Color(153, 153, 153)));
 
+        EmailnotificationLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-email-16.png"))); // NOI18N
+        EmailnotificationLabel.setText("Message");
+        EmailnotificationLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                EmailnotificationLabelMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout MenuPanelLayout = new javax.swing.GroupLayout(MenuPanel);
         MenuPanel.setLayout(MenuPanelLayout);
         MenuPanelLayout.setHorizontalGroup(
@@ -565,10 +584,12 @@ public class UserInterface extends javax.swing.JFrame {
                 .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(MenuPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(153, 153, 153)
+                .addComponent(EmailnotificationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40))
@@ -579,8 +600,10 @@ public class UserInterface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                    .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(EmailnotificationLabel)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(prdbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Orderbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1312,7 +1335,7 @@ public class UserInterface extends javax.swing.JFrame {
                         .addComponent(jLabel18)
                         .addGap(5, 5, 5)
                         .addComponent(producttype, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel40)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(prdqty, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1339,7 +1362,7 @@ public class UserInterface extends javax.swing.JFrame {
                 .addComponent(listprice, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(categorybtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(60, 60, 60))
+                .addGap(31, 31, 31))
         );
 
         ParentLayout.add(ProductsPanel, "card2");
@@ -2112,6 +2135,88 @@ public class UserInterface extends javax.swing.JFrame {
 
         ParentLayout.add(CashTransfers, "card2");
 
+        Emails.setBackground(new java.awt.Color(186, 164, 164));
+
+        categorybtn4.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        categorybtn4.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        categorybtn4.setText("Delete");
+        categorybtn4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        categorybtn4.setContentAreaFilled(false);
+        categorybtn4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        categorybtn4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                categorybtn4ActionPerformed(evt);
+            }
+        });
+
+        transferamount1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        transferamount1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transferamount1ActionPerformed(evt);
+            }
+        });
+        transferamount1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                transferamount1KeyReleased(evt);
+            }
+        });
+
+        jLabel54.setText("Notification Message");
+
+        transferedCash1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        transferedCash1.setFont(new java.awt.Font("Calibri Light", 1, 14)); // NOI18N
+        transferedCash1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane14.setViewportView(transferedCash1);
+
+        jLabel56.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jLabel56.setText("Notifications Panel");
+
+        javax.swing.GroupLayout EmailsLayout = new javax.swing.GroupLayout(Emails);
+        Emails.setLayout(EmailsLayout);
+        EmailsLayout.setHorizontalGroup(
+            EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(EmailsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel54)
+                    .addComponent(categorybtn4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(transferamount1, javax.swing.GroupLayout.PREFERRED_SIZE, 467, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(48, Short.MAX_VALUE))
+        );
+        EmailsLayout.setVerticalGroup(
+            EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(EmailsLayout.createSequentialGroup()
+                .addGroup(EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(EmailsLayout.createSequentialGroup()
+                        .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6)
+                        .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(EmailsLayout.createSequentialGroup()
+                        .addGap(81, 81, 81)
+                        .addComponent(jLabel54)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(transferamount1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(categorybtn4, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(264, Short.MAX_VALUE))
+        );
+
+        ParentLayout.add(Emails, "card2");
+
         getContentPane().add(ParentLayout, java.awt.BorderLayout.CENTER);
 
         jMenu1.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(153, 153, 153), null));
@@ -2607,7 +2712,6 @@ public class UserInterface extends javax.swing.JFrame {
         }
         
         List list = Arrays.asList(allProducts);
-        System.out.println("" + list);
         AutoCompleteDecorator.decorate(SearchProductForm, list, false);
     }//GEN-LAST:event_OrderbtnActionPerformed
 
@@ -2624,7 +2728,6 @@ public class UserInterface extends javax.swing.JFrame {
         ParentLayout.add(ProductsPanel);
         ParentLayout.repaint();
         ParentLayout.revalidate();
-
     }//GEN-LAST:event_prdbtnActionPerformed
 
     private void stocksbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stocksbtnActionPerformed
@@ -2656,9 +2759,7 @@ public class UserInterface extends javax.swing.JFrame {
             ParentLayout.repaint();
             ParentLayout.revalidate();
             LoadSatffs();
-        } catch (ParseException ex) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (ParseException | ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_staffButtonActionPerformed
@@ -3365,12 +3466,55 @@ public class UserInterface extends javax.swing.JFrame {
         System.out.println("this is the index selected" + v);
     }//GEN-LAST:event_producttypeItemStateChanged
 
+    private void categorybtn4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorybtn4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_categorybtn4ActionPerformed
+
+    private void transferamount1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transferamount1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_transferamount1ActionPerformed
+
+    private void transferamount1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_transferamount1KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_transferamount1KeyReleased
+
+    private void EmailnotificationLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EmailnotificationLabelMouseClicked
+        // When specific email clicked:
+         try {
+            // TODO add your handling code here:
+            loadBrandsJtableValues();
+            LoadCategories();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        ParentLayout.removeAll();
+        ParentLayout.add(Emails);
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
+        
+    }//GEN-LAST:event_EmailnotificationLabelMouseClicked
+
     public static void PlayNotification(String type) {
         AudioFile Af = new AudioFile();
         try {
             Af.Playme(type);
         } catch (URISyntaxException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static void refreshPage(String message) {
+        EmailnotificationLabel.setVisible(true);
+        EmailnotificationLabel.setText(message);
+        if (Instance != null) {
+            Instance.MenuPanel.repaint();
+            Instance.MenuPanel.revalidate();
+            try {
+                Instance = new UserInterface();
+            } catch (ClassNotFoundException | URISyntaxException ex) {
+                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -3403,7 +3547,8 @@ public class UserInterface extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new UserInterface().setVisible(true);
+                    Instance  = new UserInterface();
+                    Instance.setVisible(true);
                 } catch (URISyntaxException ex) {
                     Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ClassNotFoundException ex) {
@@ -3421,6 +3566,8 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JPanel CategoryPanel;
     private javax.swing.JPanel ConfigPanel;
     private javax.swing.JPanel DatedReport;
+    public static javax.swing.JLabel EmailnotificationLabel;
+    private javax.swing.JPanel Emails;
     private javax.swing.JPanel MenuPanel;
     private javax.swing.JPanel MonthlyReport;
     private javax.swing.JPanel OrderPanel;
@@ -3444,6 +3591,7 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JButton categorybtn1;
     private javax.swing.JButton categorybtn2;
     private javax.swing.JButton categorybtn3;
+    private javax.swing.JButton categorybtn4;
     private javax.swing.JTextField categoryname;
     private javax.swing.JTable dailySalesTable;
     private com.toedter.calendar.JCalendar datedrep;
@@ -3510,6 +3658,8 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel51;
     private javax.swing.JLabel jLabel52;
     private javax.swing.JLabel jLabel53;
+    private javax.swing.JLabel jLabel54;
+    private javax.swing.JLabel jLabel56;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -3536,6 +3686,7 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane13;
+    private javax.swing.JScrollPane jScrollPane14;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -3586,7 +3737,9 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel totalreturns2;
     private javax.swing.JLabel totalreturns3;
     private javax.swing.JTextField transferamount;
+    private javax.swing.JTextField transferamount1;
     private javax.swing.JTable transferedCash;
+    private javax.swing.JTable transferedCash1;
     private javax.swing.JButton twoBtn;
     public static javax.swing.JLabel usernameLabel;
     private javax.swing.JTable weeklyreporttable;

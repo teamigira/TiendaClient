@@ -73,8 +73,6 @@ public class Notifications {
             = "SELECT code from notifications WHERE code = '" + code + "'";
             ResultSet rs = stmt.executeQuery(sql);
              if (rs.next()) {
-                 System.out.println(sql);
-                 System.out.println("found something depleting here - no inserting");
             return true;
              }
             // STEP 4: Clean-up environment 
@@ -85,21 +83,17 @@ public class Notifications {
     }
     
     public static void crawlEmails() throws ClassNotFoundException, URISyntaxException {
-        System.out.println("crawling");
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query
             stmt = conna.createStatement();
             String sql
-                    = "SELECT code from notifications WHERE viewed = '0'";
+                    = "SELECT code,message from notifications WHERE viewed = '0'";
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
-                System.out.println("there are emails too");
-                new UserInterface().refreshPage();
-                EmailnotificationLabel.setVisible(true);
-                EmailnotificationLabel.setText("title");
-                System.out.println("refreshing");
+             String message = rs.getString("message");
+             UserInterface.refreshPage(message);
             }
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {

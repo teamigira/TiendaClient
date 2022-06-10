@@ -46,11 +46,11 @@ public class Main {
     
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException, URISyntaxException {
         
-        //Load user preferences
+            //Load user preferences
             UserSettings pref = new UserSettings();
             pref.UserSettings();
             
-         // Load Configuration file
+            // Load Configuration file
          try(InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
             //props.load(resourceStream);
             Configurations configurations = new Configurations().getInstance();

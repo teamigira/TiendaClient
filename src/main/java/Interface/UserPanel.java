@@ -6,8 +6,8 @@
 package Interface;
 
 import Classes.AbstractClasses.Order;
-import Classes.Orders;
-import static Classes.Orders.listOrders;
+import Classes.Functions.Orders;
+import static Classes.Functions.Orders.listOrders;
 import static com.nkanabo.Tienda.Utilities.unique;
 import java.sql.SQLException;
 import java.util.ArrayList;

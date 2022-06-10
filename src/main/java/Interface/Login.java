@@ -153,18 +153,17 @@ public class Login extends javax.swing.JFrame {
          String sql = "SELECT * FROM sales_staffs"
          + " where (first_name = '"+username+"' AND password = '"+passcode+"') AND active = '1'"; 
          ResultSet rs = stmt.executeQuery(sql);
-         //STEP 4: Extract data from result set 
+         //STEP 4: Extract data from result set
          if(rs.next()) { 
-            //Retrieve by column name 
+            //Retrieve by column name
             String fname  = rs.getString("first_name");
             String lname = rs.getString("last_name");
-            // response
+            //response
             this.dispose();
             String user = fname+" " +lname;
             Sessions ssl = new Sessions();
             ssl.setLoggedUser(user);
             UserInterface UI = new UserInterface();
-
          } 
          else {
              errormsg.setText("Password incorrect! Try again");

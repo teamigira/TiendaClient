@@ -109,10 +109,29 @@ public static String SchemaQuery = "CREATE TABLE if not exists production_catego
 "       activation_date TEXT," +
 "       expire_date TEXT," +
 "       PRIMARY KEY (id)" + ");" +
+        
 "CREATE TABLE if not exists Accounts (" +
-"       id bigint auto_increment NOT NULL,   " +        
-"	amount VARCHAR(55)," +
-"	date VARCHAR(55)," +
-"	collected_by VARCHAR(244)," +
-"       PRIMARY KEY (id)" + ");";
+        "id bigint auto_increment NOT NULL," +        
+        "amount VARCHAR(55)," +
+        "date VARCHAR(55)," +
+        "collected_by VARCHAR(244)," +
+        "PRIMARY KEY (id));" +
+        
+"CREATE TABLE if not exists production_stocks_report (" +
+        "store_id bigint NOT NULL," +
+        "product_id bigint auto_increment," +
+        "quantity INT," +
+        "date01 VARCHAR(244)," +
+        "user01 VARCHAR(244)," +
+        "PRIMARY KEY (product_id)" + ");"  +
+        
+"CREATE TABLE if not exists notifications (" +
+        "notice_id bigint auto_increment NOT NULL," +
+        "date VARCHAR(244)," +
+        "title VARCHAR(244)," +
+        "message VARCHAR(244)," +
+        "viewed VARCHAR(244)," +
+        "code VARCHAR(244)," +
+    "PRIMARY KEY (notice_id)" +
+");";
 }
