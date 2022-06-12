@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nkanabo.Tienda</groupId>
     <artifactId>Tienda</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>Tienda</name>
     <!-- FIXME change it to the project's website -->
@@ -156,14 +156,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.0.2</version>
-                        <configuration>
-                      <verbose>true</verbose>
-                      <fork>true</fork>
-                      <executable>${java.home}</executable>
-                   <compilerVersion>1.8</compilerVersion>
-                   <source>1.8</source>
-                   <target>1.8</target>
-                 </configuration>
+                    <configuration>
+                        <outputDirectory> ${project.build.outputDirectory}\resources</outputDirectory>
+                    </configuration>
                 </plugin>
         
                 <plugin>
@@ -174,19 +169,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.1</version>
                 </plugin>
-                <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <!--give full qualified name of your main class-->
-                                <mainClass>com.nkanabo.Tienda.Main</mainClass>
-
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
+               
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
                     <version>2.5.2</version>
@@ -262,7 +245,7 @@
                         </descriptorRefs>
                     </configuration>
                 </plugin>
-                                             
+                        
             </plugins>
         </pluginManagement>
     </build>
