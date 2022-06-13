@@ -9,7 +9,9 @@ import Authentication.Encrpytion;
 import Authentication.Sessions;
 import Classes.Utilities.AudioFile;
 import static Database.DBConnect.getConnection;
+import java.awt.Dimension;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -26,17 +28,27 @@ import javax.swing.ImageIcon;
  * @author Nkanabo
  */
 public class Login extends javax.swing.JFrame {
-
+static Login Instance;
     /**
      * Creates new form Login
+     * @throws java.net.URISyntaxException
      */
     public Login() throws URISyntaxException {
-        initComponents();
-        URL resource = getClass().getResource("/images/icons8.jpg");
-        File file = Paths.get(resource.toURI()).toFile(); // return a file
-        String filepath = Paths.get(resource.toURI()).toFile().getAbsolutePath();
-        ImageIcon icon = new ImageIcon(filepath);
-        setIconImage(icon.getImage());
+            initComponents();
+            if (Instance != null) {
+            try {
+                Instance = new Login();
+                String url = "resources/images/icons8.jpg";
+                File is = Instance.getFileFromResource(url);
+           
+                String filepath = Paths.get(is.toURI()).toFile().getAbsolutePath();
+                ImageIcon icon = new ImageIcon(filepath);
+                System.out.println("icon is me "+icon);
+                setIconImage(icon.getImage()); 
+            } catch (URISyntaxException ex) {
+                Logger.getLogger(launcher.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         this.setLocationRelativeTo(null);
     }
 
@@ -61,6 +73,8 @@ public class Login extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         Login.setBackground(new java.awt.Color(186, 164, 164));
+        Login.setFocusable(false);
+        Login.setMaximumSize(null);
 
         jLabel39.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel39.setText("Login");
@@ -226,6 +240,37 @@ public class Login extends javax.swing.JFrame {
                 }
             }
         });
+    }
+    
+    private InputStream getFileFromResourceAsStream(String fileName) {
+
+        // The class loader that loaded the class
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+        // the stream holding the file content
+        if (inputStream == null) {
+            throw new IllegalArgumentException("file not found! " + fileName);
+        } else {
+            return inputStream;
+        }
+
+    }
+    
+    private File getFileFromResource(String fileName) throws URISyntaxException{
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resource = classLoader.getResource(fileName);
+        if (resource == null) {
+            throw new IllegalArgumentException("file not found! " + fileName);
+        } else {
+
+            // failed if files have whitespaces or special characters
+            //return new File(resource.getFile());
+
+            return new File(resource.toURI());
+        }
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
