@@ -197,7 +197,6 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
@@ -214,7 +213,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,3,-57,0,0,6,86"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,3,108,0,0,6,78"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -259,8 +258,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" pref="199" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="153" max="-2" attributes="0"/>
-                  <Component id="EmailnotificationLabel" min="-2" pref="108" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                  <Component id="EmailnotificationLabel" min="-2" pref="636" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="usernameLabel" min="-2" pref="255" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
@@ -312,7 +311,7 @@
               <Font name="Calibri" size="24" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/icons8-brands-64.png"/>
+              <Image iconType="3" name="/resources/images/icons8-brands-64.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="BRANDS"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -338,7 +337,7 @@
               <Font name="Calibri" size="24" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/icons8-shopping-cart-promotion-64.png"/>
+              <Image iconType="3" name="/resources/images/icons8-shopping-cart-promotion-64.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="ORDERS"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -364,7 +363,7 @@
               <Font name="Calibri" size="24" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/icons8-products-64.png"/>
+              <Image iconType="3" name="/resources/images/icons8-products-64.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="PRODUCTS"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -390,7 +389,7 @@
               <Font name="Calibri" size="24" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/icons8-stocks-64.png"/>
+              <Image iconType="3" name="/resources/images/icons8-stocks-64.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="STOCKS"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -416,7 +415,7 @@
               <Font name="Calibri" size="24" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/icons8-sorting-64.png"/>
+              <Image iconType="3" name="/resources/images/icons8-sorting-64.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="CATEGORIES"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -442,7 +441,7 @@
               <Font name="Calibri" size="24" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/icons8-staff-64.png"/>
+              <Image iconType="3" name="/resources/images/icons8-staff-64.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="STAFF"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -468,7 +467,7 @@
               <Font name="Calibri" size="24" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/icons8-reports-64.png"/>
+              <Image iconType="3" name="/resources/images/icons8-reports-64.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="REPORTS"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -494,7 +493,7 @@
               <Font name="Calibri" size="24" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/icons8-configurations-64.png"/>
+              <Image iconType="3" name="/resources/images/icons8-configurations-64.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="CONFIG"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -531,10 +530,16 @@
         </Component>
         <Component class="javax.swing.JLabel" name="EmailnotificationLabel">
           <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="66" red="66" type="rgb"/>
+            </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/icons8-email-16.png"/>
+              <Image iconType="3" name="/resources/images/icons8-email-16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Message"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="EmailnotificationLabelMouseClicked"/>
@@ -572,7 +577,6 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane1" alignment="0" min="-2" pref="1074" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel8" min="-2" pref="93" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -586,32 +590,31 @@
                               <Component id="eraserLabelIcon" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="backbutton" min="-2" pref="40" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane7" alignment="0" min="-2" pref="1066" max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" min="-2" pref="1074" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="quantityfield" alignment="0" min="-2" pref="266" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="oneBtn" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="fiveBtn" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="nineBtn" alignment="0" min="-2" pref="59" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="139" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="zeroBtn" alignment="0" min="-2" pref="52" max="-2" attributes="0"/>
-                                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="twoBtn" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="sixBtn" alignment="0" min="-2" pref="55" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="quantityfield" alignment="0" min="-2" pref="266" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="threeBtn" alignment="0" min="-2" pref="57" max="-2" attributes="0"/>
-                                          <Component id="sevenBtn" alignment="0" min="-2" pref="57" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="oneBtn" alignment="0" pref="59" max="32767" attributes="0"/>
+                                          <Component id="fiveBtn" alignment="0" max="32767" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="twoBtn" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="sixBtn" alignment="0" min="-2" pref="55" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="threeBtn" alignment="0" pref="57" max="32767" attributes="0"/>
+                                          <Component id="sevenBtn" alignment="0" pref="57" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -619,23 +622,43 @@
                                           <Component id="eightBtn" alignment="0" min="-2" pref="61" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
-                                  <Component id="zeroBtn1" alignment="0" min="-2" pref="52" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="backdate" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="productid" min="-2" pref="91" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="datelabel" alignment="0" min="-2" pref="144" max="-2" attributes="0"/>
+                                  <Component id="qntlabel" alignment="0" min="-2" pref="113" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="saleproductbtn" min="-2" pref="160" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="saleproductbtnUpdate" min="-2" pref="160" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="backdate" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="productid" min="-2" pref="91" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="datelabel" alignment="0" min="-2" pref="144" max="-2" attributes="0"/>
-                          <Component id="qntlabel" alignment="0" min="-2" pref="113" max="-2" attributes="0"/>
-                          <Group type="102" attributes="0">
-                              <Component id="saleproductbtn" min="-2" pref="160" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="saleproductbtnUpdate" min="-2" pref="160" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="137" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="nineBtn" max="32767" attributes="0"/>
+                                  <Component id="eightBtn3" pref="61" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="zeroBtn1" min="-2" pref="57" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                                      <Component id="zeroBtn" min="-2" pref="56" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="eightBtn1" min="-2" pref="61" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="eightBtn2" min="-2" pref="61" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="130" max="32767" attributes="0"/>
+                      <EmptySpace pref="49" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -654,21 +677,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="jScrollPane7" min="-2" pref="76" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="searchLabelIcon" max="32767" attributes="0"/>
-                                      <Component id="eraserLabelIcon" min="-2" max="-2" attributes="0"/>
-                                      <Component id="deleteLabelIcon" max="32767" attributes="0"/>
-                                  </Group>
-                                  <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <Component id="backdate" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -692,19 +701,44 @@
                                   <Component id="eightBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="eightBtn2" alignment="1" min="-2" pref="49" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="eightBtn1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="nineBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="zeroBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="zeroBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="nineBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="eightBtn3" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="zeroBtn1" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="saleproductbtn" alignment="3" min="-2" pref="65" max="-2" attributes="0"/>
                                   <Component id="saleproductbtnUpdate" alignment="3" min="-2" pref="65" max="-2" attributes="0"/>
                               </Group>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jScrollPane7" min="-2" pref="76" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="searchLabelIcon" max="32767" attributes="0"/>
+                                          <Component id="eraserLabelIcon" min="-2" max="-2" attributes="0"/>
+                                          <Component id="deleteLabelIcon" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="backbutton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace pref="102" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1103,16 +1137,22 @@
                   <Font name="Calibri" size="18" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Date"/>
-                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="com.toedter.calendar.JCalendar" name="backdate">
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="backdateMouseClicked"/>
+                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="backdateMouseExited"/>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="backdateMousePressed"/>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="backdateMouseReleased"/>
+                <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="backdatePropertyChange"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="searchLabelIcon">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/searchicon.png"/>
+                  <Image iconType="3" name="/resources/images/searchicon.png"/>
                 </Property>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -1125,7 +1165,7 @@
             <Component class="javax.swing.JLabel" name="deleteLabelIcon">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/deleteicon.png"/>
+                  <Image iconType="3" name="/resources/images/deleteicon.png"/>
                 </Property>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -1138,7 +1178,7 @@
             <Component class="javax.swing.JLabel" name="eraserLabelIcon">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/erasericon.png"/>
+                  <Image iconType="3" name="/resources/images/erasericon.png"/>
                 </Property>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -1151,7 +1191,7 @@
             <Component class="javax.swing.JLabel" name="jLabel39">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/calendaricon.png"/>
+                  <Image iconType="3" name="/resources/images/calendaricon.png"/>
                 </Property>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -1192,6 +1232,94 @@
                   </Border>
                 </Property>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="backbutton">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/resources/images/icons8-back-arrow-32.png"/>
+                </Property>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="backbuttonMouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="eightBtn1">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="66" green="66" red="66" type="rgb"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Calibri Light" size="36" style="1"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f0" green="f0" red="f0" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="&#xbd;"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                    <EtchetBorder/>
+                  </Border>
+                </Property>
+                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[50, 49]"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="eightBtn1ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="eightBtn2">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="66" green="66" red="66" type="rgb"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Calibri Light" size="36" style="1"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f0" green="f0" red="f0" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="&#xbe;"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                    <EtchetBorder/>
+                  </Border>
+                </Property>
+                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[50, 49]"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="eightBtn2ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="eightBtn3">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="66" green="66" red="66" type="rgb"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Calibri Light" size="36" style="1"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f0" green="f0" red="f0" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="&#xbc;"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                    <EtchetBorder/>
+                  </Border>
+                </Property>
+                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[50, 49]"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="eightBtn3ActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -1532,7 +1660,11 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel21" min="-2" pref="126" max="-2" attributes="0"/>
                           <Component id="jLabel17" min="-2" pref="93" max="-2" attributes="0"/>
-                          <Component id="categorybtn1" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="categorybtn1" min="-2" pref="160" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="updateProductbtn" min="-2" pref="160" max="-2" attributes="0"/>
+                          </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel6" alignment="0" min="-2" pref="141" max="-2" attributes="0"/>
@@ -1540,25 +1672,31 @@
                                   <Component id="jLabel5" alignment="0" min="-2" pref="117" max="-2" attributes="0"/>
                                   <Component id="jLabel18" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="brands" alignment="0" min="-2" pref="266" max="-2" attributes="0"/>
-                                  <Component id="categories" alignment="0" min="-2" pref="269" max="-2" attributes="0"/>
+                                  <Component id="categoriesCombo" alignment="0" min="-2" pref="269" max="-2" attributes="0"/>
                                   <Component id="producttype" alignment="0" min="-2" pref="266" max="-2" attributes="0"/>
                                   <Component id="jLabel16" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel19" min="-2" max="-2" attributes="0"/>
-                                  <Component id="expiredate" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel19" min="-2" max="-2" attributes="0"/>
+                                          <Component id="expiredate" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                                      <Component id="hiddenProductId" min="-2" pref="110" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                           <Component id="jLabel20" min="-2" pref="113" max="-2" attributes="0"/>
                           <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="prdqty" alignment="0" pref="266" max="32767" attributes="0"/>
-                              <Component id="listprice" alignment="0" max="32767" attributes="0"/>
+                              <Component id="listprice" alignment="0" pref="266" max="32767" attributes="0"/>
                               <Component id="retailprice" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jLabel40" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="39" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1566,42 +1704,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel17" min="-2" pref="56" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="productname" min="-2" pref="37" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="jLabel6" min="-2" pref="29" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="categories" min="-2" pref="41" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jLabel5" min="-2" pref="35" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="expiredate" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="brands" min="-2" pref="37" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="producttype" min="-2" pref="33" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jLabel40" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="prdqty" min="-2" pref="34" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel15" min="-2" pref="56" max="-2" attributes="0"/>
@@ -1617,17 +1720,53 @@
                                   </Group>
                               </Group>
                               <Component id="jScrollPane4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel17" min="-2" pref="56" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="expiredate" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="productname" min="-2" pref="37" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jLabel6" min="-2" pref="29" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="categoriesCombo" min="-2" pref="41" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jLabel5" min="-2" pref="35" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="brands" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                                  <Component id="hiddenProductId" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                              <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="producttype" min="-2" pref="33" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="retailprice" min="-2" pref="35" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel21" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="listprice" min="-2" pref="36" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <Component id="retailprice" min="-2" pref="35" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel21" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="listprice" min="-2" pref="36" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                      <Component id="categorybtn1" min="-2" pref="65" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="categorybtn1" alignment="3" min="-2" pref="65" max="-2" attributes="0"/>
+                          <Component id="updateProductbtn" alignment="3" min="-2" pref="65" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1667,6 +1806,10 @@
                       </Table>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="productsTableMouseClicked"/>
+                    <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="productsTableMouseEntered"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -1740,7 +1883,7 @@
                 <Property name="text" type="java.lang.String" value="Brand"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="categories">
+            <Component class="javax.swing.JComboBox" name="categoriesCombo">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Calibri" size="14" style="1"/>
@@ -1803,7 +1946,7 @@
             <Component class="javax.swing.JLabel" name="eraserLabelIcon1">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/erasericon.png"/>
+                  <Image iconType="3" name="/resources/images/erasericon.png"/>
                 </Property>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -1816,7 +1959,7 @@
             <Component class="javax.swing.JLabel" name="deleteLabelIcon1">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/deleteicon.png"/>
+                  <Image iconType="3" name="/resources/images/deleteicon.png"/>
                 </Property>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -1830,7 +1973,7 @@
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/searchicon.png"/>
+                  <Image iconType="3" name="/resources/images/searchicon.png"/>
                 </Property>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -1860,11 +2003,32 @@
             </Component>
             <Component class="com.toedter.calendar.JCalendar" name="expiredate">
             </Component>
-            <Component class="javax.swing.JTextField" name="prdqty">
-            </Component>
-            <Component class="javax.swing.JLabel" name="jLabel40">
+            <Component class="javax.swing.JButton" name="updateProductbtn">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Quantity"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="69" green="69" id="Button.darkShadow" palette="3" red="69" type="palette"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Calibri" size="18" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Update"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder/>
+                  </Border>
+                </Property>
+                <Property name="contentAreaFilled" type="boolean" value="false"/>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateProductbtnActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JTextField" name="hiddenProductId">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="jTextField1"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -2293,7 +2457,7 @@
                       <Component id="jButton3" min="-2" pref="46" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="302" max="32767" attributes="0"/>
+                      <EmptySpace pref="264" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -2390,23 +2554,35 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jScrollPane5" alignment="0" min="-2" pref="1074" max="-2" attributes="0"/>
-                          <Component id="jLabel22" alignment="0" min="-2" pref="93" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel22" min="-2" pref="93" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="searchLabelIcon2" min="-2" pref="60" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="deleteLabelIcon2" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="eraserLabelIcon2" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel25" min="-2" pref="93" max="-2" attributes="0"/>
+                              <Component id="addstocklbl" min="-2" pref="93" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                                       <Component id="ProductsOnly" max="32767" attributes="0"/>
-                                      <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="prdlabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="StockQuantity" alignment="1" pref="266" max="32767" attributes="0"/>
-                                      <Component id="jLabel23" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="qtylabel" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                                          <Component id="LabelProduct" min="-2" pref="122" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
-                                  <Component id="insertBrand1" min="-2" pref="160" max="-2" attributes="0"/>
+                                  <Component id="StockAddBtn" min="-2" pref="160" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -2419,23 +2595,38 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel22" min="-2" pref="56" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="jLabel22" min="-2" pref="56" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="searchLabelIcon2" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="eraserLabelIcon2" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="deleteLabelIcon2" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                               <Component id="jScrollPane5" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel25" min="-2" pref="56" max="-2" attributes="0"/>
+                              <Component id="addstocklbl" min="-2" pref="56" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
-                              <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
+                              <Component id="prdlabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="ProductsOnly" min="-2" pref="53" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jLabel23" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="qtylabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="LabelProduct" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="StockQuantity" min="-2" pref="56" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="insertBrand1" min="-2" pref="65" max="-2" attributes="0"/>
+                              <Component id="StockAddBtn" min="-2" pref="65" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -2470,6 +2661,9 @@
                       </Table>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="stocksTableMouseClicked"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -2481,20 +2675,26 @@
                 <Property name="text" type="java.lang.String" value="Stock"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel25">
+            <Component class="javax.swing.JLabel" name="addstocklbl">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Calibri" size="18" style="1"/>
+                  <Font name="Calibri" size="14" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Add Stock"/>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="addstocklblMouseClicked"/>
+              </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel10">
+            <Component class="javax.swing.JLabel" name="prdlabel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Product"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="insertBrand1">
+            <Component class="javax.swing.JButton" name="StockAddBtn">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="69" green="69" id="Button.darkShadow" palette="3" red="69" type="palette"/>
@@ -2514,12 +2714,12 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="insertBrand1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="StockAddBtnActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="StockQuantity">
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel23">
+            <Component class="javax.swing.JLabel" name="qtylabel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Quantity"/>
               </Properties>
@@ -2538,6 +2738,54 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JLabel" name="searchLabelIcon2">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/resources/images/searchicon.png"/>
+                </Property>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="searchLabelIcon2MouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="deleteLabelIcon2">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/resources/images/deleteicon.png"/>
+                </Property>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="deleteLabelIcon2MouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="eraserLabelIcon2">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/resources/images/erasericon.png"/>
+                </Property>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="eraserLabelIcon2MouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="LabelProduct">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Tahoma" size="14" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="jLabel41"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>
@@ -2750,22 +2998,32 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel33" min="-2" pref="114" max="-2" attributes="0"/>
+                              <Component id="jLabel10" min="-2" pref="108" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="tinvest2" min="-2" pref="106" max="-2" attributes="0"/>
+                              <Component id="overallInvestment" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel34" min="-2" pref="64" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="profit2" min="-2" pref="109" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel32" min="-2" pref="146" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="totalreturns2" min="-2" pref="106" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel33" min="-2" pref="114" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="tinvest2" min="-2" pref="106" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel34" min="-2" pref="64" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="profit2" min="-2" pref="109" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel32" min="-2" pref="146" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="totalreturns2" min="-2" pref="106" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -2799,6 +3057,11 @@
                                       <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                       <Component id="profit2" min="-2" pref="30" max="-2" attributes="0"/>
                                   </Group>
+                              </Group>
+                              <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="overallInvestment" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -2908,6 +3171,19 @@
                   </Border>
                 </Property>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel10">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Investment overall :"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="overallInvestment">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="jButton1"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="overallInvestmentActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -3152,7 +3428,7 @@
                           <Component id="transferamount" alignment="0" min="-2" pref="266" max="-2" attributes="0"/>
                           <Component id="categorybtn3" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="246" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -3170,13 +3446,13 @@
                               <Component id="jLabel52" min="-2" pref="56" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel51" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="transferamount" min="-2" pref="37" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="categorybtn3" min="-2" pref="65" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="220" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -3286,8 +3562,8 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane14" alignment="0" min="-2" pref="1074" max="-2" attributes="0"/>
-                          <Component id="jLabel56" alignment="0" min="-2" pref="93" max="-2" attributes="0"/>
+                          <Component id="jScrollPane14" min="-2" pref="1074" max="-2" attributes="0"/>
+                          <Component id="jLabel56" min="-2" pref="236" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -3295,7 +3571,7 @@
                           <Component id="categorybtn4" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
                           <Component id="transferamount1" min="-2" pref="467" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="48" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -3317,7 +3593,7 @@
                               <Component id="categorybtn4" min="-2" pref="65" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="264" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -3369,7 +3645,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="transferedCash1">
+                <Component class="javax.swing.JTable" name="EmailTable">
                   <Properties>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
