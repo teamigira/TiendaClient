@@ -207,10 +207,10 @@ static launcher Instance;
 
         LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
 
-        long dateofExpiry = 0;
+        long dateofExpiry;
         try {
             //60000 is one day into milliseconds
-            dateofExpiry = milliConverter(String.valueOf(d1)) + 60000;
+            dateofExpiry = milliConverter(String.valueOf(d1)) + 6000000;
             Connection conn = getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT * FROM app_key"
