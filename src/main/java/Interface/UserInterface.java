@@ -40,13 +40,13 @@ import static Classes.Functions.Notifications.listNotifications;
 import static Classes.Functions.Orders.listOrdersDated;
 import static Classes.Functions.Reports.Summaryeport;
 import Classes.Utilities.AudioFile;
+import Classes.Utilities.ExcelFormat;
 import UserSettings.UserSettings;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import static com.nkanabo.Tienda.Utilities.unique;
 import Classes.Utilities.StockThread;
-import static com.nkanabo.Tienda.Utilities.DoubleConverter;
+import static Database.MasterTables.createTables;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -60,12 +60,12 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
@@ -343,6 +343,8 @@ public final class UserInterface extends javax.swing.JFrame {
         eightBtn1 = new javax.swing.JButton();
         eightBtn2 = new javax.swing.JButton();
         eightBtn3 = new javax.swing.JButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jToggleButton9 = new javax.swing.JToggleButton();
         BrandPanel = new javax.swing.JPanel();
         insertBrand = new javax.swing.JButton();
         brandname = new javax.swing.JTextField();
@@ -351,6 +353,7 @@ public final class UserInterface extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jToggleButton8 = new javax.swing.JToggleButton();
         CategoryPanel = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -359,6 +362,7 @@ public final class UserInterface extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         categoryname = new javax.swing.JTextField();
         categorybtn = new javax.swing.JButton();
+        jToggleButton7 = new javax.swing.JToggleButton();
         ProductsPanel = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -384,6 +388,7 @@ public final class UserInterface extends javax.swing.JFrame {
         expiredate = new com.toedter.calendar.JCalendar();
         updateProductbtn = new javax.swing.JButton();
         hiddenProductId = new javax.swing.JTextField();
+        jToggleButton6 = new javax.swing.JToggleButton();
         StaffPanel = new javax.swing.JPanel();
         categorybtn2 = new javax.swing.JButton();
         jLabel42 = new javax.swing.JLabel();
@@ -398,6 +403,7 @@ public final class UserInterface extends javax.swing.JFrame {
         surname = new javax.swing.JTextField();
         email = new javax.swing.JTextField();
         staff_role = new javax.swing.JComboBox<>();
+        jToggleButton5 = new javax.swing.JToggleButton();
         ReportsPanel = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
@@ -408,6 +414,7 @@ public final class UserInterface extends javax.swing.JFrame {
         tinvest = new javax.swing.JLabel();
         totalreturns = new javax.swing.JLabel();
         profit = new javax.swing.JLabel();
+        jToggleButton4 = new javax.swing.JToggleButton();
         ConfigPanel = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -427,6 +434,7 @@ public final class UserInterface extends javax.swing.JFrame {
         deleteLabelIcon2 = new javax.swing.JLabel();
         eraserLabelIcon2 = new javax.swing.JLabel();
         LabelProduct = new javax.swing.JLabel();
+        jToggleButton3 = new javax.swing.JToggleButton();
         WeeklyReport = new javax.swing.JPanel();
         jLabel27 = new javax.swing.JLabel();
         jScrollPane9 = new javax.swing.JScrollPane();
@@ -437,6 +445,7 @@ public final class UserInterface extends javax.swing.JFrame {
         tinvest1 = new javax.swing.JLabel();
         totalreturns1 = new javax.swing.JLabel();
         profit1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         MonthlyReport = new javax.swing.JPanel();
         jLabel31 = new javax.swing.JLabel();
         jScrollPane10 = new javax.swing.JScrollPane();
@@ -449,6 +458,7 @@ public final class UserInterface extends javax.swing.JFrame {
         profit2 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         overallInvestment = new javax.swing.JButton();
+        jToggleButton2 = new javax.swing.JToggleButton();
         DatedReport = new javax.swing.JPanel();
         jLabel35 = new javax.swing.JLabel();
         jScrollPane11 = new javax.swing.JScrollPane();
@@ -716,11 +726,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        oneBtn.setBackground(new java.awt.Color(102, 102, 102));
+        oneBtn.setBackground(new java.awt.Color(46, 144, 205));
         oneBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         oneBtn.setForeground(new java.awt.Color(240, 240, 240));
         oneBtn.setText("1");
-        oneBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        oneBtn.setBorder(null);
         oneBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         oneBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -728,11 +738,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        twoBtn.setBackground(new java.awt.Color(102, 102, 102));
+        twoBtn.setBackground(new java.awt.Color(46, 144, 205));
         twoBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         twoBtn.setForeground(new java.awt.Color(240, 240, 240));
         twoBtn.setText("2");
-        twoBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        twoBtn.setBorder(null);
         twoBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         twoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -740,11 +750,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        threeBtn.setBackground(new java.awt.Color(102, 102, 102));
+        threeBtn.setBackground(new java.awt.Color(46, 144, 205));
         threeBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         threeBtn.setForeground(new java.awt.Color(240, 240, 240));
         threeBtn.setText("3");
-        threeBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        threeBtn.setBorder(null);
         threeBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         threeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -752,11 +762,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        fourBtn.setBackground(new java.awt.Color(102, 102, 102));
+        fourBtn.setBackground(new java.awt.Color(46, 144, 205));
         fourBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         fourBtn.setForeground(new java.awt.Color(240, 240, 240));
         fourBtn.setText("4");
-        fourBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        fourBtn.setBorder(null);
         fourBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         fourBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -764,11 +774,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        fiveBtn.setBackground(new java.awt.Color(102, 102, 102));
+        fiveBtn.setBackground(new java.awt.Color(46, 144, 205));
         fiveBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         fiveBtn.setForeground(new java.awt.Color(240, 240, 240));
         fiveBtn.setText("5");
-        fiveBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        fiveBtn.setBorder(null);
         fiveBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         fiveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -776,11 +786,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        sixBtn.setBackground(new java.awt.Color(102, 102, 102));
+        sixBtn.setBackground(new java.awt.Color(46, 144, 205));
         sixBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         sixBtn.setForeground(new java.awt.Color(240, 240, 240));
         sixBtn.setText("6");
-        sixBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        sixBtn.setBorder(null);
         sixBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         sixBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -788,11 +798,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        sevenBtn.setBackground(new java.awt.Color(102, 102, 102));
+        sevenBtn.setBackground(new java.awt.Color(46, 144, 205));
         sevenBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         sevenBtn.setForeground(new java.awt.Color(240, 240, 240));
         sevenBtn.setText("7");
-        sevenBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        sevenBtn.setBorder(null);
         sevenBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         sevenBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -800,11 +810,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        eightBtn.setBackground(new java.awt.Color(102, 102, 102));
+        eightBtn.setBackground(new java.awt.Color(46, 144, 205));
         eightBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         eightBtn.setForeground(new java.awt.Color(240, 240, 240));
         eightBtn.setText("8");
-        eightBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        eightBtn.setBorder(null);
         eightBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         eightBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -812,11 +822,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        zeroBtn1.setBackground(new java.awt.Color(102, 102, 102));
+        zeroBtn1.setBackground(new java.awt.Color(46, 144, 205));
         zeroBtn1.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         zeroBtn1.setForeground(new java.awt.Color(240, 240, 240));
         zeroBtn1.setText("C");
-        zeroBtn1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        zeroBtn1.setBorder(null);
         zeroBtn1.setMaximumSize(new java.awt.Dimension(50, 49));
         zeroBtn1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -824,11 +834,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        zeroBtn.setBackground(new java.awt.Color(102, 102, 102));
+        zeroBtn.setBackground(new java.awt.Color(46, 144, 205));
         zeroBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         zeroBtn.setForeground(new java.awt.Color(240, 240, 240));
         zeroBtn.setText("0");
-        zeroBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        zeroBtn.setBorder(null);
         zeroBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         zeroBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -836,11 +846,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        nineBtn.setBackground(new java.awt.Color(102, 102, 102));
+        nineBtn.setBackground(new java.awt.Color(46, 144, 205));
         nineBtn.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         nineBtn.setForeground(new java.awt.Color(240, 240, 240));
         nineBtn.setText("9");
-        nineBtn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        nineBtn.setBorder(null);
         nineBtn.setMaximumSize(new java.awt.Dimension(50, 49));
         nineBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -946,11 +956,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        eightBtn1.setBackground(new java.awt.Color(102, 102, 102));
+        eightBtn1.setBackground(new java.awt.Color(46, 144, 205));
         eightBtn1.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         eightBtn1.setForeground(new java.awt.Color(240, 240, 240));
         eightBtn1.setText("½");
-        eightBtn1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        eightBtn1.setBorder(null);
         eightBtn1.setMaximumSize(new java.awt.Dimension(50, 49));
         eightBtn1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -958,11 +968,11 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        eightBtn2.setBackground(new java.awt.Color(102, 102, 102));
+        eightBtn2.setBackground(new java.awt.Color(46, 144, 205));
         eightBtn2.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         eightBtn2.setForeground(new java.awt.Color(240, 240, 240));
         eightBtn2.setText("¾");
-        eightBtn2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        eightBtn2.setBorder(null);
         eightBtn2.setMaximumSize(new java.awt.Dimension(50, 49));
         eightBtn2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -970,15 +980,29 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        eightBtn3.setBackground(new java.awt.Color(102, 102, 102));
+        eightBtn3.setBackground(new java.awt.Color(46, 144, 205));
         eightBtn3.setFont(new java.awt.Font("Calibri Light", 1, 36)); // NOI18N
         eightBtn3.setForeground(new java.awt.Color(240, 240, 240));
         eightBtn3.setText("¼");
-        eightBtn3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        eightBtn3.setBorder(null);
         eightBtn3.setMaximumSize(new java.awt.Dimension(50, 49));
         eightBtn3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 eightBtn3ActionPerformed(evt);
+            }
+        });
+
+        jToggleButton1.setText("jToggleButton1");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+
+        jToggleButton9.setText("Download Excell");
+        jToggleButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton9ActionPerformed(evt);
             }
         });
 
@@ -988,7 +1012,8 @@ public final class UserInterface extends javax.swing.JFrame {
             OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(OrderPanelLayout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jToggleButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(OrderPanelLayout.createSequentialGroup()
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1002,9 +1027,11 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel39)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(backbutton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(backbutton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64)
+                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 1066, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1074, Short.MAX_VALUE))
                 .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(OrderPanelLayout.createSequentialGroup()
                         .addGap(139, 139, 139)
@@ -1031,28 +1058,30 @@ public final class UserInterface extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(productid, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(datelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(qntlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(OrderPanelLayout.createSequentialGroup()
-                                .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(saleproductbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(qntlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(OrderPanelLayout.createSequentialGroup()
                         .addGap(137, 137, 137)
-                        .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(nineBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(eightBtn3, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE))
                         .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(OrderPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(zeroBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, OrderPanelLayout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addComponent(zeroBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(eightBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(eightBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(49, Short.MAX_VALUE))
+                                .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(saleproductbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(OrderPanelLayout.createSequentialGroup()
+                                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(nineBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(eightBtn3, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE))
+                                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(OrderPanelLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(zeroBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, OrderPanelLayout.createSequentialGroup()
+                                        .addGap(4, 4, 4)
+                                        .addComponent(zeroBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(eightBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(eightBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         OrderPanelLayout.setVerticalGroup(
             OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1087,17 +1116,16 @@ public final class UserInterface extends javax.swing.JFrame {
                             .addComponent(sevenBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(eightBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(eightBtn2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(eightBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(nineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(zeroBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(eightBtn1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(nineBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(eightBtn2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(zeroBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(eightBtn3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(zeroBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(68, 68, 68)
+                        .addGap(18, 18, 18)
                         .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(saleproductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(saleproductbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1111,10 +1139,15 @@ public final class UserInterface extends javax.swing.JFrame {
                                     .addComponent(eraserLabelIcon)
                                     .addComponent(deleteLabelIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addComponent(jLabel39))
+                            .addGroup(OrderPanelLayout.createSequentialGroup()
+                                .addComponent(jToggleButton1)
+                                .addGap(9, 9, 9))
                             .addComponent(backbutton))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jToggleButton9)
+                .addContainerGap(80, Short.MAX_VALUE))
         );
 
         ParentLayout.add(OrderPanel, "card2");
@@ -1163,6 +1196,13 @@ public final class UserInterface extends javax.swing.JFrame {
 
         jLabel2.setText("Brand Name");
 
+        jToggleButton8.setText("Download Excell");
+        jToggleButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout BrandPanelLayout = new javax.swing.GroupLayout(BrandPanel);
         BrandPanel.setLayout(BrandPanelLayout);
         BrandPanelLayout.setHorizontalGroup(
@@ -1178,12 +1218,14 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(BrandPanelLayout.createSequentialGroup()
-                        .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(insertBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addContainerGap())
+                    .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jToggleButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(BrandPanelLayout.createSequentialGroup()
+                            .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(insertBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(0, 0, Short.MAX_VALUE)))))
         );
         BrandPanelLayout.setVerticalGroup(
             BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1201,7 +1243,9 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(insertBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(insertBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jToggleButton8)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1251,6 +1295,13 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        jToggleButton7.setText("Download Excell");
+        jToggleButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton7ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout CategoryPanelLayout = new javax.swing.GroupLayout(CategoryPanel);
         CategoryPanel.setLayout(CategoryPanelLayout);
         CategoryPanelLayout.setHorizontalGroup(
@@ -1270,7 +1321,8 @@ public final class UserInterface extends javax.swing.JFrame {
                     .addGroup(CategoryPanelLayout.createSequentialGroup()
                         .addGroup(CategoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(categoryname, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(categorybtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(categorybtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jToggleButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         CategoryPanelLayout.setVerticalGroup(
@@ -1289,7 +1341,9 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(categoryname, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(categorybtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(categorybtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jToggleButton7)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1362,7 +1416,7 @@ public final class UserInterface extends javax.swing.JFrame {
 
         jLabel6.setText("Category *");
 
-        jLabel18.setText("Model");
+        jLabel18.setText("Unit of measurements");
 
         jLabel19.setText("Expire date (Optional)");
 
@@ -1425,14 +1479,21 @@ public final class UserInterface extends javax.swing.JFrame {
 
         hiddenProductId.setText("jTextField1");
 
+        jToggleButton6.setText("Download Excell");
+        jToggleButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ProductsPanelLayout = new javax.swing.GroupLayout(ProductsPanel);
         ProductsPanel.setLayout(ProductsPanelLayout);
         ProductsPanelLayout.setHorizontalGroup(
             ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ProductsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1074, Short.MAX_VALUE)
                     .addGroup(ProductsPanelLayout.createSequentialGroup()
                         .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -1440,7 +1501,8 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteLabelIcon1)
                         .addGap(18, 18, 18)
-                        .addComponent(eraserLabelIcon1)))
+                        .addComponent(eraserLabelIcon1))
+                    .addComponent(jToggleButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1477,58 +1539,59 @@ public final class UserInterface extends javax.swing.JFrame {
         ProductsPanelLayout.setVerticalGroup(
             ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ProductsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel19))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(expiredate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(ProductsPanelLayout.createSequentialGroup()
-                        .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(ProductsPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(6, 6, 6))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProductsPanelLayout.createSequentialGroup()
-                                .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(searchLabelIcon1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(eraserLabelIcon1)
-                                    .addComponent(deleteLabelIcon1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(ProductsPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(productname, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel16)
-                            .addComponent(jLabel19))
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(expiredate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(ProductsPanelLayout.createSequentialGroup()
-                                .addComponent(productname, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(categoriesCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(categoriesCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(brands, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(hiddenProductId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(17, 17, 17)
-                        .addComponent(jLabel18)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(producttype, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel20)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(retailprice, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel21)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(listprice, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(brands, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(hiddenProductId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(producttype, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(retailprice, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(listprice, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(categorybtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(updateProductbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(87, 87, 87))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(ProductsPanelLayout.createSequentialGroup()
+                .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ProductsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProductsPanelLayout.createSequentialGroup()
+                        .addGroup(ProductsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(searchLabelIcon1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(eraserLabelIcon1)
+                            .addComponent(deleteLabelIcon1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jToggleButton6)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         ParentLayout.add(ProductsPanel, "card2");
@@ -1590,6 +1653,13 @@ public final class UserInterface extends javax.swing.JFrame {
 
         staff_role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        jToggleButton5.setText("Download Excell");
+        jToggleButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout StaffPanelLayout = new javax.swing.GroupLayout(StaffPanel);
         StaffPanel.setLayout(StaffPanelLayout);
         StaffPanelLayout.setHorizontalGroup(
@@ -1600,17 +1670,19 @@ public final class UserInterface extends javax.swing.JFrame {
                     .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel47, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(StaffPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel43, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel44, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel42)
-                    .addComponent(jLabel45)
-                    .addComponent(staffname, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                    .addComponent(surname)
-                    .addComponent(email)
-                    .addComponent(categorybtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(staff_role, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(StaffPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(StaffPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel43, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel44, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel42)
+                        .addComponent(jLabel45)
+                        .addComponent(staffname, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                        .addComponent(surname)
+                        .addComponent(email)
+                        .addComponent(categorybtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(staff_role, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jToggleButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         StaffPanelLayout.setVerticalGroup(
@@ -1641,7 +1713,9 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(staff_role, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(categorybtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(categorybtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jToggleButton5)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1687,6 +1761,13 @@ public final class UserInterface extends javax.swing.JFrame {
         profit.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         profit.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        jToggleButton4.setText("Download Excell");
+        jToggleButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ReportsPanelLayout = new javax.swing.GroupLayout(ReportsPanel);
         ReportsPanel.setLayout(ReportsPanelLayout);
         ReportsPanelLayout.setHorizontalGroup(
@@ -1703,13 +1784,15 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tinvest, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(ReportsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(profit, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(ReportsPanelLayout.createSequentialGroup()
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalreturns, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(totalreturns, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(ReportsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jToggleButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(ReportsPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(profit, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ReportsPanelLayout.setVerticalGroup(
@@ -1736,7 +1819,9 @@ public final class UserInterface extends javax.swing.JFrame {
                                 .addComponent(jLabel26))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ReportsPanelLayout.createSequentialGroup()
                                 .addGap(26, 26, 26)
-                                .addComponent(profit, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(profit, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jToggleButton4)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1808,7 +1893,7 @@ public final class UserInterface extends javax.swing.JFrame {
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(264, Short.MAX_VALUE))
+                .addContainerGap(308, Short.MAX_VALUE))
         );
 
         ParentLayout.add(ConfigPanel, "card2");
@@ -1893,6 +1978,13 @@ public final class UserInterface extends javax.swing.JFrame {
         LabelProduct.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         LabelProduct.setText("jLabel41");
 
+        jToggleButton3.setText("Download Excell");
+        jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout StockPanelLayout = new javax.swing.GroupLayout(StockPanel);
         StockPanel.setLayout(StockPanelLayout);
         StockPanelLayout.setHorizontalGroup(
@@ -1924,7 +2016,8 @@ public final class UserInterface extends javax.swing.JFrame {
                                     .addComponent(qtylabel)
                                     .addGap(18, 18, 18)
                                     .addComponent(LabelProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(StockAddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(StockAddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jToggleButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         StockPanelLayout.setVerticalGroup(
@@ -1957,7 +2050,9 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(StockQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(StockAddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(StockAddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jToggleButton3)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -2003,6 +2098,13 @@ public final class UserInterface extends javax.swing.JFrame {
         profit1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         profit1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        jButton1.setText("Download Excell");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout WeeklyReportLayout = new javax.swing.GroupLayout(WeeklyReport);
         WeeklyReport.setLayout(WeeklyReportLayout);
         WeeklyReportLayout.setHorizontalGroup(
@@ -2025,7 +2127,8 @@ public final class UserInterface extends javax.swing.JFrame {
                     .addGroup(WeeklyReportLayout.createSequentialGroup()
                         .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalreturns1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(totalreturns1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         WeeklyReportLayout.setVerticalGroup(
@@ -2052,7 +2155,9 @@ public final class UserInterface extends javax.swing.JFrame {
                                 .addComponent(jLabel30))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, WeeklyReportLayout.createSequentialGroup()
                                 .addGap(26, 26, 26)
-                                .addComponent(profit1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(profit1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -2107,15 +2212,23 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        jToggleButton2.setText("Download Excell");
+        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout MonthlyReportLayout = new javax.swing.GroupLayout(MonthlyReport);
         MonthlyReport.setLayout(MonthlyReportLayout);
         MonthlyReportLayout.setHorizontalGroup(
             MonthlyReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MonthlyReportLayout.createSequentialGroup()
                 .addGap(169, 169, 169)
-                .addGroup(MonthlyReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 1159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(MonthlyReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1159, Short.MAX_VALUE)
+                    .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jToggleButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(MonthlyReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(MonthlyReportLayout.createSequentialGroup()
@@ -2168,7 +2281,9 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addGroup(MonthlyReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
                             .addComponent(overallInvestment))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jToggleButton2)
+                .addContainerGap(139, Short.MAX_VALUE))
         );
 
         ParentLayout.add(MonthlyReport, "card2");
@@ -2375,7 +2490,7 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addComponent(transferamount, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(categorybtn3, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(220, Short.MAX_VALUE))
+                .addContainerGap(264, Short.MAX_VALUE))
         );
 
         ParentLayout.add(CashTransfers, "card2");
@@ -3126,6 +3241,7 @@ public final class UserInterface extends javax.swing.JFrame {
     private void zeroBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zeroBtn1ActionPerformed
         // TODO add your handling code here:
         quantityfield.setText("");
+        quantity="0.0";
         quantity = "";
     }//GEN-LAST:event_zeroBtn1ActionPerformed
 
@@ -3148,20 +3264,23 @@ public final class UserInterface extends javax.swing.JFrame {
     private void saleproductbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleproductbtnActionPerformed
         saleproductbtn.setEnabled(false);
         saleproductbtn.setText("Wait");
+        
         try {
 
             quantity = quantityfield.getText();
             String order_id = unique();
             String item_id = unique();
             String product_id = SearchProductForm.getText();
-            Double price = 1.0;
             Double discount = 0.00;
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
             String backdated = dcn.format(backdate.getDate());
 
             try {
-                if (Orders.addOrder(order_id, item_id, product_id, quantity, price, discount, backdated)) {
-                    Stocks.editStock(product_id, quantity);
+                if (Orders.addOrder(order_id, item_id, product_id, quantity, discount, backdated)) {
+                    boolean stockUpdate = Stocks.editStock(product_id, quantity);
+                    if(stockUpdate == false){
+                    JOptionPane.showMessageDialog(this, "Error in Updating stock");
+                    }
                     JOptionPane.showMessageDialog(this, "Succesfully");
                     try {
                         loadJtableValues();
@@ -3640,13 +3759,7 @@ public final class UserInterface extends javax.swing.JFrame {
 
     private void quantityfieldMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_quantityfieldMouseExited
         // TODO add your handling code here:
-        int x;
-        try {
-            x = Integer.parseInt(quantityfield.getText());
-        } catch (NumberFormatException nfe) {
-            quantityfield.setText("");
-            quantity = "0";
-        }
+        
     }//GEN-LAST:event_quantityfieldMouseExited
 
     private void saleproductbtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleproductbtnUpdateActionPerformed
@@ -3801,14 +3914,39 @@ public final class UserInterface extends javax.swing.JFrame {
 
     private void searchLabelIcon2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchLabelIcon2MouseClicked
         // TODO add your handling code here:
+            //Search engine.
+        row = stocksTable.getSelectedRow();
+        column = stocksTable.getColumnCount();
+        //Row sorters
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(stockModel);
+        stocksTable.setRowSorter(sorter);
+        //End of row sorters
+        String input = JOptionPane.showInputDialog(this, "Search row");
+        if (input.length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter(input));
+        }
     }//GEN-LAST:event_searchLabelIcon2MouseClicked
 
     private void deleteLabelIcon2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIcon2MouseClicked
-        // TODO add your handling code here:
+        // Stocks delete button
     }//GEN-LAST:event_deleteLabelIcon2MouseClicked
 
     private void eraserLabelIcon2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserLabelIcon2MouseClicked
-        // TODO add your handling code here:
+       
+          try {
+            // TODO add your handling code here:
+            this.stocksTable.setAutoCreateRowSorter(false);
+            this.stocksTable.setAutoCreateRowSorter(true);
+            this.stocksTable.repaint();
+            ProductsOnly.setSelectedItem("");
+            StockQuantity.setText("");
+            LoadProductsOnly();
+        } catch (SQLException | ClassNotFoundException  ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+          
     }//GEN-LAST:event_eraserLabelIcon2MouseClicked
 
     private void stocksTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stocksTableMouseClicked
@@ -3906,20 +4044,16 @@ public final class UserInterface extends javax.swing.JFrame {
         
         brands.setSelectedItem(productModel.getValueAt(row,2).toString());
         brands.updateUI();
+        categoriesCombo.setSelectedItem(productModel.getValueAt(row,3).toString());
+        categoriesCombo.updateUI();
         producttype.setSelectedItem(productModel.getValueAt(row,4).toString());
         producttype.updateUI();
         this.repaint();
         this.revalidate();
         String j = productModel.getValueAt(row,5).toString();
-        
-        System.out.println("category ni hii"+productModel.getValueAt(row, 3).toString());
         categoriesCombo.setSelectedItem("kiporo");
         categoriesCombo.updateUI();
-        //Date.parse(j);
-        //System.out.println("this is the converted date" + Date.parse(j));
-        //expiredate.setDate(Date.parse(j));
         expiredate.updateUI();
-//        System.out.println(""+expiredate.getDate());
         retailprice.setText(productModel.getValueAt(row,7).toString());
         listprice.setText(productModel.getValueAt(row,6).toString());
         categoriesCombo.setSelectedIndex(1);
@@ -3948,15 +4082,6 @@ public final class UserInterface extends javax.swing.JFrame {
         String backdated = dcn.format(expiredate.getDate());
         Double list_price = Double.parseDouble(listprice.getText());
         Double retail_price = Double.parseDouble(retailprice.getText());
-        System.out.println("Prd id"+
-                        product_id + "name"+
-                        product_name +"brand"+
-                        brand_id + "cate"+
-                        category_id + "model"+
-                        model+ "backdate"+
-                        backdated + "list price"+
-                        list_price + "retail"+
-                        retail_price);
         try {
             try {
                 if (Products.editProduct(
@@ -4036,6 +4161,136 @@ public final class UserInterface extends javax.swing.JFrame {
         quantityfield.setText(r);
         }
     }//GEN-LAST:event_eightBtn3ActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        try {
+            // TODO add your handling code here:
+            createTables();
+        } catch (Exception ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
+        // Button that downloads the excell:
+        ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(monthlyreporttable, new File(file));
+           }
+        
+    }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // Download Excell format :
+          // Button that downloads the excell:
+        ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(weeklyreporttable, new File(file));
+           }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
+        //Download excell in stocks report:
+          ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(stocksTable, new File(file));
+           }
+    }//GEN-LAST:event_jToggleButton3ActionPerformed
+
+    private void jToggleButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton4ActionPerformed
+        // TODO add your handling code here:
+          ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(dailySalesTable, new File(file));
+           }
+    }//GEN-LAST:event_jToggleButton4ActionPerformed
+
+    private void jToggleButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton5ActionPerformed
+        // TODO add your handling code here:
+          ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(staffTable, new File(file));
+           }
+    }//GEN-LAST:event_jToggleButton5ActionPerformed
+
+    private void jToggleButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton6ActionPerformed
+          // TODO add your handling code here:
+          ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(productsTable, new File(file));
+           }
+        
+    }//GEN-LAST:event_jToggleButton6ActionPerformed
+
+    private void jToggleButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton7ActionPerformed
+        //download categoryTable
+         ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(categoryTable, new File(file));
+           }
+    }//GEN-LAST:event_jToggleButton7ActionPerformed
+
+    private void jToggleButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton8ActionPerformed
+        // Download excell :
+           ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(brandsTable, new File(file));
+           }
+    }//GEN-LAST:event_jToggleButton8ActionPerformed
+
+    private void jToggleButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton9ActionPerformed
+        // Download :
+          ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(ordersTable, new File(file));
+           }
+        
+    }//GEN-LAST:event_jToggleButton9ActionPerformed
 
     public void clearStockSelection(){
         ProductsOnly.setVisible(true);
@@ -4204,6 +4459,7 @@ public final class UserInterface extends javax.swing.JFrame {
     private javax.swing.JButton fourBtn;
     private javax.swing.JTextField hiddenProductId;
     private javax.swing.JButton insertBrand;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton7;
@@ -4287,6 +4543,15 @@ public final class UserInterface extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JToggleButton jToggleButton2;
+    private javax.swing.JToggleButton jToggleButton3;
+    private javax.swing.JToggleButton jToggleButton4;
+    private javax.swing.JToggleButton jToggleButton5;
+    private javax.swing.JToggleButton jToggleButton6;
+    private javax.swing.JToggleButton jToggleButton7;
+    private javax.swing.JToggleButton jToggleButton8;
+    private javax.swing.JToggleButton jToggleButton9;
     private javax.swing.JTextField listprice;
     private javax.swing.JTable monthlyreporttable;
     private javax.swing.JButton nineBtn;
