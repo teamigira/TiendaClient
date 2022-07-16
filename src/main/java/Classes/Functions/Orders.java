@@ -6,6 +6,7 @@
 package Classes.Functions;
 
 import Classes.AbstractClasses.Order;
+import static Classes.Functions.Products.getProductPrice;
 import static Classes.Functions.Stocks.Sales;
 import Database.DBConnection;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
@@ -27,7 +28,7 @@ import javax.swing.JOptionPane;
 public class Orders {
 
     public static boolean addOrder(String order_id, String item_id,
-            String product_id, long quantity, Double price, Double discount, String backdated) throws ParseException, ClassNotFoundException {
+            String product_id, String quantity, Double discount, String backdated) throws ParseException, ClassNotFoundException {
         //To change body of generated methods, choose Tools | Templates
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
@@ -44,11 +45,13 @@ public class Orders {
             }
 
             String today = "" + d1;
+            
+            String price = getProductPrice(product_id);
 
             String sql
                     = "INSERT INTO sales_order_items"
                     + "(item_id,product_id,quantity,list_price,discount,date) VALUES ('" + item_id + "','" + product_id + "',"
-                    + "'" + quantity + "','" + price + "','" + discount + "','" + milliConverter(today) + "')";
+                    + "'" + quantity + "','"+ price +"','" + discount + "','" + milliConverter(today) + "')";
             int i = stmt.executeUpdate(sql);
             if (i > 0) {
                 System.out.println(sql);
@@ -65,6 +68,7 @@ public class Orders {
         return true;
     }
 
+   
     public static Boolean editBrand(String id, String brandname)
             throws SQLException, ClassNotFoundException {
         try {
@@ -110,19 +114,26 @@ public class Orders {
 
     }
 
-    public static ArrayList listOrders() throws SQLException, ClassNotFoundException {
+    public static ArrayList listOrders() throws SQLException, ClassNotFoundException, ParseException {
 
         ArrayList<Order> list = new ArrayList<Order>();
         ArrayList rowValues = new ArrayList();
         try {
 //            Connection conna = DBConnection.getConnectionInstance().getConnection();
             DBConnection dbc = DBConnection.getConnectionInstance();
+            LocalDate today = LocalDate.now(ZoneId.of("Europe/Paris"));
+            String dateToday = String.valueOf(today);
+            Long dateofOrder;
+            dateofOrder = milliConverter(dateToday);
             // STEP 3: Execute a query 
-            String sqlquery = "SELECT * FROM sales_order_items JOIN production_products ON"
-                    + " sales_order_items.product_id = production_products.product_id ORDER BY order_id DESC ";
+            String sqlquery = "SELECT * FROM sales_order_items"
+                    + " JOIN production_products ON"
+                    + " sales_order_items.product_id = production_products.product_id"
+                    + " WHERE date = '"+ dateofOrder + "'"
+                    + " ORDER BY order_id DESC";
 //             Statement stmt = conna.createStatement();
                     Connection con = dbc.getConnection();
-                    Statement stmt = null;
+                    Statement stmt;
                     stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
@@ -132,7 +143,7 @@ public class Orders {
                 String discount = rs.getString("discount");
                 list.add(new Order(rs.getString("order_id"),
                         rs.getString("product_name"),
-                        Integer.parseInt(quantity),
+                        quantity,
                         Double.parseDouble(listprice),
                         Double.parseDouble(discount)));
             }
@@ -143,6 +154,45 @@ public class Orders {
             se.printStackTrace();
         }
         return list;
+    }
+    
+    public static ArrayList listOrdersDated(String date) throws ParseException, ClassNotFoundException{
+       ArrayList<Order> list = new ArrayList<Order>();
+        ArrayList rowValues = new ArrayList();
+        try {
+//            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            DBConnection dbc = DBConnection.getConnectionInstance();
+            Long dateofOrder;
+            dateofOrder = milliConverter(date);
+            // STEP 3: Execute a query
+            String sqlquery = "SELECT * FROM sales_order_items"
+                    + " JOIN production_products ON"
+                    + " sales_order_items.product_id = production_products.product_id"
+                    + " WHERE date = '"+ dateofOrder + "'"
+                    + " ORDER BY order_id DESC";
+//             Statement stmt = conna.createStatement();
+                    Connection con = dbc.getConnection();
+                    Statement stmt;
+                    stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sqlquery);
+            while (rs.next()) {
+
+                String quantity = rs.getString("quantity");
+                String listprice = rs.getString("production_products.list_price");
+                String discount = rs.getString("discount");
+                list.add(new Order(rs.getString("order_id"),
+                        rs.getString("product_name"),
+                        quantity,
+                        Double.parseDouble(listprice),
+                        Double.parseDouble(discount)));
+            }
+            // STEP 4: Clean-up environment 
+            
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        return list;  
     }
 
     public static boolean deleteAll() throws ClassNotFoundException {
@@ -167,7 +217,7 @@ public class Orders {
         return true;
     }
 
-    public static boolean deleteRow(int row, int quantity) throws ClassNotFoundException {
+    public static boolean deleteRow(int row, double quantity) throws ClassNotFoundException {
         int productCode = 0;
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
@@ -202,7 +252,7 @@ public class Orders {
         return true;
     }
 
-    public static boolean updateOrder(int order_id, String item_id, String product_id, long quantity, Double price, Double discount, String backdated) throws ParseException, ClassNotFoundException {
+    public static boolean updateOrder(int order_id, String item_id, String product_id, String quantity, Double price, Double discount, String backdated) throws ParseException, ClassNotFoundException {
         //To change body of generated methods, choose Tools | Templates
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
