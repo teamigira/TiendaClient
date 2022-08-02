@@ -355,13 +355,21 @@ public class Sale extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel2MouseClicked
 
     private void SearchProductFormKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchProductFormKeyReleased
-        // TODO add your handling code here:
+        // Search engine
         String Search = SearchProductForm.getText().trim();
         if(Search.equals("Code, Product name, Bar code scanner")){
         }
         else {
-            System.out.println(Search);
-            //jPopupMenu1.show(Search, 0, Search.getHeight());
+            try {
+                mod.removeAllElements();
+                for(String item:searchSuggestions(Search)){
+                    mod.addElement(item);
+                    
+                }
+                jPopupMenu1.show(SearchProductForm, 0, SearchProductForm.getHeight());
+            } catch (IOException | org.json.simple.parser.ParseException ex) {
+                Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_SearchProductFormKeyReleased
 
@@ -398,8 +406,7 @@ public class Sale extends javax.swing.JFrame {
     }//GEN-LAST:event_SearchProductFormFocusGained
 
     private void autocompleteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_autocompleteKeyReleased
-        // TODO add your handling code here:
-          // TODO add your handling code here:
+        // test form field
         String Search = autocomplete.getText().trim();
         if(Search.equals("Code, Product name, Bar code scanner")){
         }
@@ -442,7 +449,6 @@ public class Sale extends javax.swing.JFrame {
                 JSONArray array = new JSONArray();
                 array.put(obj);
                 
-//              JSONArray a = (JSONArray) parser.parse(inputLine);
               for(Object o: array) {
                   val = o.toString();
               }
