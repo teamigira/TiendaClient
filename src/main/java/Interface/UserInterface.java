@@ -5,6 +5,7 @@
  */
 package Interface;
 
+import static Authentication.Auth.Login;
 import static Authentication.Sessions.LoggedUser;
 import Classes.AbstractClasses.DailyReport;
 import Classes.Functions.Accounts;
@@ -39,14 +40,14 @@ import Classes.Functions.Notifications;
 import static Classes.Functions.Notifications.listNotifications;
 import static Classes.Functions.Orders.listOrdersDated;
 import static Classes.Functions.Reports.Summaryeport;
-import Classes.Utilities.AudioFile;
+import Classes.Utilities.AudioPlayer;
 import Classes.Utilities.ExcelFormat;
 import UserSettings.UserSettings;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import static com.nkanabo.Tienda.Utilities.unique;
 import Classes.Utilities.StockThread;
-import static Database.MasterTables.createTables;
 import java.awt.Color;
+import java.awt.Font;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -68,6 +69,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -149,8 +151,7 @@ public final class UserInterface extends javax.swing.JFrame {
     */
     
     public UserInterface() throws URISyntaxException, ClassNotFoundException, ParseException {
-//        setPreferredSize(new Dimension(450, 260));
-//        System.setProperty("prism.allowhidpi", "false");
+        System.setProperty("prism.allowhidpi", "false");
         initComponents();
         StockThread th = new StockThread();
         th.main();
@@ -178,7 +179,7 @@ public final class UserInterface extends javax.swing.JFrame {
         
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-        this.setExtendedState(UserPanel.MAXIMIZED_BOTH);
+        this.setExtendedState(UserInterface.MAXIMIZED_BOTH);
         
         orderlist = new ArrayList<>();
         ordersModel = new DefaultTableModel(headers, 0);
@@ -256,7 +257,7 @@ public final class UserInterface extends javax.swing.JFrame {
             LoadNotificationsEmails();
             LoadNotificationsEmails();
         } catch (SQLException ex) {
-            Logger.getLogger(UserPanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         DefaultComboBoxModel model = new DefaultComboBoxModel(allBrands);
@@ -285,6 +286,7 @@ public final class UserInterface extends javax.swing.JFrame {
         EmailnotificationLabel.setVisible(false);
         LabelProduct.setVisible(false);
         updateProductbtn.setVisible(false);
+        productid.setVisible(false);
 
     }
 
@@ -343,7 +345,6 @@ public final class UserInterface extends javax.swing.JFrame {
         eightBtn1 = new javax.swing.JButton();
         eightBtn2 = new javax.swing.JButton();
         eightBtn3 = new javax.swing.JButton();
-        jToggleButton1 = new javax.swing.JToggleButton();
         jToggleButton9 = new javax.swing.JToggleButton();
         BrandPanel = new javax.swing.JPanel();
         insertBrand = new javax.swing.JButton();
@@ -354,6 +355,9 @@ public final class UserInterface extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jToggleButton8 = new javax.swing.JToggleButton();
+        searchLabelIcon3 = new javax.swing.JLabel();
+        deleteLabelIcon4 = new javax.swing.JLabel();
+        eraserLabelIcon3 = new javax.swing.JLabel();
         CategoryPanel = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -363,6 +367,24 @@ public final class UserInterface extends javax.swing.JFrame {
         categoryname = new javax.swing.JTextField();
         categorybtn = new javax.swing.JButton();
         jToggleButton7 = new javax.swing.JToggleButton();
+        searchLabelIcon4 = new javax.swing.JLabel();
+        deleteLabelIcon5 = new javax.swing.JLabel();
+        eraserLabelIcon4 = new javax.swing.JLabel();
+        StaffPanel = new javax.swing.JPanel();
+        categorybtn2 = new javax.swing.JButton();
+        jLabel42 = new javax.swing.JLabel();
+        jLabel43 = new javax.swing.JLabel();
+        jLabel44 = new javax.swing.JLabel();
+        staffname = new javax.swing.JTextField();
+        jLabel45 = new javax.swing.JLabel();
+        jLabel46 = new javax.swing.JLabel();
+        jScrollPane12 = new javax.swing.JScrollPane();
+        staffTable = new javax.swing.JTable();
+        jLabel47 = new javax.swing.JLabel();
+        surname = new javax.swing.JTextField();
+        email = new javax.swing.JTextField();
+        staff_role = new javax.swing.JComboBox<>();
+        jToggleButton5 = new javax.swing.JToggleButton();
         ProductsPanel = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -389,21 +411,6 @@ public final class UserInterface extends javax.swing.JFrame {
         updateProductbtn = new javax.swing.JButton();
         hiddenProductId = new javax.swing.JTextField();
         jToggleButton6 = new javax.swing.JToggleButton();
-        StaffPanel = new javax.swing.JPanel();
-        categorybtn2 = new javax.swing.JButton();
-        jLabel42 = new javax.swing.JLabel();
-        jLabel43 = new javax.swing.JLabel();
-        jLabel44 = new javax.swing.JLabel();
-        staffname = new javax.swing.JTextField();
-        jLabel45 = new javax.swing.JLabel();
-        jLabel46 = new javax.swing.JLabel();
-        jScrollPane12 = new javax.swing.JScrollPane();
-        staffTable = new javax.swing.JTable();
-        jLabel47 = new javax.swing.JLabel();
-        surname = new javax.swing.JTextField();
-        email = new javax.swing.JTextField();
-        staff_role = new javax.swing.JComboBox<>();
-        jToggleButton5 = new javax.swing.JToggleButton();
         ReportsPanel = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
@@ -471,6 +478,7 @@ public final class UserInterface extends javax.swing.JFrame {
         profit3 = new javax.swing.JLabel();
         datedrep = new com.toedter.calendar.JCalendar();
         jButton12 = new javax.swing.JButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
         CashTransfers = new javax.swing.JPanel();
         categorybtn3 = new javax.swing.JButton();
         transferamount = new javax.swing.JTextField();
@@ -481,36 +489,42 @@ public final class UserInterface extends javax.swing.JFrame {
         jLabel53 = new javax.swing.JLabel();
         Emails = new javax.swing.JPanel();
         categorybtn4 = new javax.swing.JButton();
-        transferamount1 = new javax.swing.JTextField();
+        emailMessage = new javax.swing.JTextField();
         jLabel54 = new javax.swing.JLabel();
         jScrollPane14 = new javax.swing.JScrollPane();
         EmailTable = new javax.swing.JTable();
         jLabel56 = new javax.swing.JLabel();
+        deleteLabelIcon3 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        File = new javax.swing.JMenu();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
+        AccountsLabel = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        Reports = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
+        NotificationMenu = new javax.swing.JMenu();
+        jCheckBoxMenuItem4 = new javax.swing.JCheckBoxMenuItem();
+        Staff = new javax.swing.JMenu();
+        jCheckBoxMenuItem5 = new javax.swing.JCheckBoxMenuItem();
+        Configurations = new javax.swing.JMenu();
+        jCheckBoxMenuItem6 = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         MenuPanel.setBackground(new java.awt.Color(203, 196, 201));
+        MenuPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         MenuPanel.setMaximumSize(null);
 
         jLabel1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jLabel1.setText("Nkanabo Microsystems");
+        jLabel1.setText(" NSR Microsystems");
 
         Brandsbtn.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         Brandsbtn.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
@@ -579,8 +593,8 @@ public final class UserInterface extends javax.swing.JFrame {
 
         staffButton.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         staffButton.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        staffButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-staff-64.png"))); // NOI18N
-        staffButton.setText("STAFF");
+        staffButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-sign-out-64.png"))); // NOI18N
+        staffButton.setText("Log out");
         staffButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         staffButton.setContentAreaFilled(false);
         staffButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -592,8 +606,8 @@ public final class UserInterface extends javax.swing.JFrame {
 
         jButton7.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         jButton7.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-reports-64.png"))); // NOI18N
-        jButton7.setText("REPORTS");
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-uninstalling-updates-64.png"))); // NOI18N
+        jButton7.setText("Updates");
         jButton7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton7.setContentAreaFilled(false);
         jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -605,8 +619,8 @@ public final class UserInterface extends javax.swing.JFrame {
 
         jButton8.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
         jButton8.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-configurations-64.png"))); // NOI18N
-        jButton8.setText("CONFIG");
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-close-64.png"))); // NOI18N
+        jButton8.setText("Exit");
         jButton8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton8.setContentAreaFilled(false);
         jButton8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -992,13 +1006,6 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        jToggleButton1.setText("jToggleButton1");
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
-            }
-        });
-
         jToggleButton9.setText("Download Excell");
         jToggleButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1027,9 +1034,7 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel39)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(backbutton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(64, 64, 64)
-                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(backbutton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 1066, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1074, Short.MAX_VALUE))
                 .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1139,9 +1144,6 @@ public final class UserInterface extends javax.swing.JFrame {
                                     .addComponent(eraserLabelIcon)
                                     .addComponent(deleteLabelIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addComponent(jLabel39))
-                            .addGroup(OrderPanelLayout.createSequentialGroup()
-                                .addComponent(jToggleButton1)
-                                .addGap(9, 9, 9))
                             .addComponent(backbutton))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1203,6 +1205,31 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        searchLabelIcon3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        searchLabelIcon3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/searchicon.png"))); // NOI18N
+        searchLabelIcon3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        searchLabelIcon3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchLabelIcon3MouseClicked(evt);
+            }
+        });
+
+        deleteLabelIcon4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/deleteicon.png"))); // NOI18N
+        deleteLabelIcon4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        deleteLabelIcon4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deleteLabelIcon4MouseClicked(evt);
+            }
+        });
+
+        eraserLabelIcon3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/erasericon.png"))); // NOI18N
+        eraserLabelIcon3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        eraserLabelIcon3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                eraserLabelIcon3MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout BrandPanelLayout = new javax.swing.GroupLayout(BrandPanel);
         BrandPanel.setLayout(BrandPanelLayout);
         BrandPanelLayout.setHorizontalGroup(
@@ -1211,28 +1238,39 @@ public final class UserInterface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(BrandPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchLabelIcon3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteLabelIcon4)
+                        .addGap(18, 18, 18)
+                        .addComponent(eraserLabelIcon3)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(BrandPanelLayout.createSequentialGroup()
                         .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addContainerGap())
-                    .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jToggleButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(BrandPanelLayout.createSequentialGroup()
-                            .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(insertBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(BrandPanelLayout.createSequentialGroup()
+                        .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(insertBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jToggleButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         BrandPanelLayout.setVerticalGroup(
             BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BrandPanelLayout.createSequentialGroup()
                 .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(BrandPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(BrandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(searchLabelIcon3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(eraserLabelIcon3)
+                                .addComponent(deleteLabelIcon4)))
                         .addGap(6, 6, 6)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(BrandPanelLayout.createSequentialGroup()
@@ -1302,6 +1340,31 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        searchLabelIcon4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        searchLabelIcon4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/searchicon.png"))); // NOI18N
+        searchLabelIcon4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        searchLabelIcon4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchLabelIcon4MouseClicked(evt);
+            }
+        });
+
+        deleteLabelIcon5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/deleteicon.png"))); // NOI18N
+        deleteLabelIcon5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        deleteLabelIcon5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deleteLabelIcon5MouseClicked(evt);
+            }
+        });
+
+        eraserLabelIcon4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/erasericon.png"))); // NOI18N
+        eraserLabelIcon4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        eraserLabelIcon4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                eraserLabelIcon4MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout CategoryPanelLayout = new javax.swing.GroupLayout(CategoryPanel);
         CategoryPanel.setLayout(CategoryPanelLayout);
         CategoryPanelLayout.setHorizontalGroup(
@@ -1310,7 +1373,14 @@ public final class UserInterface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(CategoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(CategoryPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchLabelIcon4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteLabelIcon5)
+                        .addGap(18, 18, 18)
+                        .addComponent(eraserLabelIcon4)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(CategoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(CategoryPanelLayout.createSequentialGroup()
@@ -1330,7 +1400,12 @@ public final class UserInterface extends javax.swing.JFrame {
             .addGroup(CategoryPanelLayout.createSequentialGroup()
                 .addGroup(CategoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(CategoryPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(CategoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(CategoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(searchLabelIcon4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(eraserLabelIcon4)
+                                .addComponent(deleteLabelIcon5)))
                         .addGap(6, 6, 6)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(CategoryPanelLayout.createSequentialGroup()
@@ -1348,6 +1423,70 @@ public final class UserInterface extends javax.swing.JFrame {
         );
 
         ParentLayout.add(CategoryPanel, "card2");
+
+        StaffPanel.setBackground(new java.awt.Color(186, 164, 164));
+
+        categorybtn2.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        categorybtn2.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        categorybtn2.setText("Add");
+        categorybtn2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        categorybtn2.setContentAreaFilled(false);
+        categorybtn2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        categorybtn2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                categorybtn2ActionPerformed(evt);
+            }
+        });
+
+        jLabel42.setText("Role");
+
+        jLabel43.setText("Email");
+
+        jLabel44.setText("Sur Name");
+
+        staffname.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        staffname.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                staffnameActionPerformed(evt);
+            }
+        });
+        staffname.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                staffnameKeyReleased(evt);
+            }
+        });
+
+        jLabel45.setText("Name");
+
+        jLabel46.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jLabel46.setText("Add Staff");
+
+        staffTable.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        staffTable.setFont(new java.awt.Font("Calibri Light", 1, 14)); // NOI18N
+        staffTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane12.setViewportView(staffTable);
+
+        jLabel47.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jLabel47.setText("Staff");
+
+        staff_role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jToggleButton5.setText("Download Excell");
+        jToggleButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton5ActionPerformed(evt);
+            }
+        });
 
         ProductsPanel.setBackground(new java.awt.Color(186, 164, 164));
 
@@ -1594,72 +1733,6 @@ public final class UserInterface extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        ParentLayout.add(ProductsPanel, "card2");
-
-        StaffPanel.setBackground(new java.awt.Color(186, 164, 164));
-
-        categorybtn2.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
-        categorybtn2.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        categorybtn2.setText("Add");
-        categorybtn2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        categorybtn2.setContentAreaFilled(false);
-        categorybtn2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        categorybtn2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                categorybtn2ActionPerformed(evt);
-            }
-        });
-
-        jLabel42.setText("Role");
-
-        jLabel43.setText("Email");
-
-        jLabel44.setText("Sur Name");
-
-        staffname.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        staffname.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                staffnameActionPerformed(evt);
-            }
-        });
-        staffname.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                staffnameKeyReleased(evt);
-            }
-        });
-
-        jLabel45.setText("Name");
-
-        jLabel46.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jLabel46.setText("Add Staff");
-
-        staffTable.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        staffTable.setFont(new java.awt.Font("Calibri Light", 1, 14)); // NOI18N
-        staffTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane12.setViewportView(staffTable);
-
-        jLabel47.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jLabel47.setText("Staff");
-
-        staff_role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jToggleButton5.setText("Download Excell");
-        jToggleButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton5ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout StaffPanelLayout = new javax.swing.GroupLayout(StaffPanel);
         StaffPanel.setLayout(StaffPanelLayout);
         StaffPanelLayout.setHorizontalGroup(
@@ -1684,6 +1757,11 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addComponent(staff_role, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jToggleButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(StaffPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(StaffPanelLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(ProductsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         StaffPanelLayout.setVerticalGroup(
             StaffPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1717,6 +1795,11 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jToggleButton5)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(StaffPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(StaffPanelLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(ProductsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         ParentLayout.add(StaffPanel, "card2");
@@ -2341,6 +2424,13 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        jToggleButton1.setText("Download Excell");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout DatedReportLayout = new javax.swing.GroupLayout(DatedReport);
         DatedReport.setLayout(DatedReportLayout);
         DatedReportLayout.setHorizontalGroup(
@@ -2348,7 +2438,6 @@ public final class UserInterface extends javax.swing.JFrame {
             .addGroup(DatedReportLayout.createSequentialGroup()
                 .addGap(169, 169, 169)
                 .addGroup(DatedReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton12)
                     .addGroup(DatedReportLayout.createSequentialGroup()
                         .addGroup(DatedReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 1159, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2370,7 +2459,12 @@ public final class UserInterface extends javax.swing.JFrame {
                                         .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(totalreturns3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(DatedReportLayout.createSequentialGroup()
+                        .addComponent(jButton12)
+                        .addGap(32, 32, 32)
+                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         DatedReportLayout.setVerticalGroup(
@@ -2401,7 +2495,9 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(datedrep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(31, 31, 31)
-                .addComponent(jButton12)
+                .addGroup(DatedReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton12)
+                    .addComponent(jToggleButton1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -2509,15 +2605,15 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
-        transferamount1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        transferamount1.addActionListener(new java.awt.event.ActionListener() {
+        emailMessage.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        emailMessage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                transferamount1ActionPerformed(evt);
+                emailMessageActionPerformed(evt);
             }
         });
-        transferamount1.addKeyListener(new java.awt.event.KeyAdapter() {
+        emailMessage.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                transferamount1KeyReleased(evt);
+                emailMessageKeyReleased(evt);
             }
         });
 
@@ -2536,10 +2632,26 @@ public final class UserInterface extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        EmailTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                EmailTableMouseClicked(evt);
+            }
+        });
         jScrollPane14.setViewportView(EmailTable);
 
         jLabel56.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel56.setText("Notifications Panel");
+
+        deleteLabelIcon3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/deleteicon.png"))); // NOI18N
+        deleteLabelIcon3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        deleteLabelIcon3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deleteLabelIcon3MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                deleteLabelIcon3MouseEntered(evt);
+            }
+        });
 
         javax.swing.GroupLayout EmailsLayout = new javax.swing.GroupLayout(Emails);
         Emails.setLayout(EmailsLayout);
@@ -2549,28 +2661,33 @@ public final class UserInterface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(EmailsLayout.createSequentialGroup()
+                        .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteLabelIcon3)))
                 .addGap(18, 18, 18)
                 .addGroup(EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel54)
                     .addComponent(categorybtn4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(transferamount1, javax.swing.GroupLayout.PREFERRED_SIZE, 467, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(emailMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 467, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         EmailsLayout.setVerticalGroup(
             EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(EmailsLayout.createSequentialGroup()
-                .addGroup(EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(EmailsLayout.createSequentialGroup()
-                        .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6)
+                        .addGroup(EmailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(deleteLabelIcon3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(EmailsLayout.createSequentialGroup()
                         .addGap(81, 81, 81)
                         .addComponent(jLabel54)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(transferamount1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(emailMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(categorybtn4, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -2579,35 +2696,41 @@ public final class UserInterface extends javax.swing.JFrame {
 
         getContentPane().add(ParentLayout, java.awt.BorderLayout.CENTER);
 
-        jMenu1.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(153, 153, 153), null));
-        jMenu1.setText("File");
-        jMenu1.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        File.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(153, 153, 153), null));
+        File.setText("File");
+        File.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        File.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
 
-        jCheckBoxMenuItem1.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        jCheckBoxMenuItem1.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("Home");
-        jMenu1.add(jCheckBoxMenuItem1);
+        jCheckBoxMenuItem1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        File.add(jCheckBoxMenuItem1);
 
-        jMenuItem1.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        jMenuItem1.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         jMenuItem1.setText("Exit");
+        jMenuItem1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        File.add(jMenuItem1);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(File);
 
-        jMenu4.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(204, 204, 204), null));
-        jMenu4.setText("Accounts");
-        jMenu4.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        AccountsLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(204, 204, 204), null));
+        AccountsLabel.setText("Accounts");
+        AccountsLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        AccountsLabel.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
 
         jMenu6.setText("Cash Transfers");
-        jMenu6.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        jMenu6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jMenu6.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
 
-        jMenuItem4.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        jMenuItem4.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         jMenuItem4.setText("Record Transfer");
+        jMenuItem4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem4ActionPerformed(evt);
@@ -2615,46 +2738,22 @@ public final class UserInterface extends javax.swing.JFrame {
         });
         jMenu6.add(jMenuItem4);
 
-        jMenuItem7.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
-        jMenuItem7.setText("Weekly Report");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
-            }
-        });
-        jMenu6.add(jMenuItem7);
+        AccountsLabel.add(jMenu6);
 
-        jMenuItem8.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
-        jMenuItem8.setText("Monthly Report");
-        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem8ActionPerformed(evt);
-            }
-        });
-        jMenu6.add(jMenuItem8);
+        jMenuBar1.add(AccountsLabel);
 
-        jMenuItem9.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
-        jMenuItem9.setText("Dated Report");
-        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem9ActionPerformed(evt);
-            }
-        });
-        jMenu6.add(jMenuItem9);
-
-        jMenu4.add(jMenu6);
-
-        jMenuBar1.add(jMenu4);
-
-        jMenu2.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(204, 204, 204), null));
-        jMenu2.setText("Reports");
-        jMenu2.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
+        Reports.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(204, 204, 204), null));
+        Reports.setText("Reports");
+        Reports.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Reports.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
 
         jMenu3.setText("Sales Reports");
+        jMenu3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenu3.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
 
         jMenuItem2.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
         jMenuItem2.setText("Daily Report");
+        jMenuItem2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem2ActionPerformed(evt);
@@ -2664,6 +2763,7 @@ public final class UserInterface extends javax.swing.JFrame {
 
         jMenuItem3.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
         jMenuItem3.setText("Weekly Report");
+        jMenuItem3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);
@@ -2673,6 +2773,7 @@ public final class UserInterface extends javax.swing.JFrame {
 
         jMenuItem5.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
         jMenuItem5.setText("Monthly Report");
+        jMenuItem5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem5ActionPerformed(evt);
@@ -2682,6 +2783,7 @@ public final class UserInterface extends javax.swing.JFrame {
 
         jMenuItem6.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
         jMenuItem6.setText("Dated Report");
+        jMenuItem6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem6ActionPerformed(evt);
@@ -2689,18 +2791,80 @@ public final class UserInterface extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem6);
 
-        jMenu2.add(jMenu3);
+        Reports.add(jMenu3);
 
         jMenu5.setText("Stock Reports");
+        jMenu5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenu5.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
         jMenu5.setHideActionText(true);
-        jMenu2.add(jMenu5);
+        Reports.add(jMenu5);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(Reports);
+
+        NotificationMenu.setText("Notifications");
+        NotificationMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        NotificationMenu.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        NotificationMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NotificationMenuActionPerformed(evt);
+            }
+        });
+
+        jCheckBoxMenuItem4.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        jCheckBoxMenuItem4.setSelected(true);
+        jCheckBoxMenuItem4.setText("Product Alerts");
+        jCheckBoxMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem4ActionPerformed(evt);
+            }
+        });
+        NotificationMenu.add(jCheckBoxMenuItem4);
+
+        jMenuBar1.add(NotificationMenu);
+
+        Staff.setText("Staff");
+        Staff.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Staff.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        Staff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StaffActionPerformed(evt);
+            }
+        });
+
+        jCheckBoxMenuItem5.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        jCheckBoxMenuItem5.setSelected(true);
+        jCheckBoxMenuItem5.setText("Details");
+        jCheckBoxMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem5ActionPerformed(evt);
+            }
+        });
+        Staff.add(jCheckBoxMenuItem5);
+
+        jMenuBar1.add(Staff);
+
+        Configurations.setText("Settings");
+        Configurations.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Configurations.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        Configurations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfigurationsActionPerformed(evt);
+            }
+        });
+
+        jCheckBoxMenuItem6.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        jCheckBoxMenuItem6.setSelected(true);
+        jCheckBoxMenuItem6.setText("System settings");
+        jCheckBoxMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem6ActionPerformed(evt);
+            }
+        });
+        Configurations.add(jCheckBoxMenuItem6);
+
+        jMenuBar1.add(Configurations);
 
         setJMenuBar(jMenuBar1);
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     public final void loadJtableValues() throws SQLException, ClassNotFoundException, ParseException {
@@ -3125,9 +3289,7 @@ public final class UserInterface extends javax.swing.JFrame {
             // TODO add your handling code here:
             LoadProductsOnly();
             LoadStocks();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -3142,15 +3304,10 @@ public final class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_stocksbtnActionPerformed
 
     private void staffButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_staffButtonActionPerformed
-        activeButton("staffButton");
+       this.dispose();
         try {
-            // TODO add your handling code here:
-            ParentLayout.removeAll();
-            ParentLayout.add(StaffPanel);
-            ParentLayout.repaint();
-            ParentLayout.revalidate();
-            LoadSatffs();
-        } catch (ParseException | ClassNotFoundException ex) {
+            Login();
+        } catch (URISyntaxException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_staffButtonActionPerformed
@@ -3262,40 +3419,38 @@ public final class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_nineBtnActionPerformed
 
     private void saleproductbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleproductbtnActionPerformed
-        saleproductbtn.setEnabled(false);
-        saleproductbtn.setText("Wait");
-        
-        try {
-
-            quantity = quantityfield.getText();
-            String order_id = unique();
-            String item_id = unique();
-            String product_id = SearchProductForm.getText();
-            Double discount = 0.00;
-            SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
-            String backdated = dcn.format(backdate.getDate());
-
-            try {
-                if (Orders.addOrder(order_id, item_id, product_id, quantity, discount, backdated)) {
-                    boolean stockUpdate = Stocks.editStock(product_id, quantity);
-                    if(stockUpdate == false){
-                    JOptionPane.showMessageDialog(this, "Error in Updating stock");
-                    }
-                    JOptionPane.showMessageDialog(this, "Succesfully");
-                    try {
-                        loadJtableValues();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(UserPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } catch (ParseException ex) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        saleproductbtn.setEnabled(true);
-        saleproductbtn.setText("Sale");
+//        saleproductbtn.setEnabled(false);
+//        saleproductbtn.setText("Wait");
+//        try {
+//            quantity = quantityfield.getText();
+//            String order_id = unique();
+//            String item_id = unique();
+//            String product_id = SearchProductForm.getText();
+//            Double discount = 0.00;
+//            SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
+//            String backdated = dcn.format(backdate.getDate());
+//            Double newquantity = Double.parseDouble(quantity);
+//            try {
+//                if (Orders.addOrder(order_id, item_id, product_id, newquantity, discount, backdated)) {
+//                    boolean stockUpdate = Stocks.editStock(product_id, quantity);
+//                    if(stockUpdate == false){
+//                    JOptionPane.showMessageDialog(this, "Error in Updating stock");
+//                    }
+//                    JOptionPane.showMessageDialog(this, "Succesfully");
+//                    try {
+//                        loadJtableValues();
+//                    } catch (SQLException ex) {
+//                        Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+//            } catch (ClassNotFoundException ex) {
+//                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        } catch (ParseException ex) {
+//            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        saleproductbtn.setEnabled(true);
+//        saleproductbtn.setText("Sale");
     }//GEN-LAST:event_saleproductbtnActionPerformed
 
     private void brandnameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_brandnameKeyReleased
@@ -3460,12 +3615,7 @@ public final class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_StockAddBtnActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
-        activeButton("Config");
-        ParentLayout.removeAll();
-        ParentLayout.add(ConfigPanel);
-        ParentLayout.repaint();
-        ParentLayout.revalidate();
+       System.exit(0);
     }//GEN-LAST:event_jButton8ActionPerformed
 
 
@@ -3622,18 +3772,6 @@ public final class UserInterface extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
-
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem8ActionPerformed
-
-    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem9ActionPerformed
-
     private void categorybtn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorybtn3ActionPerformed
         try {
             // TODO add your handling code here:
@@ -3668,7 +3806,7 @@ public final class UserInterface extends javax.swing.JFrame {
 
     private void soundSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soundSettingActionPerformed
         // TODO add your handling code here:
-        AudioFile Af = new AudioFile();
+        AudioPlayer Af = new AudioPlayer();
         String a = soundSetting.getText();
         UserSettings us = new UserSettings();
         try {
@@ -3746,7 +3884,6 @@ public final class UserInterface extends javax.swing.JFrame {
         } catch (SQLException | ClassNotFoundException | ParseException ex) {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }//GEN-LAST:event_eraserLabelIconMouseClicked
 
     private void jLabel39MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel39MouseClicked
@@ -3775,15 +3912,16 @@ public final class UserInterface extends javax.swing.JFrame {
             String product_id = SearchProductForm.getText();
             Double price = 1.0;
             Double discount = 0.00;
+            Double newquantity = Double.parseDouble(quantity);
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
             String backdated = dcn.format(backdate.getDate());
             try {
                 Stocks.editStockFromOrdersEd(order_id, product_id, quantity);
-                if (Orders.updateOrder(order_id, item_id, product_id, quantity, price, discount, backdated)) {
+                if (Orders.updateOrder(order_id, item_id, product_id, newquantity, price, discount, backdated)) {
                     try {
                         loadJtableValues();
                     } catch (SQLException ex) {
-                        Logger.getLogger(UserPanel.class.getName())
+                        Logger.getLogger(UserInterface.class.getName())
                                 .log(Level.SEVERE, null, ex);
                     }
                 }
@@ -3887,29 +4025,19 @@ public final class UserInterface extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_categorybtn4ActionPerformed
 
-    private void transferamount1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transferamount1ActionPerformed
+    private void emailMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailMessageActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_transferamount1ActionPerformed
+    }//GEN-LAST:event_emailMessageActionPerformed
 
-    private void transferamount1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_transferamount1KeyReleased
+    private void emailMessageKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_emailMessageKeyReleased
         // TODO add your handling code here:
-    }//GEN-LAST:event_transferamount1KeyReleased
+    }//GEN-LAST:event_emailMessageKeyReleased
 
     private void EmailnotificationLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EmailnotificationLabelMouseClicked
-        // When specific email clicked:
-         try {
-            // TODO add your handling code here:
-            loadBrandsJtableValues();
-            LoadCategories();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(UserInterface.class.getName())
-                    .log(Level.SEVERE, null, ex);
-        }
         ParentLayout.removeAll();
         ParentLayout.add(Emails);
         ParentLayout.repaint();
         ParentLayout.revalidate();
-        
     }//GEN-LAST:event_EmailnotificationLabelMouseClicked
 
     private void searchLabelIcon2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchLabelIcon2MouseClicked
@@ -4162,15 +4290,6 @@ public final class UserInterface extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_eightBtn3ActionPerformed
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        try {
-            // TODO add your handling code here:
-            createTables();
-        } catch (Exception ex) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
-
     private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
         // Button that downloads the excell:
         ExcelFormat exft = new ExcelFormat();
@@ -4292,6 +4411,240 @@ public final class UserInterface extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jToggleButton9ActionPerformed
 
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        // Dated report excell :
+          ExcelFormat exft = new ExcelFormat();
+           JFileChooser fchoose = new JFileChooser();
+           int option = fchoose.showSaveDialog(UserInterface.this);
+           if(option == JFileChooser.APPROVE_OPTION){
+             String name = fchoose.getSelectedFile().getName(); 
+             String path = fchoose.getSelectedFile().getParentFile().getPath();
+             String file = path + "\\" + name + ".xls"; 
+             exft.export(datedreporttable, new File(file));
+           }
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void EmailTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EmailTableMouseClicked
+        // Email table mouse click even:
+        // codes to get the items out of orders clicked row:
+        row = EmailTable.getSelectedRow();
+        column = EmailTable.getColumnCount();
+        emailMessage.setText(emailNotifications.getValueAt(row, 3).toString());
+    }//GEN-LAST:event_EmailTableMouseClicked
+
+    private void NotificationMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NotificationMenuActionPerformed
+
+        ParentLayout.removeAll();
+        ParentLayout.add(Emails);
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
+    }//GEN-LAST:event_NotificationMenuActionPerformed
+
+    private void jCheckBoxMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem4ActionPerformed
+        // TODO add your handling code here:
+        ParentLayout.removeAll();
+        ParentLayout.add(Emails);
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
+    }//GEN-LAST:event_jCheckBoxMenuItem4ActionPerformed
+
+    private void deleteLabelIcon3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIcon3MouseClicked
+        // Emails mouse click event
+         //Delete sales.
+        int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
+
+        if (reply == JOptionPane.YES_OPTION) {
+
+            row = EmailTable.getSelectedRow();
+            column = EmailTable.getColumnCount();
+            int notice_id = IntegerConverter(emailNotifications.getValueAt(row, 0).toString());
+            int quantity = IntegerConverter(emailNotifications.getValueAt(row, 2).toString());
+            try {
+                if(Notifications.deleteRow(notice_id) == false){
+                    JOptionPane.showMessageDialog(this, "Error in deleting");
+                    }
+                    JOptionPane.showMessageDialog(this, "Succesfully");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            emailNotifications.removeRow(row);
+            emailList.remove(row);
+            emailNotifications.setRowCount(0);
+
+            for (int i = 0; i < emailList.size(); i++) {
+                Object[] obj = {
+                emailList.get(i).notice_id,
+                emailList.get(i).date,
+                emailList.get(i).title,
+                emailList.get(i).message
+                };
+                emailNotifications.addRow(obj);
+            }
+        }
+    }//GEN-LAST:event_deleteLabelIcon3MouseClicked
+
+    private void deleteLabelIcon3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIcon3MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteLabelIcon3MouseEntered
+
+    private void searchLabelIcon3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchLabelIcon3MouseClicked
+        // Brands search button
+        
+        
+        //Search engine.
+        row = brandsTable.getSelectedRow();
+        column = brandsTable.getColumnCount();
+        //Row sorters
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(brandsModel);
+        brandsTable.setRowSorter(sorter);
+        //End of row sorters
+        String input = JOptionPane.showInputDialog(this, "Search row");
+        if (input.length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter(input));
+        }
+    }//GEN-LAST:event_searchLabelIcon3MouseClicked
+
+    private void deleteLabelIcon4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIcon4MouseClicked
+        // TODO add your handling code here:
+                //Delete sales.
+        int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
+
+        if (reply == JOptionPane.YES_OPTION) {
+
+            row = brandsTable.getSelectedRow();
+            column = brandsTable.getColumnCount();
+            int brandId = IntegerConverter(brandsModel.getValueAt(row, 0).toString());
+            try {
+                Crudes.deleteRow(brandId);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            brandsModel.removeRow(row);
+            brandlist.remove(row);
+            brandsModel.setRowCount(0);
+
+            for (int i = 0; i < brandlist.size(); i++) {
+                Object[] obj = {
+                    brandlist.get(i).brand_id,
+                    brandlist.get(i).brand_name
+                };
+                brandsModel.addRow(obj);
+            }
+        }
+
+    }//GEN-LAST:event_deleteLabelIcon4MouseClicked
+
+    private void eraserLabelIcon3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserLabelIcon3MouseClicked
+        // TODO add your handling code here:
+           try {
+            // TODO add your handling code here:
+            this.brandsTable.setAutoCreateRowSorter(false);
+            this.brandsTable.setAutoCreateRowSorter(true);
+            this.brandsTable.repaint();
+            brandname.setText("");
+            loadJtableValues();
+            LoadStockProducts();
+        } catch (SQLException | ClassNotFoundException | ParseException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_eraserLabelIcon3MouseClicked
+
+    private void searchLabelIcon4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchLabelIcon4MouseClicked
+        // Search for category:
+         
+        //Search engine.
+        row = categoryTable.getSelectedRow();
+        column = categoryTable.getColumnCount();
+        //Row sorters
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(categoryModel);
+        categoryTable.setRowSorter(sorter);
+        //End of row sorters
+        String input = JOptionPane.showInputDialog(this, "Search row");
+        if (input.length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter(input));
+        }
+    }//GEN-LAST:event_searchLabelIcon4MouseClicked
+
+    private void deleteLabelIcon5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIcon5MouseClicked
+        // TODO add your handling code here:
+                 //Delete sales.
+        int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
+
+        if (reply == JOptionPane.YES_OPTION) {
+
+            row = categoryTable.getSelectedRow();
+            column = categoryTable.getColumnCount();
+            int categoryId = IntegerConverter(categoryModel.getValueAt(row, 0).toString());
+            try {
+                Categories.deleteCategory(categoryId);
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            categoryModel.removeRow(row);
+            categorylist.remove(row);
+            categoryModel.setRowCount(0);
+
+            for (int i = 0; i < brandlist.size(); i++) {
+                Object[] obj = {
+                    categorylist.get(i).category_id,
+                    categorylist.get(i).category_name
+                };
+                categoryModel.addRow(obj);
+            }
+        }
+    }//GEN-LAST:event_deleteLabelIcon5MouseClicked
+
+    private void eraserLabelIcon4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserLabelIcon4MouseClicked
+            // Clear fields:
+            try {
+            // TODO add your handling code here:
+            this.categoryTable.setAutoCreateRowSorter(false);
+            this.categoryTable.setAutoCreateRowSorter(true);
+            this.categoryTable.repaint();
+            categoryname.setText("");
+            loadJtableValues();
+            LoadStockProducts();
+        } catch (SQLException | ClassNotFoundException | ParseException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_eraserLabelIcon4MouseClicked
+
+    private void jCheckBoxMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem5ActionPerformed
+           activeButton("staffButton");
+        try {
+            // TODO add your handling code here:
+            ParentLayout.removeAll();
+            ParentLayout.add(StaffPanel);
+            ParentLayout.repaint();
+            ParentLayout.revalidate();
+            LoadSatffs();
+        } catch (ParseException | ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jCheckBoxMenuItem5ActionPerformed
+
+    private void StaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StaffActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_StaffActionPerformed
+
+    private void jCheckBoxMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem6ActionPerformed
+        // Configurations label
+              // TODO add your handling code here:
+        activeButton("Config");
+        ParentLayout.removeAll();
+        ParentLayout.add(ConfigPanel);
+        ParentLayout.repaint();
+        ParentLayout.revalidate();
+    }//GEN-LAST:event_jCheckBoxMenuItem6ActionPerformed
+
+    private void ConfigurationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigurationsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ConfigurationsActionPerformed
+
     public void clearStockSelection(){
         ProductsOnly.setVisible(true);
         prdlabel.setVisible(true);
@@ -4303,7 +4656,7 @@ public final class UserInterface extends javax.swing.JFrame {
     }
     
     public static void PlayNotification(String type) {
-        AudioFile Af = new AudioFile();
+        AudioPlayer Af = new AudioPlayer();
         try {
             Af.Playme(type);
         } catch (URISyntaxException ex) {
@@ -4361,13 +4714,17 @@ public final class UserInterface extends javax.swing.JFrame {
         }
 
     }
+    
 
-    public static void UserIntfc() throws ClassNotFoundException {
+    public static void UserIntfc() throws ClassNotFoundException, UnsupportedLookAndFeelException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+        
+        
+                
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -4400,26 +4757,32 @@ public final class UserInterface extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu AccountsLabel;
     private javax.swing.JPanel BrandPanel;
     private javax.swing.JButton Brandsbtn;
     private javax.swing.JPanel CashTransfers;
     private javax.swing.JButton CategoryBtn;
     private javax.swing.JPanel CategoryPanel;
     private javax.swing.JPanel ConfigPanel;
+    private javax.swing.JMenu Configurations;
     private javax.swing.JPanel DatedReport;
     private javax.swing.JTable EmailTable;
     public static javax.swing.JLabel EmailnotificationLabel;
     private javax.swing.JPanel Emails;
+    private javax.swing.JMenu File;
     private javax.swing.JLabel LabelProduct;
     private javax.swing.JPanel MenuPanel;
     private javax.swing.JPanel MonthlyReport;
+    private javax.swing.JMenu NotificationMenu;
     private javax.swing.JPanel OrderPanel;
     private javax.swing.JButton Orderbtn;
     private javax.swing.JPanel ParentLayout;
     private javax.swing.JComboBox<String> ProductsOnly;
     private javax.swing.JPanel ProductsPanel;
+    private javax.swing.JMenu Reports;
     private javax.swing.JPanel ReportsPanel;
     private javax.swing.JTextArea SearchProductForm;
+    private javax.swing.JMenu Staff;
     private javax.swing.JPanel StaffPanel;
     private javax.swing.JButton StockAddBtn;
     private javax.swing.JPanel StockPanel;
@@ -4446,14 +4809,20 @@ public final class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel deleteLabelIcon;
     private javax.swing.JLabel deleteLabelIcon1;
     private javax.swing.JLabel deleteLabelIcon2;
+    private javax.swing.JLabel deleteLabelIcon3;
+    private javax.swing.JLabel deleteLabelIcon4;
+    private javax.swing.JLabel deleteLabelIcon5;
     private javax.swing.JButton eightBtn;
     private javax.swing.JButton eightBtn1;
     private javax.swing.JButton eightBtn2;
     private javax.swing.JButton eightBtn3;
     private javax.swing.JTextField email;
+    private javax.swing.JTextField emailMessage;
     private javax.swing.JLabel eraserLabelIcon;
     private javax.swing.JLabel eraserLabelIcon1;
     private javax.swing.JLabel eraserLabelIcon2;
+    private javax.swing.JLabel eraserLabelIcon3;
+    private javax.swing.JLabel eraserLabelIcon4;
     private com.toedter.calendar.JCalendar expiredate;
     private javax.swing.JButton fiveBtn;
     private javax.swing.JButton fourBtn;
@@ -4465,6 +4834,9 @@ public final class UserInterface extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem4;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem5;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -4513,10 +4885,7 @@ public final class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
@@ -4526,9 +4895,6 @@ public final class UserInterface extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
@@ -4577,6 +4943,8 @@ public final class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel searchLabelIcon;
     private javax.swing.JLabel searchLabelIcon1;
     private javax.swing.JLabel searchLabelIcon2;
+    private javax.swing.JLabel searchLabelIcon3;
+    private javax.swing.JLabel searchLabelIcon4;
     private javax.swing.JButton sevenBtn;
     private javax.swing.JButton sixBtn;
     private javax.swing.JRadioButton soundSetting;
@@ -4598,7 +4966,6 @@ public final class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel totalreturns2;
     private javax.swing.JLabel totalreturns3;
     private javax.swing.JTextField transferamount;
-    private javax.swing.JTextField transferamount1;
     private javax.swing.JTable transferedCash;
     private javax.swing.JButton twoBtn;
     private javax.swing.JButton updateProductbtn;
