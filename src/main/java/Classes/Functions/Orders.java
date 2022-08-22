@@ -6,9 +6,12 @@
 package Classes.Functions;
 
 import Classes.AbstractClasses.Order;
+import static Classes.Functions.Products.getProductId;
 import static Classes.Functions.Products.getProductPrice;
+import static Classes.Functions.Products.getProductPricefromName;
 import static Classes.Functions.Stocks.Sales;
 import Database.DBConnection;
+import Interface.UserInterface;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -18,7 +21,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import static com.nkanabo.Tienda.Utilities.milliConverter;
+import static com.nkanabo.Tienda.Utilities.unique;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,9 +33,9 @@ import javax.swing.JOptionPane;
  * @author Nkanabo
  */
 public class Orders {
+    
 
-    public static boolean addOrder(String order_id, String item_id,
-            String product_id, String quantity, Double discount, String backdated) throws ParseException, ClassNotFoundException {
+    public static boolean addOrder(String product_id, double quantity, Double discount, String backdated) throws ParseException, ClassNotFoundException {
         //To change body of generated methods, choose Tools | Templates
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
@@ -37,20 +44,15 @@ public class Orders {
             //System.out.println(product_id.substring(0, product_id.indexOf('-')));
             //product_id = (product_id.split(" - ", 2)[0]);
             product_id = product_id.split(":")[1];
-
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
-
             if (backdated != null) {
                 d1 = LocalDate.parse(backdated);
             }
-
             String today = "" + d1;
-            
             String price = getProductPrice(product_id);
-
             String sql
                     = "INSERT INTO sales_order_items"
-                    + "(item_id,product_id,quantity,list_price,discount,date) VALUES ('" + item_id + "','" + product_id + "',"
+                    + "(product_id,quantity,list_price,discount,date) VALUES ('" + product_id + "',"
                     + "'" + quantity + "','"+ price +"','" + discount + "','" + milliConverter(today) + "')";
             int i = stmt.executeUpdate(sql);
             if (i > 0) {
@@ -141,7 +143,7 @@ public class Orders {
                 String quantity = rs.getString("quantity");
                 String listprice = rs.getString("production_products.list_price");
                 String discount = rs.getString("discount");
-                list.add(new Order(rs.getString("order_id"),
+                list.add(new Order(false,rs.getString("order_id"),
                         rs.getString("product_name"),
                         quantity,
                         Double.parseDouble(listprice),
@@ -150,8 +152,7 @@ public class Orders {
             // STEP 4: Clean-up environment 
             
         } catch (SQLException se) {
-            // Handle errors for JDBC 
-            se.printStackTrace();
+            // Handle errors for JDBC
         }
         return list;
     }
@@ -180,7 +181,7 @@ public class Orders {
                 String quantity = rs.getString("quantity");
                 String listprice = rs.getString("production_products.list_price");
                 String discount = rs.getString("discount");
-                list.add(new Order(rs.getString("order_id"),
+                list.add(new Order(false,rs.getString("order_id"),
                         rs.getString("product_name"),
                         quantity,
                         Double.parseDouble(listprice),
@@ -252,20 +253,20 @@ public class Orders {
         return true;
     }
 
-    public static boolean updateOrder(int order_id, String item_id, String product_id, String quantity, Double price, Double discount, String backdated) throws ParseException, ClassNotFoundException {
+    public static boolean updateOrder(int order_id, String product_name, double quantity, Double price, Double discount, String backdated) throws ParseException, ClassNotFoundException {
         //To change body of generated methods, choose Tools | Templates
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
 //            // STEP 3: Execute a query
-              String id;
-              id = product_id.split(":")[1];
-              int productCode = IntegerConverter(product_id);
+            Products products = new Products();
+            String productCode;
+            productCode = Products.getProductId(product_name);
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
 
-            if (backdated != null) {
-                d1 = LocalDate.parse(backdated);
-            }
+//            if (backdated != null) {
+//                d1 = LocalDate.parse(backdated);
+//            }
             
             String today = "" + d1;
             String sql
@@ -287,5 +288,41 @@ public class Orders {
         }
         return true;
     }
+    
+   public static boolean addOrderFromName(String product_name, double quantity, Double discount, String backdated) throws ClassNotFoundException, ParseException{
+         //To change body of generated methods, choose Tools | Templates
+        try {
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
+            // STEP 3: Execute a query
+            LocalDate d1;
+            backdated = null;
+            if (backdated != null) {
+                d1 = LocalDate.parse(backdated);
+            }
+            else {
+                d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+            }
+            String today = "" + d1;
+            String price = getProductPricefromName(product_name);
+            String product_id = getProductId(product_name);
+            String sql
+                    = "INSERT INTO sales_order_items"
+                    + "(product_id, quantity, list_price, discount, date) VALUES ('" + product_id + "',"
+                    + "'" + quantity + "','"+ price +"','" + discount + "','" + milliConverter(today) + "')";
+            int i = stmt.executeUpdate(sql);
+            if (i > 0) {
+                System.out.println(sql);
+            } else {
+                return false;
+            }
 
+            //STEP 4: Clean-up environment 
+
+        } catch (SQLException se) {
+            // Handle errors for JDBC
+
+        }
+        return true;
+   }
 }

@@ -24,7 +24,7 @@ public class DailyReport {
     public double profit;
     public double totalinvestment;
     public double totalreturns;
-    public int quantity;
+    public double quantity;
     public double superprofit;
     public String date;
     
@@ -35,7 +35,7 @@ public class DailyReport {
     double profit,
     double totalinvestment,
     double totalreturns,
-    int quantity,
+    double quantity,
     double superprofit,
     String date)
     {

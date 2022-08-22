@@ -25,7 +25,7 @@ public class Crudes {
         try {
             
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
@@ -50,7 +50,7 @@ public class Crudes {
             throws SQLException, ClassNotFoundException {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
@@ -76,8 +76,7 @@ public class Crudes {
     public static Boolean deleteBrand(int id) throws SQLException, ClassNotFoundException {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
-            // STEP 3: Execute a query 
+            Statement stmt;
             stmt = conna.createStatement();
 
             String updatequery
@@ -105,7 +104,7 @@ public class Crudes {
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
             String sqlquery = "SELECT * FROM production_brands";
@@ -128,13 +127,12 @@ public class Crudes {
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
             String sqlquery = "SELECT * FROM production_brands";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
-                System.out.println(rs.getString(1));
 //             System.out.println(rs.getString("brand_id"));
 //             System.out.println(rs.getString("brand_name"));
                 rowValues.add(rs.getString("brand_id"));
@@ -148,5 +146,25 @@ public class Crudes {
             se.printStackTrace();
         }
         //return rowValues; 
+    }
+
+    public static boolean deleteRow(int brandId) throws ClassNotFoundException {
+          try {
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
+            // STEP 3: Execute a query 
+            String updatequery
+                    = "DELETE production_brands where brand_id='" + brandId + "'";
+            int rsu = stmt.executeUpdate(updatequery);
+            if (rsu != 1) {
+                return false;
+            }
+
+            // STEP 4: Clean-up environment 
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        return true;
     }
 }

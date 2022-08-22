@@ -64,6 +64,21 @@ public final class Utilities {
         return s;
     }
 
+        public static double DoubleConverter(String z) {
+       
+        if (z != null) {
+            try {
+                return Double.parseDouble(z.trim());
+            } catch (NumberFormatException pe) {
+                System.out.println(pe);
+            }
+        }
+        else {
+            System.out.println("no value provided.");
+        }
+        return s;
+    }
+        
     public static void Notifications(String type, String message) {
 //        JOptionPane.showMessageDialog(new HomeFrame, "Hello Java");
     }
@@ -100,7 +115,6 @@ public final class Utilities {
 
     public static void DateCompariosn(String date1, String date2) {
         try {
-
             SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
             Date d1 = sdformat.parse(date1);
             Date d2 = sdformat.parse(date2);

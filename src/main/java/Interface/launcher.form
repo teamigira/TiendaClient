@@ -36,7 +36,7 @@
     <Container class="javax.swing.JPanel" name="ActivationCode">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="cc" green="cc" red="cc" type="rgb"/>
+          <Color blue="ff" green="ff" id="white" palette="1" red="ff" type="palette"/>
         </Property>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -56,9 +56,9 @@
                       <Component id="jButton1" min="-2" pref="119" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="key1" min="-2" pref="128" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                           <Component id="key2" min="-2" pref="128" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jLabel1" min="-2" pref="22" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                           <Component id="key3" min="-2" pref="128" max="-2" attributes="0"/>
@@ -69,7 +69,7 @@
                       </Group>
                       <Component id="response" alignment="0" min="-2" pref="320" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="186" max="32767" attributes="0"/>
+                  <EmptySpace pref="181" max="32767" attributes="0"/>
               </Group>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
@@ -99,7 +99,7 @@
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jButton1" min="-2" pref="39" max="-2" attributes="0"/>
-                  <EmptySpace pref="168" max="32767" attributes="0"/>
+                  <EmptySpace pref="202" max="32767" attributes="0"/>
               </Group>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
@@ -115,7 +115,7 @@
         <Component class="javax.swing.JLabel" name="KeyLabel">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Lucida Fax" size="16" style="1"/>
+              <Font name="Segoe UI Light" size="18" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Enter the Product Code"/>
           </Properties>
@@ -125,6 +125,9 @@
         <Component class="javax.swing.JButton" name="jButton1">
           <Properties>
             <Property name="text" type="java.lang.String" value="SUBMIT"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton1MouseClicked"/>

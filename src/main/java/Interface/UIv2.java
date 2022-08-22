@@ -34,7 +34,7 @@ import Classes.Utilities.ExcelFormat;
 import Classes.Utilities.Resources;
 import Classes.Utilities.StockThread;
 import Interface.Sales.EditSale;
-import Interface.Sales.Return_Exchange;
+import Interface.Sales.ReturnProduct;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import static com.nkanabo.Tienda.Utilities.DoubleConverter;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
@@ -50,11 +50,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
-import static org.jdesktop.swingx.graphics.BlendComposite.Color;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
+import Interface.Products.*;
 
 /*
  *
@@ -259,7 +259,7 @@ public final class UIv2 extends javax.swing.JFrame {
         //The preferred blue 102,102,102
         col.setCellRenderer(new MyRenderer(new Color (255,255,255), new Color (0,102,51)));
         //col.setFont(col.getFont().deriveFont(Font.BOLD, 14f));
-//        col.setFont(new Font("Arial", Font.BOLD, 10));
+//        col.setCellRenderer(setFont(new Font("Arial", Font.BOLD, 10)));
       
         this.setLocationRelativeTo(null);
         try {
@@ -989,7 +989,7 @@ public final class UIv2 extends javax.swing.JFrame {
         SalesTablePanel.setBackground(new java.awt.Color(255, 255, 255));
         SalesTablePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
-        SalesTable.setFont(new java.awt.Font("Gadugi", 0, 24)); // NOI18N
+        SalesTable.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
         SalesTable.setForeground(new java.awt.Color(102, 102, 102));
         SalesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1579,9 +1579,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private void boxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boxMouseClicked
         // TODO add your handling code here:
         getActiveClass("box");
-        AddProduct prd;
-        prd = new AddProduct();
-        AddProduct.main(null);
+        RegisterProduct.main(null);
     }//GEN-LAST:event_boxMouseClicked
 
     private void statsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statsMouseClicked
@@ -1639,11 +1637,9 @@ public final class UIv2 extends javax.swing.JFrame {
     private void EditLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditLabelMouseClicked
         Boolean selected = ((Boolean)SellingModel.getValueAt(row, 0));
         if(selected == true){
-         
-            EditSale editSale;
             try {
-                editSale = new EditSale();
-           EditSale.setMeUp(getProductDetails());
+                EditSale editSale;
+                EditSale.setMeUp(getProductDetails());
             } catch (ClassNotFoundException | ParseException ex) {
                 Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1697,8 +1693,7 @@ public final class UIv2 extends javax.swing.JFrame {
 
     private void ExchangeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ExchangeLabelMouseClicked
         // Calling the exchange JFrame
-        Return_Exchange return_Exchange = new Return_Exchange();
-        Return_Exchange.main(null);
+        ReturnProduct.main(null);
     }//GEN-LAST:event_ExchangeLabelMouseClicked
 
     /**

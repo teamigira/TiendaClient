@@ -5,84 +5,82 @@
  */
 package Database;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Optional;
 import org.flywaydb.core.Flyway;
-
+import org.flywaydb.core.api.output.MigrateResult;
+import org.flywaydb.core.api.output.RepairResult;
 
 /**
  *
  * @author Nkanabo
  */
 public class DBConnection {
-   
-    
+
     /**
      * H2 Database Connection
      */
     private static DBConnection dbConnection = null;
-    
+
     /**
      * Database username
      */
     private Optional<String> username = Optional.of("root");
-    
+
     /**
      * Database password
      */
-    
     private Optional<String> password = Optional.of("tazamaroad");
-    
+
     /**
      * Database Location
      */
     private Optional<String> url = Optional.of("~/Tienda");
-    
-    private Connection connection = null;
-    
-    
-    /**
-     * Creating an Instance of Database Connection, which we will be 
-     * accessible in entire applications
-     * @return 
-     */
 
+    private Connection connection = null;
+
+    /**
+     * Creating an Instance of Database Connection, which we will be accessible
+     * in entire applications
+     *
+     * @return
+     */
     public static DBConnection getConnectionInstance() {
-        if ( dbConnection == null ) {
-             dbConnection = new DBConnection();
+        if (dbConnection == null) {
+            dbConnection = new DBConnection();
         }
         return dbConnection;
     }
-    
+
     /**
      * Return Connection and create it when is null
-     * @return 
-     * @throws java.sql.SQLException 
+     *
+     * @return
+     * @throws java.sql.SQLException
      */
     public Connection getConnection() throws SQLException, ClassNotFoundException {
-        if (connection == null) {            
-            try{
+        if (connection == null) {
+            try {
                 Class.forName("org.h2.Driver");
-            }
-            catch(ClassNotFoundException ex){
+            } catch (ClassNotFoundException ex) {
                 System.out.println(ex.getMessage());
             }
-            
+
             connection = DriverManager.getConnection(
-                    "jdbc:h2:"+url.get()+"/Tienda", 
-                    username.get(), 
+                    "jdbc:h2:" + url.get() + "/Tienda",
+                    username.get(),
                     password.get()
             );
         }
         return connection;
     }
-    
+
     /**
      * Setting Database username
-     * @param username 
+     *
+     * @param username
      */
     public void setUsername(Optional<String> username) {
         this.username = username;
@@ -90,7 +88,8 @@ public class DBConnection {
 
     /**
      * Setting Database password
-     * @param password 
+     *
+     * @param password
      */
     public void setPassword(Optional<String> password) {
         this.password = password;
@@ -98,39 +97,67 @@ public class DBConnection {
 
     /**
      * Setting Database url
-     * @param url 
+     *
+     * @param url
      */
     public void setUrl(Optional<String> url) {
         this.url = url;
     }
-    
+
     /**
-     * Close Connection only if Connection is available
-     * otherwise do nothing
-     * @throws SQLException 
+     * Close Connection only if Connection is available otherwise do nothing
+     *
+     * @throws SQLException
      */
     public void closeConnection() throws SQLException {
-        if (connection != null)
+        if (connection != null) {
             connection.close();
+        }
     }
-    
+
     /**
      * Checking if Connection is Available
-     * @return 
+     *
+     * @return
      */
     public boolean isAvailable() {
         return connection != null;
     }
 
-
     /**
-     * 
+     *
      */
-    public void migrate() {
-        String uri = "jdbc:h2:" + url.get()+"/Tienda";
+    
+    public void repair() {
+        String uri = "jdbc:h2:" + url.get() + "/Tienda";
+        String user = username.get();
+        String pass = password.get();
+        String urlc = "jdbc:h2:" + url.get() + "/Tienda;DATABASE_TO_UPPER=false";
+         RepairResult flyway = 
+                 Flyway.configure()
+                .dataSource(urlc, user, pass)
+                .defaultSchema("Tienda")
+                .schemas("Tienda")
+                .baselineOnMigrate(true)
+                .load()
+                .repair();
         
-        Flyway flyway = Flyway
+    }
+
+    public void migrate() {
+        String uri = "jdbc:h2:" + url.get() + "/Tienda";
+        String user = username.get();
+        String pass = password.get();
+        String urlc = "jdbc:h2:" + url.get() + "/Tienda;DATABASE_TO_UPPER=false";
+
+        MigrateResult flyway;
+        flyway = Flyway
                 .configure()
-                .dataSource(uri, username.get(), password.get()).load();
+                .dataSource(urlc, user, pass)
+                .defaultSchema("Tienda")
+                .schemas("Tienda")
+                .baselineOnMigrate(true)
+                .load()
+                .migrate();
     }
 }

@@ -33,13 +33,13 @@ public class Auth {
             //else
             //request for log in
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
-            long today = 0;
+            long today;
 
             today = milliConverter(String.valueOf(d1));
 
             DBConnection dbc = DBConnection.getConnectionInstance();
             Connection con = dbc.getConnection();
-            Statement stmt = null;
+            Statement stmt;
             stmt = con.createStatement();
             String sql = "SELECT * FROM app_key"
                     + " where activation_status = 0 OR "

@@ -5,11 +5,9 @@
  */
 package Classes.Functions;
 
-import Classes.AbstractClasses.DailyReport;
-import static Database.DBConnect.getConnection;
+import Classes.AbstractClasses.DailyReport;import Classes.Utilities.NumericalFormats;
 import Database.DBConnection;
-import static com.nkanabo.Tienda.Utilities.DateMilli;
-import static com.nkanabo.Tienda.Utilities.milliConverter;
+import static com.nkanabo.Tienda.Utilities.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,7 +32,7 @@ public class Reports {
 
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
@@ -45,7 +43,7 @@ public class Reports {
             ResultSet rs = stmt.executeQuery(query2);
 
             int b = 0;
-            double profit = 0.0;
+            double profit;
             double totalreturns = 0.0;
             double totalinvestment = 0.0;
             double netProfit = 0.0;
@@ -62,7 +60,7 @@ public class Reports {
                 date = DateMilli(date);
 
                 profit = (Double.parseDouble(list_price) - Double.parseDouble(retail_price));
-                int c = Integer.parseInt(quantity);
+                Double c = Double.parseDouble(quantity);
                 totalreturns += Double.parseDouble(list_price) * c;
                 totalinvestment += Double.parseDouble(retail_price) * c;
                 superprofit += profit * c;
@@ -91,7 +89,7 @@ public class Reports {
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             //STEP 3: Execute a query 
             stmt = conna.createStatement();
 
@@ -105,7 +103,6 @@ public class Reports {
             ResultSet rs = stmt.executeQuery(query2);
 
             int b = 0;
-            double profit = 0.0;
             double totalreturns = 0.0;
             double totalinvestment = 0.0;
             double netProfit = 0.0;
@@ -121,8 +118,8 @@ public class Reports {
                 String date = rs.getString("sales_order_items.date");
                 date = DateMilli(date);
 
-                profit = (Double.parseDouble(list_price) - Double.parseDouble(retail_price));
-                int c = Integer.parseInt(quantity);
+                double profit = Double.parseDouble(list_price) - Double.parseDouble(retail_price);
+                Double c = Double.parseDouble(quantity);
                 totalreturns += Double.parseDouble(list_price) * c;
                 totalinvestment += Double.parseDouble(retail_price) * c;
                 superprofit += profit * c;
@@ -151,7 +148,7 @@ public class Reports {
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
@@ -164,7 +161,6 @@ public class Reports {
             ResultSet rs = stmt.executeQuery(query2);
 
             int b = 0;
-            double profit = 0.0;
             double totalreturns = 0.0;
             double totalinvestment = 0.0;
             double netProfit = 0.0;
@@ -180,8 +176,8 @@ public class Reports {
                 String date = rs.getString("sales_order_items.date");
                 date = DateMilli(date);
 
-                profit = (Double.parseDouble(list_price) - Double.parseDouble(retail_price));
-                int c = Integer.parseInt(quantity);
+                double profit = Double.parseDouble(list_price) - Double.parseDouble(retail_price);
+                Double c = Double.parseDouble(quantity);
                 totalreturns += Double.parseDouble(list_price) * c;
                 totalinvestment += Double.parseDouble(retail_price) * c;
                 superprofit += profit * c;
@@ -210,7 +206,7 @@ public class Reports {
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
             long fb = milliConverter(db);
@@ -221,7 +217,6 @@ public class Reports {
             ResultSet rs = stmt.executeQuery(query2);
 
             int b = 0;
-            double profit = 0.0;
             double totalreturns = 0.0;
             double totalinvestment = 0.0;
             double netProfit = 0.0;
@@ -237,8 +232,8 @@ public class Reports {
                 String date = rs.getString("sales_order_items.date");
                 date = DateMilli(date);
 
-                profit = (Double.parseDouble(list_price) - Double.parseDouble(retail_price));
-                int c = Integer.parseInt(quantity);
+                double profit = Double.parseDouble(list_price) - Double.parseDouble(retail_price);
+                Double c = Double.parseDouble(quantity);
                 totalreturns += Double.parseDouble(list_price) * c;
                 totalinvestment += Double.parseDouble(retail_price) * c;
                 superprofit += profit * c;
@@ -267,7 +262,7 @@ public class Reports {
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
@@ -277,7 +272,6 @@ public class Reports {
             ResultSet rs = stmt.executeQuery(query2);
 
             int b = 0;
-            double profit = 0.0;
             double totalreturns = 0.0;
             double totalinvestment = 0.0;
             double netProfit = 0.0;
@@ -293,8 +287,8 @@ public class Reports {
                 String date = rs.getString("sales_order_items.date");
                 date = DateMilli(date);
 
-                profit = (Double.parseDouble(list_price) - Double.parseDouble(retail_price));
-                int c = Integer.parseInt(quantity);
+                double profit = Double.parseDouble(list_price) - Double.parseDouble(retail_price);
+                Double c = Double.parseDouble(quantity);
                 totalreturns += Double.parseDouble(list_price) * c;
                 totalinvestment += Double.parseDouble(retail_price) * c;
                 superprofit += profit * c;
@@ -318,4 +312,55 @@ public class Reports {
         return list;
     }
 
+    
+        public static String Summaryeport() throws ClassNotFoundException {
+        ArrayList<DailyReport> list = new ArrayList<DailyReport>();
+        ArrayList rowValues = new ArrayList();
+        Double overlInvestment = 0.0;
+        try {
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt;
+            // STEP 3: Execute a query 
+            stmt = conna.createStatement();
+
+            String query2 = "SELECT * from  production_products JOIN production_stocks on production_products.product_id = production_stocks.product_id";
+            ResultSet rs = stmt.executeQuery(query2);
+
+            int b = 0;
+            double totalreturns = 0.0;
+            double totalinvestment = 0.0;
+            double netProfit = 0.0;
+            double superprofit = 0.0;
+
+            while (rs.next()) {
+                String list_price = rs.getString("production_products.list_price");
+                String retail_price = rs.getString("production_products.retail_price");
+                String quantity = rs.getString("production_stocks.quantity");
+//                date = DateMilli(date);
+                double profit = Double.parseDouble(list_price) - Double.parseDouble(retail_price);
+                Double c = Double.parseDouble(quantity);
+                totalreturns += Double.parseDouble(list_price) * c;
+                
+                overlInvestment += Double.parseDouble(retail_price) * c;
+                superprofit += profit * c;
+/*                list.add(new DailyReport(
+                        product_name,
+                        retail_price,
+                        list_price,
+                        profit,
+                        totalreturns,
+                        totalinvestment,
+                        c,
+                        superprofit,
+                        date)); */
+            }        
+         }
+        
+             catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        NumericalFormats nft = new NumericalFormats();
+        return nft.accountsFormat(String.valueOf(overlInvestment));
+    }
 }

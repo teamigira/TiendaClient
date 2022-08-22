@@ -148,13 +148,16 @@ public final class UserInterface extends javax.swing.JFrame {
 
     /**
      * Creates new form UserInterface
+     * @throws java.net.URISyntaxException
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.text.ParseException
     */
     
     public UserInterface() throws URISyntaxException, ClassNotFoundException, ParseException {
         System.setProperty("prism.allowhidpi", "false");
         initComponents();
         StockThread th = new StockThread();
-        th.main();
+        StockThread.main();
 
            if (Instance != null) {
             try {
@@ -3902,7 +3905,7 @@ public final class UserInterface extends javax.swing.JFrame {
     private void saleproductbtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleproductbtnUpdateActionPerformed
         // Updating the values of order
         // This is conditional to users (administrator's) configurations]]
-        saleproductbtnUpdate.setEnabled(false);
+     /*   saleproductbtnUpdate.setEnabled(false);
         saleproductbtnUpdate.setText("Wait");
 
         try {
@@ -3917,7 +3920,7 @@ public final class UserInterface extends javax.swing.JFrame {
             String backdated = dcn.format(backdate.getDate());
             try {
                 Stocks.editStockFromOrdersEd(order_id, product_id, quantity);
-                if (Orders.updateOrder(order_id, item_id, product_id, newquantity, price, discount, backdated)) {
+//                if (Orders.updateOrder(order_id, item_id, product_id, newquantity, price, discount, backdated)) {
                     try {
                         loadJtableValues();
                     } catch (SQLException ex) {
@@ -3950,17 +3953,17 @@ public final class UserInterface extends javax.swing.JFrame {
             Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-
+*/
     }//GEN-LAST:event_eraserLabelIcon1MouseClicked
 
     private void deleteLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIcon1MouseClicked
         // Button to delete the specific product
 
         //Delete sales.
-        int reply = JOptionPane.showConfirmDialog(this, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
-
+        int reply =
+        JOptionPane.showConfirmDialog(this, "Are you sure?",
+                "Confirm", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
-
             row = productsTable.getSelectedRow();
             column = productsTable.getColumnCount();
             int productId = IntegerConverter(productModel.getValueAt(row, 0).toString());

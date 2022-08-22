@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 public class StockThread {
 
-    long delay = 10 * 1000; // delay in milliseconds
+    long delay = 25 * 1000; // delay in milliseconds
     LoopTask task = new LoopTask();
     Timer timer = new Timer("TaskName");
 

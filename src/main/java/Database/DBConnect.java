@@ -44,7 +44,8 @@ public class DBConnect {
            stmt = conn.createStatement();
            return conn;
        } catch (ClassNotFoundException ex) {
-           Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
+           Logger.getLogger(DBConnect.class.getName())
+                   .log(Level.SEVERE, null, ex);
            return null;
        }
    }

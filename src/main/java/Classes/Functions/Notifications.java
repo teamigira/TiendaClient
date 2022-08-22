@@ -1,9 +1,10 @@
 package Classes.Functions;
 
+import Classes.AbstractClasses.Email;
 import static Classes.Functions.Notifications.confirmCheck;
 import Database.DBConnection;
 import Interface.UserInterface;
-import static Interface.UserInterface.EmailnotificationLabel;
+import static com.nkanabo.Tienda.Utilities.DateMilli;
 import static com.nkanabo.Tienda.Utilities.milliConverter;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -13,6 +14,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -31,7 +33,26 @@ public class Notifications {
 
     public static LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
     public static String today = "" + d1;
-    public String foo;
+
+    public static boolean deleteRow(int emailId) throws ClassNotFoundException, ClassNotFoundException {
+               try {
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
+            // STEP 3: Execute a query 
+            String updatequery
+                    = "DELETE notifications where notice_id='" + emailId + "'";
+            int rsu = stmt.executeUpdate(updatequery);
+            if (rsu != 1) {
+                return false;
+            }
+
+            // STEP 4: Clean-up environment 
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        return true;
+   }
 
     
     public void Notifications() throws URISyntaxException, ClassNotFoundException {
@@ -42,7 +63,7 @@ public class Notifications {
     public static boolean notify(String product_name, String quantity, String productId) throws ClassNotFoundException, ParseException {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
             String pid;
@@ -66,7 +87,7 @@ public class Notifications {
     public static boolean confirmCheck(String code) throws ClassNotFoundException, ParseException {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query
             stmt = conna.createStatement();
             String sql
@@ -75,29 +96,73 @@ public class Notifications {
              if (rs.next()) {
             return true;
              }
-            // STEP 4: Clean-up environment 
+            // STEP 4: Clean-up environment
         } catch (SQLException se) {
             // Handle errors for JDBC
         }
         return false;
     }
-    
-    public static void crawlEmails() throws ClassNotFoundException, URISyntaxException {
+
+    public static void crawlEmails() throws ClassNotFoundException, URISyntaxException, ParseException {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query
             stmt = conna.createStatement();
             String sql
-                    = "SELECT code,message from notifications WHERE viewed = '0'";
+                    = "SELECT code,message from notifications WHERE viewed = '0' ORDER BY notice_id DESC";
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
              String message = rs.getString("message");
-             UserInterface.refreshPage(message);
+             UserInterface.setEmailNotification(message);
             }
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC
         }
+    }
+    
+        public static ArrayList listNotifications() throws ClassNotFoundException{
+        ArrayList<Email> list = new ArrayList<Email>();
+        ArrayList rowValues = new ArrayList();
+        try {
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt;
+            // STEP 3: Execute a query 
+            stmt = conna.createStatement();
+            String sqlquery = "SELECT * FROM notifications ORDER BY notice_id DESC";
+            ResultSet rs = stmt.executeQuery(sqlquery);
+            while (rs.next()) {
+                //rowValues.add(rs.getInt("brand_id"), rs.getString("brand_name"));
+                list.add(new Email(rs.getString("notice_id"),
+                         DateMilli(rs.getString("date")),rs.getString("title"),rs.getString("message")));
+            }
+            // STEP 4: Clean-up environment 
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        return list;
+    }
+        
+         public static Boolean deleteEmails() throws SQLException, ClassNotFoundException {
+        try {
+            Connection conna = DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
+            // STEP 3: Execute a query 
+            String updatequery
+                    = "DELETE notifications";
+            int rsu = stmt.executeUpdate(updatequery);
+            if (rsu != 1) {
+                return false;
+            }
+
+            // STEP 4: Clean-up environment 
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        return true;
+
     }
 }

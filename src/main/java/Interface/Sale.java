@@ -115,6 +115,7 @@ public class Sale extends javax.swing.JFrame {
           }
           UserSettings us = new UserSettings();
           TotalLabel.setText(us.getSystemCurrency(Total));
+          System.out.println(us.getSystemCurrency(Total));
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -237,9 +238,7 @@ public class Sale extends javax.swing.JFrame {
         salePanel.setLayout(salePanelLayout);
         salePanelLayout.setHorizontalGroup(
             salePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(salePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         salePanelLayout.setVerticalGroup(
             salePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -443,9 +442,9 @@ public class Sale extends javax.swing.JFrame {
             .addGroup(topSalePanelLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(saveLabel)
-                .addGap(45, 45, 45)
-                .addComponent(customerslabel, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addGap(35, 35, 35)
+                .addComponent(customerslabel, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(discountlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(commentslabel)
@@ -455,7 +454,7 @@ public class Sale extends javax.swing.JFrame {
                 .addComponent(adminlabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 218, Short.MAX_VALUE)
                 .addComponent(closelabel)
                 .addContainerGap())
         );
@@ -644,6 +643,7 @@ public class Sale extends javax.swing.JFrame {
             String backdated = "";
             if (Orders.addOrderFromName(product_id, quantity, discount, backdated)) {
                 boolean stockUpdate = false;
+                setTotal();
                 try {
                     stockUpdate = Stocks.editStock(product_id, quantity);
                 } catch (ClassNotFoundException ex) {
@@ -654,8 +654,6 @@ public class Sale extends javax.swing.JFrame {
                 }
                 JOptionPane.showMessageDialog(this, "Succesfully");
                 loadJtableValues();
-                totalPanel.repaint();
-                totalPanel.revalidate();
                 SearchProductForm.setText("Code, Product name, Bar code scanner");
 //                LoadStockProducts();
             }

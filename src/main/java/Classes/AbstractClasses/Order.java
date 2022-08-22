@@ -11,19 +11,20 @@ package Classes.AbstractClasses;
  * 
  */
 public class Order {
+    public boolean selected;
     public String orderid;
     public String product;
-    public int quantity;
+    public String quantity;
     public double listprice;
     public double discount;
     
-    public Order(String orderid, String prd, int qty, double lprc, double dsc){
+    public Order(boolean selected, String orderid, String prd, String qty, double lprc, double dsc){
         this.orderid = orderid;
         this.product = prd;
         this.quantity = qty;
         this.listprice = lprc;
         this.discount = dsc;
-        
+        this.selected = false;
     }
     
 }

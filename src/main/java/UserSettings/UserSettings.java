@@ -29,6 +29,11 @@ public class UserSettings {
          myprefs.put("sounds", "false");
     }
      
+     public String getSystemCurrency(Double price){
+         myprefs.put("Currency", "Tsh");
+         return "Tsh " + price;
+     }
+     
     public void testKeys(){
           //myprefs.remove("sounds");
           System.out.println("The current status" +myprefs.get("product_key", "root"));
@@ -45,11 +50,8 @@ public class UserSettings {
     
    public void UserSettings() throws FileNotFoundException{
        try {
-           myprefs.exportNode(new FileOutputStream("Preferences.xml"));
-      
-       } catch (IOException ex) {
-           Logger.getLogger(UserSettings.class.getName()).log(Level.SEVERE, null, ex);
-       } catch (BackingStoreException ex) {
+           myprefs.exportNode(new FileOutputStream("Tienda-Preferences.xml"));
+       } catch (IOException | BackingStoreException ex) {
            Logger.getLogger(UserSettings.class.getName()).log(Level.SEVERE, null, ex);
        }
    }

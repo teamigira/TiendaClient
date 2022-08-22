@@ -4,16 +4,22 @@
  */
 package Interface.Sales;
 
+import Classes.Functions.Orders;
+import Classes.Functions.Stocks;
 import Classes.Utilities.SearchEngine;
-import Interface.UIv2;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
+import static com.nkanabo.Tienda.Utilities.DoubleConverter;
+import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import java.awt.Component;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,22 +30,28 @@ public class EditSale extends javax.swing.JFrame {
     /**
      * Creates new form EditSale
      */
-    
     private final DefaultListModel mod;
     private static ArrayList<String> productDetails;
-        
+    private static String id;
+    public static String quantity;
+    public static String name;
+    public static String product_price;
+    public static String discountoffere;
+
     public EditSale() throws ClassNotFoundException, ParseException {
         FlatGitHubIJTheme.setup();
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setResizable(true);  
+        this.setResizable(true);
         this.setExtendedState(getExtendedState() | EditSale.MAXIMIZED_BOTH);
-        
         mod = new DefaultListModel();
         autocompleteProducts.setModel(mod);
         Component add;
         add = jPopupMenu1.add(Autocomplete);
-        price.setText("trial");
+        price.setText(product_price);
+        quantityreturn.setText(quantity);
+        SearchProductForm.setText(name);
+        discount.setText(discountoffere);
     }
 
     /**
@@ -69,6 +81,8 @@ public class EditSale extends javax.swing.JFrame {
         quantityreturn = new javax.swing.JTextField();
         price = new javax.swing.JTextField();
         returnquantitylabel1 = new javax.swing.JLabel();
+        discount = new javax.swing.JTextField();
+        returnquantitylabel2 = new javax.swing.JLabel();
 
         autocompleteProducts.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         autocompleteProducts.setForeground(new java.awt.Color(0, 153, 255));
@@ -134,22 +148,38 @@ public class EditSale extends javax.swing.JFrame {
         SaveLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-checkmark-32.png"))); // NOI18N
         SaveLabel.setText("Save");
         SaveLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        SaveLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SaveLabelMouseClicked(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-ban-32.png"))); // NOI18N
         jLabel1.setText("Cancel");
         jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/erasericon.png"))); // NOI18N
         jLabel2.setText("Clear");
         jLabel2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel2MouseClicked(evt);
+            }
+        });
 
         jSeparator1.setForeground(javax.swing.UIManager.getDefaults().getColor("Actions.GreyInline"));
         jSeparator1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 255), 5));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Sale Details"));
 
+        selectprdlabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         selectprdlabel.setText("Select Product");
 
         SearchProductForm.setBackground(new java.awt.Color(255, 255, 204));
@@ -194,11 +224,23 @@ public class EditSale extends javax.swing.JFrame {
             }
         });
 
+        returnquantitylabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         returnquantitylabel.setText("Quantity");
 
-        price.setEditable(false);
+        quantityreturn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
+        price.setEditable(false);
+        price.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        price.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+
+        returnquantitylabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         returnquantitylabel1.setText("Price");
+
+        discount.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        discount.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        returnquantitylabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        returnquantitylabel2.setText("Discount");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -209,12 +251,14 @@ public class EditSale extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(selectprdlabel)
                     .addComponent(returnquantitylabel)
-                    .addComponent(returnquantitylabel1))
+                    .addComponent(returnquantitylabel1)
+                    .addComponent(returnquantitylabel2))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(SearchProductForm, javax.swing.GroupLayout.PREFERRED_SIZE, 621, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(quantityreturn, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(discount, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(68, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -232,7 +276,11 @@ public class EditSale extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(returnquantitylabel1)
                     .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(353, Short.MAX_VALUE))
+                .addGap(22, 22, 22)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(returnquantitylabel2)
+                    .addComponent(discount, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(410, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout EditSalePanelLayout = new javax.swing.GroupLayout(EditSalePanel);
@@ -327,7 +375,7 @@ public class EditSale extends javax.swing.JFrame {
     }//GEN-LAST:event_SearchProductFormActionPerformed
 
     private void SearchProductFormPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_SearchProductFormPropertyChange
-      
+
     }//GEN-LAST:event_SearchProductFormPropertyChange
 
     private void SearchProductFormKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchProductFormKeyReleased
@@ -339,15 +387,15 @@ public class EditSale extends javax.swing.JFrame {
             SearchEngine searchEngine = new SearchEngine();
             try {
                 //                for(String item:searchEngine.ProductsearchSuggestions(Search)){
-                    for (String item : searchEngine.productsSearch(Search)) {
-                        System.out.println("selected item" + item);
-                        mod.addElement(item);
-                    }
-                } catch (ClassNotFoundException | ParseException | SQLException ex) {
-                    Logger.getLogger(EditSale.class.getName()).log(Level.SEVERE, null, ex);
+                for (String item : searchEngine.productsSearch(Search)) {
+                    System.out.println("selected item" + item);
+                    mod.addElement(item);
                 }
-                jPopupMenu1.show(SearchProductForm, 0, SearchProductForm.getHeight());
+            } catch (ClassNotFoundException | ParseException | SQLException ex) {
+                Logger.getLogger(EditSale.class.getName()).log(Level.SEVERE, null, ex);
             }
+            jPopupMenu1.show(SearchProductForm, 0, SearchProductForm.getHeight());
+        }
     }//GEN-LAST:event_SearchProductFormKeyReleased
 
     private void autocompleteProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_autocompleteProductsMouseClicked
@@ -357,25 +405,61 @@ public class EditSale extends javax.swing.JFrame {
         SearchProductForm.setText(s);
     }//GEN-LAST:event_autocompleteProductsMouseClicked
 
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+        // TODO add your handling code here:
+        price.setText("");
+        quantityreturn.setText("");
+        SearchProductForm.setText("");
+    }//GEN-LAST:event_jLabel2MouseClicked
+
+    private void SaveLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveLabelMouseClicked
+        Double qty = DoubleConverter(quantityreturn.getText());
+        Double prc = DoubleConverter(product_price);
+        Double orderdiscount = DoubleConverter(discount.getText());
+            LocalDateTime backdate = LocalDateTime.now();
+            String day = backdate.toString();
+        try {
+            SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
+            System.out.println(backdate);
+//          String backdated = dcn.format(backdate);
+            int iid = IntegerConverter(id);
+            Stocks.editStockFromOrdersEd(iid, name, qty);
+            if (Orders.updateOrder(iid, name, qty, prc,
+                    orderdiscount, day)) {
+                JOptionPane.showMessageDialog(this, "Succesfully");
+            }
+        } catch (ClassNotFoundException | ParseException  ex) {
+            Logger.getLogger(EditSale.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_SaveLabelMouseClicked
+
     /**
      * @param c
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.text.ParseException
      */
     
-    public static void setMeUp(ArrayList<String> c) throws ClassNotFoundException, ParseException{
-        quantityreturn.setText(c.get(0));
-        SearchProductForm.setText(c.get(2));
-        main(null);
-        quantityreturn.setText(c.get(0));
-        System.out.println(c.get(1));
+    public static void test(){
+        
     }
     
+    public static void setMeUp(ArrayList<String> c) throws ClassNotFoundException, ParseException {
+        id = c.get(0);
+        name = c.get(1);
+        product_price = c.get(2);
+        quantity = c.get(3);
+        discountoffere = c.get(4);
+        main(null);
+    }
+
     public static void main(String[] args) throws ClassNotFoundException,
-        ParseException {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+            ParseException {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -383,17 +467,9 @@ public class EditSale extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditSale.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditSale.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditSale.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(EditSale.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 new EditSale().setVisible(true);
@@ -409,10 +485,11 @@ public class EditSale extends javax.swing.JFrame {
     private javax.swing.JLabel SaveLabel;
     public static javax.swing.JTextField SearchProductForm;
     private javax.swing.JList<String> autocompleteProducts;
+    public static javax.swing.JTextField discount;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel1;
+    private static javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JSeparator jSeparator1;
@@ -421,6 +498,7 @@ public class EditSale extends javax.swing.JFrame {
     public static javax.swing.JTextField quantityreturn;
     private javax.swing.JLabel returnquantitylabel;
     private javax.swing.JLabel returnquantitylabel1;
+    private javax.swing.JLabel returnquantitylabel2;
     private javax.swing.JLabel selectprdlabel;
     // End of variables declaration//GEN-END:variables
 }

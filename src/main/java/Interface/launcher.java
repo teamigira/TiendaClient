@@ -9,8 +9,8 @@ import static Authentication.Auth.Login;
 import static Authentication.Encrpytion.encrypt;
 import static Database.DBConnect.getConnection;
 import UserSettings.UserSettings;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import static com.nkanabo.Tienda.Utilities.milliConverter;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +25,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
@@ -40,6 +39,7 @@ static launcher Instance;
      */
     public launcher() throws URISyntaxException, IOException {
 //        setPreferredSize(new Dimension(450, 260));
+        FlatGitHubIJTheme.setup();
         initComponents();
 
         if (Instance != null) {
@@ -83,13 +83,14 @@ static launcher Instance;
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        ActivationCode.setBackground(new java.awt.Color(204, 204, 204));
+        ActivationCode.setBackground(java.awt.Color.white);
         ActivationCode.setBorder(javax.swing.BorderFactory.createTitledBorder("Product activation"));
 
-        KeyLabel.setFont(new java.awt.Font("Lucida Fax", 1, 16)); // NOI18N
+        KeyLabel.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         KeyLabel.setText("Enter the Product Code");
 
         jButton1.setText("SUBMIT");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);
@@ -126,9 +127,9 @@ static launcher Instance;
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(ActivationCodeLayout.createSequentialGroup()
                         .addComponent(key1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21)
+                        .addGap(28, 28, 28)
                         .addComponent(key2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
                         .addComponent(key3, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -137,7 +138,7 @@ static launcher Instance;
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(key4, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(response, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(186, Short.MAX_VALUE))
+                .addContainerGap(181, Short.MAX_VALUE))
             .addGroup(ActivationCodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(ActivationCodeLayout.createSequentialGroup()
                     .addGap(461, 461, 461)
@@ -161,7 +162,7 @@ static launcher Instance;
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(168, Short.MAX_VALUE))
+                .addContainerGap(202, Short.MAX_VALUE))
             .addGroup(ActivationCodeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(ActivationCodeLayout.createSequentialGroup()
                     .addGap(171, 171, 171)
@@ -256,6 +257,7 @@ static launcher Instance;
     /**
      */
     public static void launcher() {
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -280,7 +282,6 @@ static launcher Instance;
         //</editor-fold>
         //</editor-fold>
         /* Create and display the form */
-        launcher();
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

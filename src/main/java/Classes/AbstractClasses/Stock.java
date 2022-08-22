@@ -11,11 +11,13 @@ package Classes.AbstractClasses;
  */
 
 public class Stock {
+        public String prdcode;
         public String product_id;
-        public int quantity ;
+        public String quantity ;
         
-        public Stock(String product_id, int quantity)
+        public Stock(String prdcode, String product_id, String quantity)
         {
+            this.prdcode = prdcode;
             this.product_id = product_id;
             this.quantity = quantity;
         }

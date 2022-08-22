@@ -15,6 +15,7 @@ import java.net.URLConnection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -24,66 +25,47 @@ import org.json.simple.parser.JSONParser;
  * @author Nkanabo
  */
 public class SearchEngine {
-    
-    
-     public String[] ProductsearchSuggestions(String search) throws MalformedURLException, IOException, org.json.simple.parser.ParseException{
+
+    public String[] ProductsearchSuggestions(String search) throws MalformedURLException, IOException, org.json.simple.parser.ParseException {
         JSONParser parser = new JSONParser();
         search = search.replace(" ", "+");
-        URL oracle =
-        new URL("http://suggestqueries.google.com/complete/search?q=" + search + "&client=firefox&hl=fr");
+        URL oracle
+                = new URL("http://suggestqueries.google.com/complete/search?q=" + search + "&client=firefox&hl=fr");
         URLConnection yc = oracle.openConnection();
         String val;
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()))) {
+        try ( BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()))) {
             val = "";
             String inputLine;
-            while((inputLine = in.readLine()) != null) {
+            while ((inputLine = in.readLine()) != null) {
                 Object obj = parser.parse(inputLine);
                 JSONArray array = new JSONArray();
                 array.put(obj);
-                System.out.println("this is json array"+array);
-              for(Object o: array) {
-                  val = o.toString();
-              }
+                for (Object o : array) {
+                    val = o.toString();
+                }
             }
         }
-         System.out.println("this is the data type"+val.getClass().getName());
-         System.out.println("this is the content"+val);
+        System.out.println("this is the data type" + val.getClass().getName());
+        System.out.println("this is the content" + val);
         String v[] = val.replace("[", "").replace("\"", "").split(",");
-        if(v.length == 1 && v[0].equals("")) {
+        if (v.length == 1 && v[0].equals("")) {
             return new String[0];
-        }
-        else {
+        } else {
+            System.out.println("V emitted" + v.toString());
             return v;
         }
     }
-     
-    public String[] productsSearch(String Search) throws ClassNotFoundException, ParseException, SQLException{
-         ArrayList<Product> products = Products.listProductOnly();
-         List<Product> line = products.stream().filter(p->(p.product_name.contains(Search))).toList();
-         System.out.println("the list");
-         //        String[] line = (String[]) products.toArray();
-        
-//         return (String[]) line.stream().map(p->p.product_name).toArray();
-         
-          String myval = "";
-          for(Product p : line) {
-            String s = p.product_name;  //This casting is required
-            myval = s;
+
+    public String[] productsSearch(String Search) throws ClassNotFoundException, ParseException, SQLException {
+        ArrayList<Product> products = Products.listProductOnly();
+        List<Product> line = products.stream().filter(p -> (p.product_name.contains(Search))).toList();
+        String[] ch = new String[line.size() + 1];
+        for (int i = 0; i < line.size(); i++) {
+            Product po = line.get(i);
+            ch[i] = po.product_name;
+
         }
-          
-         /*
-        for(Product p : line) {
-            String s = p.product_name;  //This casting is required
-            myval = s;
-            System.out.println(s);
-        } */
-        String v[] = myval.replace("[", "").replace("\"", "").split(",");
-        if(v.length == 1 && v[0].equals("")) {
-            return new String[0];
-        }
-        else {
-            return v;
-        }
-        
+        return ch;
+
     }
 }

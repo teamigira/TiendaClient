@@ -4,8 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nkanabo.Tienda</groupId>
     <artifactId>Tienda</artifactId>
-    <version>1.0.1</version>
-
+    <version>2.0.0</version>
     <name>Tienda</name>
     <!-- FIXME change it to the project's website -->
     <url>http://nkanabo.co.tz</url>
@@ -44,12 +43,18 @@
             <version>8.0.21</version>
         </dependency>
       
-        <!--PDF-->
         <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>2.0.21</version>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>2.4</version>
         </dependency>
+      
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-intellij-themes</artifactId>
+            <version>2.4</version>
+        </dependency>
+      
         
         <!--h2 database-->
         <!--Swing Netbeans libs-->
@@ -63,26 +68,9 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>6.5.6</version>
+            <version>9.1.6</version>
         </dependency>
         
-        <!-- DOCX -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>4.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>4.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
     
         <dependency>
             <groupId>com.glazedlists</groupId>
@@ -109,18 +97,27 @@
             <version>1.4</version>
         </dependency>
         
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220320</version>
+        </dependency>
     </dependencies>
 
     <build>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-                  
             <plugins>
                 <!--flyway-->
                 <plugin>
                     <groupId>org.flywaydb</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
                     <version>3.0</version>
-
                     <!-- Note that we're executing the Flyway plugin in the "generate-sources" phase -->
                     <executions>
                         <execution>
@@ -131,17 +128,33 @@
                             </goals>
                         </execution>
                     </executions>
-
                     <!-- Note that we need to prefix the db/migration path with filesystem: to prevent Flyway
                     from looking for our migration scripts only on the classpath -->
                     <configuration>
                         <schemas>
                             <schema>PUBLIC</schema>
                         </schemas>
+                        <!--<driver></driver>-->
                         <url>${db.url}</url>
                         <user>${db.username}</user>
+                        <password>${db.password}</password>
+                        <!--Start of documentated migration -->
+                        <connectRetries>10</connectRetries>
+                        <initSql>SET ROLE 'myuser'</initSql>
+                        <schemas>
+                            <schema>schema1</schema>
+                            <schema>Tienda</schema>
+                        </schemas>
+                        <createSchemas>true</createSchemas>
+                        <table>schema_history</table>
+                        <tablespace>my_tablespace</tablespace>
+                        <skipDefaultCallbacks>false</skipDefaultCallbacks>
+                        <baselineVersion>1.0</baselineVersion>
+                        <baselineDescription>Base Migration</baselineDescription>
+                        <skip>false</skip>
+                        <!--End of documentaed-->
                         <locations>
-                            <location>filesystem:src/main/resources/db/migration</location>
+                            <location>filesystem:src/main/resources/db/migration/</location>
                         </locations>
                     </configuration>
                 </plugin>

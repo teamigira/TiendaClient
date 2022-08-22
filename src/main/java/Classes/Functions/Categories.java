@@ -7,7 +7,6 @@ package Classes.Functions;
 
 import Classes.AbstractClasses.Category;
 import Classes.AbstractClasses.Brands;
-import static Database.DBConnect.getConnection;
 import Database.DBConnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -24,7 +23,7 @@ public class Categories {
     public static Boolean addCategory(String categoryname) throws SQLException, ClassNotFoundException {
         try {
             Connection conn = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conn.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conn.createStatement();
             String sql
@@ -50,7 +49,7 @@ public class Categories {
             throws SQLException, ClassNotFoundException {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
@@ -74,7 +73,7 @@ public class Categories {
     public static Boolean deleteBrand(int id) throws SQLException, ClassNotFoundException {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
@@ -102,7 +101,7 @@ public class Categories {
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
             String sqlquery = "SELECT * FROM production_brands";
@@ -124,7 +123,7 @@ public class Categories {
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
-            Statement stmt = conna.createStatement();
+            Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
             String sqlquery = "SELECT * FROM production_categories";
@@ -139,5 +138,28 @@ public class Categories {
             se.printStackTrace();
         }
         return list;
+    }
+    
+        public static Boolean deleteCategory(int id)
+                throws SQLException, ClassNotFoundException {
+        try {
+            Connection conna =
+            DBConnection.getConnectionInstance().getConnection();
+            Statement stmt = conna.createStatement();
+            // STEP 3: Execute a query 
+            String updatequery
+                    = "DELETE production_categories where category_id='" + id + "'";
+            int rsu = stmt.executeUpdate(updatequery);
+            if (rsu != 1) {
+                return false;
+            }
+
+            // STEP 4: Clean-up environment 
+        } catch (SQLException se) {
+            // Handle errors for JDBC 
+            se.printStackTrace();
+        }
+        return true;
+
     }
 }

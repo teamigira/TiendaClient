@@ -16,7 +16,6 @@ import static com.nkanabo.Tienda.Main.product_key;
 import static com.nkanabo.Tienda.Utilities.date;
 import static com.nkanabo.Tienda.Utilities.expiredate;
 import java.sql.Connection; 
-import java.sql.DriverManager; 
 import java.sql.ResultSet;
 import java.sql.SQLException; 
 import java.sql.Statement;
@@ -25,21 +24,21 @@ public class MasterData {
     
     public static void Master() throws SQLException{    
       Connection conn = getConnection();
-       Statement stmt = conn.createStatement();
-        
+      Statement stmt = conn.createStatement();
       try{
-         // STEP 3: Execute a query 
-         stmt = conn.createStatement();  
-         
+         //STEP 3: Execute a query 
+         stmt = conn.createStatement();
          String sqlquery = "SELECT staff_id FROM sales_staffs"
                  + " where staff_id='1'"; 
-         ResultSet rs = stmt.executeQuery(sqlquery); 
-         if(rs.next()) { 
+         ResultSet rs = stmt.executeQuery(sqlquery);
+          
+         if(rs.next()) {
+             System.out.println("user exist");
          }
          else {
          String sql =
-                 "INSERT INTO sales_staffs " + "VALUES (1, 'administrator',"
-               + "'user1', 'admin@gmail.com','X85ITzVZ7xLqf6S3DdrMGQ==','+2558374893','1','1','1','1')";
+                 "INSERT INTO sales_staffs " + "VALUES (1, 'admin',"
+               + "'admin', 'admin@mail.com','X85ITzVZ7xLqf6S3DdrMGQ==','+255000000','1','1','1','1')";
          
          String sql2 =
         "INSERT INTO production_categories (category_name)" + "VALUES ('General')";
@@ -71,12 +70,12 @@ public class MasterData {
          // STEP 4: Clean-up environment 
          stmt.close(); 
          conn.close(); 
-      } catch(SQLException se) { 
-         // Handle errors for JDBC 
-         se.printStackTrace(); 
-      } catch(Exception e) { 
-         // Handle errors for Class.forName 
-         e.printStackTrace(); 
+      } catch(SQLException se) {
+          // Handle errors for JDBC
+ 
+      } catch(Exception e) {
+          // Handle errors for Class.forName
+ 
       } finally { 
          // finally block used to close resources 
          try {
@@ -86,10 +85,9 @@ public class MasterData {
          try { 
             if(conn!=null) conn.close(); 
          } catch(SQLException se) { 
-            se.printStackTrace(); 
          } // end finally try 
       } // end try 
    } 
 
-    }
+ }
 
