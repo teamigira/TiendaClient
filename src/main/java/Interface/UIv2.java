@@ -521,6 +521,11 @@ public final class UIv2 extends javax.swing.JFrame {
         TablePanel.revalidate();
     }
 
+    public static void setEmailNotification(String message) throws ParseException {
+        SetEmailNotification.setVisible(true);
+        SetEmailNotification.setText(message);
+    }
+
     public void getActiveClass(String label) {
         switch (label) {
             case "saleslabel":
@@ -565,7 +570,7 @@ public final class UIv2 extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         InfoPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        SetEmailNotification = new javax.swing.JLabel();
         usernameLabel = new javax.swing.JLabel();
         Sidabar = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -791,9 +796,9 @@ public final class UIv2 extends javax.swing.JFrame {
         InfoPanel.setBackground(new java.awt.Color(255, 255, 255));
         InfoPanel.setMaximumSize(new java.awt.Dimension(30000, 30000));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-email-16.png"))); // NOI18N
-        jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        SetEmailNotification.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        SetEmailNotification.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-email-16.png"))); // NOI18N
+        SetEmailNotification.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         usernameLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         usernameLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/v2icons8-male-user-16.png"))); // NOI18N
@@ -807,7 +812,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(SetEmailNotification, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
         InfoPanelLayout.setVerticalGroup(
@@ -819,7 +824,7 @@ public final class UIv2 extends javax.swing.JFrame {
                         .addComponent(usernameLabel))
                     .addGroup(InfoPanelLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
-                        .addComponent(jLabel1)
+                        .addComponent(SetEmailNotification)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -1617,8 +1622,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 PresentsalesList.remove(row);
                 SellingModel.setRowCount(0);
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(UserInterface.class.getName())
-                .log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
 
             for (int i = 0; i < PresentsalesList.size(); i++) {
@@ -1756,6 +1760,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JPanel SalesHeader;
     private javax.swing.JTable SalesTable;
     private javax.swing.JPanel SalesTablePanel;
+    private static javax.swing.JLabel SetEmailNotification;
     private javax.swing.JPanel Sidabar;
     private javax.swing.JPanel StocksTablePanel;
     private javax.swing.JPanel Submenu;
@@ -1772,7 +1777,6 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JLabel customers;
     private javax.swing.JTable dailySalesTable;
     private javax.swing.JTable datedreporttable;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
