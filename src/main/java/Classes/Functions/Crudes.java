@@ -107,7 +107,7 @@ public class Crudes {
             Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-            String sqlquery = "SELECT * FROM production_brands";
+            String sqlquery = "SELECT * FROM Tienda.production_brands";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
 //           rowValues.add(rs.getInt("brand_id"), rs.getString("brand_name"));
@@ -130,7 +130,7 @@ public class Crudes {
             Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-            String sqlquery = "SELECT * FROM production_brands";
+            String sqlquery = "SELECT * FROM Tienda.production_brands";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
 //             System.out.println(rs.getString("brand_id"));

@@ -128,7 +128,7 @@ public class Orders {
             Long dateofOrder;
             dateofOrder = milliConverter(dateToday);
             // STEP 3: Execute a query 
-            String sqlquery = "SELECT * FROM sales_order_items"
+            String sqlquery = "SELECT * FROM Tienda.sales_order_items"
                     + " JOIN production_products ON"
                     + " sales_order_items.product_id = production_products.product_id"
                     + " WHERE date = '"+ dateofOrder + "'"
@@ -166,7 +166,7 @@ public class Orders {
             Long dateofOrder;
             dateofOrder = milliConverter(date);
             // STEP 3: Execute a query
-            String sqlquery = "SELECT * FROM sales_order_items"
+            String sqlquery = "SELECT * FROM Tienda.sales_order_items"
                     + " JOIN production_products ON"
                     + " sales_order_items.product_id = production_products.product_id"
                     + " WHERE date = '"+ dateofOrder + "'"
@@ -202,7 +202,7 @@ public class Orders {
            Statement stmt = conna.createStatement();
 
             String updatequery
-                    = "DELETE from sales_order_items";
+                    = "DELETE from Tienda.system_sales_order_items";
             int rsu = stmt.executeUpdate(updatequery);
             if (rsu != 1) {
                 return false;
@@ -224,14 +224,14 @@ public class Orders {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             String filterProduct
-                    = "Select product_id from sales_order_items where order_id = '" + row + "'";
+                    = "Select product_id from Tienda.sales_order_items where order_id = '" + row + "'";
              ResultSet rst = stmt.executeQuery(filterProduct);
             while (rst.next()) {
                 productCode = IntegerConverter(rst.getString("product_id"));
             }
             
             String updatequery
-                    = "DELETE from sales_order_items where order_id = '" + row + "'";
+                    = "DELETE from Tienda.sales_order_items where order_id = '" + row + "'";
             
             String sql
                     = "UPDATE production_stocks SET quantity = quantity+"+quantity+" WHERE product_id='" + productCode + "'";
@@ -307,7 +307,7 @@ public class Orders {
             String price = getProductPricefromName(product_name);
             String product_id = getProductId(product_name);
             String sql
-                    = "INSERT INTO sales_order_items"
+                    = "INSERT INTO Tienda.sales_order_items"
                     + "(product_id, quantity, list_price, discount, date) VALUES ('" + product_id + "',"
                     + "'" + quantity + "','"+ price +"','" + discount + "','" + milliConverter(today) + "')";
             int i = stmt.executeUpdate(sql);

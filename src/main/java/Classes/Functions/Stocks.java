@@ -68,7 +68,7 @@ public class Stocks {
             Statement stmt;
             // STEP 3: Execute a query
             stmt = conna.createStatement();
-            String sqlquery = "SELECT * FROM production_stocks"
+            String sqlquery = "SELECT * FROM Tienda.production_stocks"
                     + " where product_id = '"+id+"'";
             ResultSet rs = stmt.executeQuery(sqlquery);
             if (rs.next()) {
@@ -128,10 +128,10 @@ public class Stocks {
             stmt = conna.createStatement();
 
             String sql
-                    = "UPDATE production_stocks SET quantity = " + quantity + " WHERE product_id='" + id + "'";
+                    = "UPDATE Tienda.production_stocks SET quantity = " + quantity + " WHERE product_id='" + id + "'";
             
             String sql2
-                    = "UPDATE production_stocks_report SET quantity = " + quantity + " WHERE product_id='" + id + "'"
+                    = "UPDATE Tienda.production_stocks_report SET quantity = " + quantity + " WHERE product_id='" + id + "'"
                     + " AND date01 = (SELECT MAX(date01) FROM production_stocks_report)";
             
             int i=0;
@@ -165,7 +165,7 @@ public class Stocks {
             Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-            String sqlquery = "SELECT * FROM production_stocks JOIN production_products ON production_stocks.product_id=production_products.product_id";
+            String sqlquery = "SELECT * FROM Tienda.production_stocks JOIN Tienda.production_products ON production_stocks.product_id=production_products.product_id";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
                 //rowValues.add(rs.getInt("brand_id"), rs.getString("brand_name"));
@@ -186,7 +186,7 @@ public class Stocks {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             String productCode = getProductId(product_name);
-            String sqlquery = "SELECT * FROM sales_order_items where product_id = "
+            String sqlquery = "SELECT * FROM Tienda.sales_order_items where product_id = "
                     + productCode + " AND order_id=" + order_id + "";
             ResultSet rst = stmt.executeQuery(sqlquery);
             while (rst.next()) {
@@ -221,7 +221,7 @@ public class Stocks {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             String sql
-                    = "DELETE from production_stocks where product_id = '" + productId + "'";
+                    = "DELETE from Tienda.production_stocks where product_id = '" + productId + "'";
             int i = stmt.executeUpdate(sql);
             if (i != 1) {
                 JOptionPane.showMessageDialog(null, "There was a problem item " + productId + " not found",
@@ -246,7 +246,7 @@ public class Stocks {
                     = "SELECT"
                     + " production_stocks.quantity,production_products.product_name,"
                     + "production_products.product_id"
-                    + " FROM production_stocks JOIN production_products ON "
+                    + " FROM Tienda.production_stocks JOIN Tienda.production_products ON "
                     + "production_stocks.product_id"
                     + "=production_products.product_id where"
                     + " production_stocks.quantity <= 3";

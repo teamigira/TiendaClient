@@ -214,7 +214,7 @@ static launcher Instance;
             dateofExpiry = milliConverter(String.valueOf(d1)) + 6000000;
             Connection conn = getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM app_key"
+            String sql = "SELECT * FROM Tienda.system_app_key"
                     + " where product_id = '" + app_keys + "'";
             ResultSet rs = stmt.executeQuery(sql);
             //STEP 4: Extract data from result set 
@@ -226,7 +226,7 @@ static launcher Instance;
                 // activation status column
                 try {
                     // STEP 3: Execute a query 
-                    String updatequery = "UPDATE app_key set activation_status='1',"
+                    String updatequery = "UPDATE Tienda.system_app_key set activation_status='1',"
                             + "expire_date = '" + dateofExpiry + "'";
                     int rsu = stmt.executeUpdate(updatequery);
                     UserSettings uS = new UserSettings();
@@ -249,8 +249,10 @@ static launcher Instance;
             conn.close();
         } catch (SQLException se) {
             // Handle errors for JDBC
+            se.printStackTrace();
         } catch (Exception e) {
             // Handle errors for Class.forName
+            e.printStackTrace();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

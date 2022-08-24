@@ -41,7 +41,7 @@ public class Auth {
             Connection con = dbc.getConnection();
             Statement stmt;
             stmt = con.createStatement();
-            String sql = "SELECT * FROM app_key"
+            String sql = "SELECT * FROM Tienda.system_app_key"
                     + " where activation_status = 0 OR "
                     + "expire_date <= '" + today + "'";
             ResultSet rs = stmt.executeQuery(sql);
@@ -54,19 +54,16 @@ public class Auth {
                 return false;
                 // response
             }
-
             // STEP 5: Clean-up environment
             rs.close();
             // finally block used to close resources
         } catch (ParseException ex) {
             Logger.getLogger(Auth.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return true;
     }
 
     public static void Login() throws URISyntaxException {
-        Login lg = new Login();
-        lg.login();
+        Login.login();
     }
 }

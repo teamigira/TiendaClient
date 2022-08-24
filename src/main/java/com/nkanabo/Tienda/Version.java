@@ -36,7 +36,7 @@ public class Version {
     Connection conn = DBConnection.getConnectionInstance().getConnection();
     Statement sm = null;
     sm = conn.createStatement();
-    String SQL = "SELECT * FROM VERSION";    
+    String SQL = "SELECT * FROM Tienda.version";    
     try{
     ResultSet rss = sm.executeQuery(SQL);
       while(rss.next()){

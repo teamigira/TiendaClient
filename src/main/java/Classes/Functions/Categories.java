@@ -104,7 +104,7 @@ public class Categories {
             Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-            String sqlquery = "SELECT * FROM production_brands";
+            String sqlquery = "SELECT * FROM Tienda.production_brands";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
 //           rowValues.add(rs.getInt("brand_id"), rs.getString("brand_name"));
@@ -126,7 +126,7 @@ public class Categories {
             Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-            String sqlquery = "SELECT * FROM production_categories";
+            String sqlquery = "SELECT * FROM Tienda.production_categories";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
 //           rowValues.add(rs.getInt("brand_id"), rs.getString("brand_name"));

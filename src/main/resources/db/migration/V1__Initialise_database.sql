@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS production_products(
   retail_price DECIMAL(10, 2) NULL, 
   comments VARCHAR(255) NULL
 );
+
 CREATE TABLE IF NOT EXISTS sales_customers(
   customer_id INT PRIMARY KEY, 
   first_name VARCHAR(255) NULL, 
@@ -24,6 +25,7 @@ CREATE TABLE IF NOT EXISTS sales_customers(
   state VARCHAR(25), 
   zip_code VARCHAR(5)
 );
+
 CREATE TABLE IF NOT EXISTS sales_stores(
   store_id INT PRIMARY KEY, 
   store_name VARCHAR(255)   NOT NULL, 
@@ -34,6 +36,7 @@ CREATE TABLE IF NOT EXISTS sales_stores(
   state VARCHAR(10), 
   zip_code VARCHAR(5)
 );
+
 CREATE TABLE IF NOT EXISTS sales_staffs(
   staff_id bigint AUTO_INCREMENT NOT NULL PRIMARY KEY, 
   first_name VARCHAR(50) NULL, 
@@ -46,6 +49,7 @@ CREATE TABLE IF NOT EXISTS sales_staffs(
   manager_id INT, 
   role_id INT
 );
+
 CREATE TABLE IF NOT EXISTS sales_orders(
   order_id INT PRIMARY KEY, 
   customer_id INT, 
@@ -57,6 +61,7 @@ CREATE TABLE IF NOT EXISTS sales_orders(
   store_id  INT NULL, 
   staff_id  INT NULL
 );
+
 CREATE TABLE IF NOT EXISTS sales_order_items(
   order_id bigint AUTO_INCREMENT, 
   item_id VARCHAR(55), 
@@ -66,6 +71,7 @@ CREATE TABLE IF NOT EXISTS sales_order_items(
   PRIMARY KEY (order_id), 
   date VARCHAR(55)
 );
+
 CREATE TABLE IF NOT EXISTS production_stocks(
   store_id bigint AUTO_INCREMENT  NOT NULL, 
   product_id bigint AUTO_INCREMENT  NOT NULL, 
@@ -73,7 +79,8 @@ CREATE TABLE IF NOT EXISTS production_stocks(
   minimum_quantity VARCHAR(55), 
   PRIMARY  KEY(product_id)
 );
-CREATE TABLE IF NOT EXISTS app_key(
+
+CREATE TABLE IF NOT EXISTS system_app_key(
   id bigint AUTO_INCREMENT NOT NULL, 
   VERSION VARCHAR(21), 
   product_id VARCHAR(244), 
@@ -82,13 +89,15 @@ CREATE TABLE IF NOT EXISTS app_key(
   expire_date TEXT, 
   PRIMARY  KEY(id)
 );
-CREATE TABLE IF NOT EXISTS Accounts(
+
+CREATE TABLE IF NOT EXISTS system_ccounts(
   id bigint AUTO_INCREMENT  NOT NULL, 
   amount VARCHAR(55), 
   date VARCHAR(55), 
   collected_by VARCHAR(244), 
   PRIMARY  KEY(id)
 );
+
 CREATE TABLE IF NOT EXISTS production_stocks_report(
   store_id bigint NULL, 
   product_id bigint AUTO_INCREMENT, 
@@ -97,7 +106,8 @@ CREATE TABLE IF NOT EXISTS production_stocks_report(
   user01 VARCHAR(244), 
   PRIMARY  KEY(product_id)
 );
-CREATE TABLE IF NOT EXISTS notifications(
+
+CREATE TABLE IF NOT EXISTS system_notifications(
   notice_id bigint AUTO_INCREMENT  NOT NULL, 
   date VARCHAR(244), 
   title VARCHAR(244), 
@@ -105,4 +115,16 @@ CREATE TABLE IF NOT EXISTS notifications(
   viewed VARCHAR(244), 
   code VARCHAR(244), 
   PRIMARY KEY(notice_id)
+);
+
+CREATE TABLE IF NOT EXISTS production_categories(
+  category_id bigint AUTO_INCREMENT  NOT NULL, 
+  category_name VARCHAR (255) NOT NULL,
+  PRIMARY KEY ( category_id )
+);
+
+CREATE TABLE IF NOT EXISTS production_brands(
+  brand_id bigint AUTO_INCREMENT NOT NULL,
+  brand_name VARCHAR (255) NOT NULL,
+  PRIMARY KEY ( brand_id )
 );

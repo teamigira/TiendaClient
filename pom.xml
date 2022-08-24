@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--https://stackoverflow.com/questions/574594/how-can-i-create-an-executable-jar-with-dependencies-using-maven-->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- https://stackoverflow.com/questions/574594/-->
+<!--how-can-i-create-an-executable-jar-with-dependencies-using-maven-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+    http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nkanabo.Tienda</groupId>
     <artifactId>Tienda</artifactId>
@@ -8,7 +12,6 @@
     <name>Tienda</name>
     <!-- FIXME change it to the project's website -->
     <url>http://nkanabo.co.tz</url>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -142,7 +145,6 @@
                         <connectRetries>10</connectRetries>
                         <initSql>SET ROLE 'myuser'</initSql>
                         <schemas>
-                            <schema>schema1</schema>
                             <schema>Tienda</schema>
                         </schemas>
                         <createSchemas>true</createSchemas>

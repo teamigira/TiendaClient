@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Optional;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.output.CleanResult;
 import org.flywaydb.core.api.output.MigrateResult;
 import org.flywaydb.core.api.output.RepairResult;
 
@@ -59,8 +60,10 @@ public class DBConnection {
      *
      * @return
      * @throws java.sql.SQLException
+     * @throws java.lang.ClassNotFoundException
      */
-    public Connection getConnection() throws SQLException, ClassNotFoundException {
+    public Connection getConnection() throws SQLException,
+            ClassNotFoundException {
         if (connection == null) {
             try {
                 Class.forName("org.h2.Driver");
@@ -69,7 +72,7 @@ public class DBConnection {
             }
 
             connection = DriverManager.getConnection(
-                    "jdbc:h2:" + url.get() + "/Tienda",
+                    "jdbc:h2:" + url.get() + "/Tienda;SCHEMA="+"Tienda;"+"DATABASE_TO_UPPER=false;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE",
                     username.get(),
                     password.get()
             );
@@ -124,38 +127,33 @@ public class DBConnection {
         return connection != null;
     }
 
-    /**
-     *
-     */
-    
     public void repair() {
         String uri = "jdbc:h2:" + url.get() + "/Tienda";
         String user = username.get();
         String pass = password.get();
         String urlc = "jdbc:h2:" + url.get() + "/Tienda;DATABASE_TO_UPPER=false";
-         RepairResult flyway = 
-                 Flyway.configure()
-                .dataSource(urlc, user, pass)
-                .defaultSchema("Tienda")
-                .schemas("Tienda")
-                .baselineOnMigrate(true)
-                .load()
-                .repair();
-        
+        CleanResult flyway
+                = Flyway.configure()
+                        .dataSource(urlc, user, pass)
+                        .defaultSchema("Tienda")
+                        .schemas("Tienda")
+                        .baselineOnMigrate(true)
+                        .cleanDisabled(false)
+                        .load()
+                        .clean();
+
     }
 
     public void migrate() {
-        String uri = "jdbc:h2:" + url.get() + "/Tienda";
+        String uri = "jdbc:h2:" + url.get() + "/Tienda;IFEXISTS=FALSE;DATABASE_TO_UPPER=false";
         String user = username.get();
         String pass = password.get();
-        String urlc = "jdbc:h2:" + url.get() + "/Tienda;DATABASE_TO_UPPER=false";
-
         MigrateResult flyway;
         flyway = Flyway
                 .configure()
-                .dataSource(urlc, user, pass)
-                .defaultSchema("Tienda")
+                .dataSource(uri, user, pass)
                 .schemas("Tienda")
+                .defaultSchema("Tienda")
                 .baselineOnMigrate(true)
                 .load()
                 .migrate();

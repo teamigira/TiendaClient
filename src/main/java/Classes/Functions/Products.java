@@ -43,7 +43,7 @@ public class Products {
       // STEP 3: Execute a query
       String check;
       check =
-          "SELECT product_name FROM production_products"
+          "SELECT product_name FROM Tienda.production_products"
           + " WHERE product_name = '"
           + product_name + "'";
       ResultSet rscheck =
@@ -56,7 +56,7 @@ public class Products {
         return false;
       } else {
         String sql =
-            "INSERT INTO production_products "
+            "INSERT INTOTienda. production_products "
             + "(product_name,brand_id,category_id,model_year,"
             + "expiry_date,list_price,retail_price) VALUES"
             + " ('" + product_name + "','"
@@ -98,7 +98,7 @@ public class Products {
       // exist
       String check;
       check =
-          "SELECT product_name FROM production_products"
+          "SELECT product_name FROM Tienda.production_products"
           + " WHERE code = '" + obj[0]
           + "' OR product_id ='" + obj[0] + "'";
       ResultSet rscheck =
@@ -222,7 +222,7 @@ OBJECT POSITIONS AND VALUES
       // STEP 3: Execute a query
       stmt = conna.createStatement();
       String sqlquery =
-          "SELECT * FROM production_products JOIN"
+          "SELECT * FROM Tienda.production_products JOIN"
           + " production_brands ON production_products.brand_id ="
           + " production_brands.brand_id JOIN production_categories ON"
           + " production_products.category_id = "
@@ -274,7 +274,7 @@ OBJECT POSITIONS AND VALUES
       // STEP 3: Execute a query
       stmt = conna.createStatement();
       String sqlquery =
-          "SELECT * FROM production_products JOIN"
+          "SELECT * FROM Tienda.production_products JOIN"
           + " production_brands ON production_products.brand_id ="
           + " production_brands.brand_id JOIN production_categories ON"
           + " production_products.category_id = "
@@ -329,7 +329,7 @@ OBJECT POSITIONS AND VALUES
       // STEP 3: Execute a query
       stmt = conna.createStatement();
       String sqlquery =
-          "SELECT * FROM production_products JOIN"
+          "SELECT * FROM Tienda.production_products JOIN"
           + " production_brands ON production_products.brand_id ="
           + " production_brands.brand_id JOIN production_categories ON"
           + " production_products.category_id = "
@@ -376,7 +376,7 @@ OBJECT POSITIONS AND VALUES
               .getConnection();
       Statement stmt = conna.createStatement();
       String sql =
-          "DELETE from production_products where product_id = '"
+          "DELETE from Tienda.production_products where product_id = '"
           + productId + "'";
       int i = stmt.executeUpdate(sql);
       if (i != 1) {
@@ -451,7 +451,7 @@ OBJECT POSITIONS AND VALUES
     Statement stmt = conna.createStatement();
     String price = "0";
     String check =
-        "SELECT list_price FROM production_products"
+        "SELECT list_price FROM Tienda.production_products"
         + " WHERE product_id = '" + id + "'";
     ResultSet rs = stmt.executeQuery(check);
     if (rs.next()) {
@@ -469,7 +469,7 @@ OBJECT POSITIONS AND VALUES
     Statement stmt = conna.createStatement();
     String price = "0";
     String check =
-        "SELECT list_price FROM production_products"
+        "SELECT list_price FROM Tienda.production_products"
         + " WHERE product_name = '" + name + "'";
     ResultSet rs = stmt.executeQuery(check);
     if (rs.next()) {
@@ -487,7 +487,7 @@ OBJECT POSITIONS AND VALUES
     Statement stmt = conna.createStatement();
     String id = "0";
     String check =
-        "SELECT product_id FROM production_products"
+        "SELECT product_id FROM Tienda.production_products"
         + " WHERE product_name = '" + name + "'";
     ResultSet rs = stmt.executeQuery(check);
     if (rs.next()) {

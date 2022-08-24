@@ -67,7 +67,7 @@ public class Accounts {
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
             // STEP 3: Execute a query 
-            String sqlquery = "SELECT * FROM accounts";
+            String sqlquery = "SELECT * FROM Tienda.system_ccounts";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
                 String amount = rs.getString("amount");

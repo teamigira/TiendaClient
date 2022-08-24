@@ -91,7 +91,7 @@ public class Notifications {
             // STEP 3: Execute a query
             stmt = conna.createStatement();
             String sql
-            = "SELECT code from notifications WHERE code = '" + code + "'";
+            = "SELECT code from Tienda.system_notifications WHERE code = '" + code + "'";
             ResultSet rs = stmt.executeQuery(sql);
              if (rs.next()) {
             return true;
@@ -110,7 +110,7 @@ public class Notifications {
             // STEP 3: Execute a query
             stmt = conna.createStatement();
             String sql
-                    = "SELECT code,message from notifications WHERE viewed = '0' ORDER BY notice_id DESC";
+                    = "SELECT code,message from Tienda.system_notifications WHERE viewed = '0' ORDER BY notice_id DESC";
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
              String message = rs.getString("message");
@@ -130,7 +130,7 @@ public class Notifications {
             Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-            String sqlquery = "SELECT * FROM notifications ORDER BY notice_id DESC";
+            String sqlquery = "SELECT * FROM Tienda.system_notifications ORDER BY notice_id DESC";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
                 //rowValues.add(rs.getInt("brand_id"), rs.getString("brand_name"));

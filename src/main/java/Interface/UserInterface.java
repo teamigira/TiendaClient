@@ -48,6 +48,7 @@ import static com.nkanabo.Tienda.Utilities.unique;
 import Classes.Utilities.StockThread;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -349,6 +350,7 @@ public final class UserInterface extends javax.swing.JFrame {
         eightBtn2 = new javax.swing.JButton();
         eightBtn3 = new javax.swing.JButton();
         jToggleButton9 = new javax.swing.JToggleButton();
+        jLabel23 = new javax.swing.JLabel();
         BrandPanel = new javax.swing.JPanel();
         insertBrand = new javax.swing.JButton();
         brandname = new javax.swing.JTextField();
@@ -1016,6 +1018,8 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        jLabel23.setText("jLabel23");
+
         javax.swing.GroupLayout OrderPanelLayout = new javax.swing.GroupLayout(OrderPanel);
         OrderPanel.setLayout(OrderPanelLayout);
         OrderPanelLayout.setHorizontalGroup(
@@ -1037,7 +1041,9 @@ public final class UserInterface extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel39)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(backbutton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(backbutton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(89, 89, 89)
+                        .addComponent(jLabel23))
                     .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 1066, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1074, Short.MAX_VALUE))
                 .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1147,7 +1153,8 @@ public final class UserInterface extends javax.swing.JFrame {
                                     .addComponent(eraserLabelIcon)
                                     .addComponent(deleteLabelIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addComponent(jLabel39))
-                            .addComponent(backbutton))
+                            .addComponent(backbutton)
+                            .addComponent(jLabel23))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -3940,22 +3947,6 @@ public final class UserInterface extends javax.swing.JFrame {
         saleproductbtnUpdate.setText("Update");
     }//GEN-LAST:event_saleproductbtnUpdateActionPerformed
 
-    private void eraserLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserLabelIcon1MouseClicked
-        // Button that clears the search filter
-        try {
-            // TODO add your handling code here:
-            this.productsTable.setAutoCreateRowSorter(false);
-            this.productsTable.setAutoCreateRowSorter(true);
-            this.productsTable.repaint();
-            clearFields();
-            LoadProducts();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-*/
-    }//GEN-LAST:event_eraserLabelIcon1MouseClicked
-
     private void deleteLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteLabelIcon1MouseClicked
         // Button to delete the specific product
 
@@ -4648,6 +4639,22 @@ public final class UserInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_ConfigurationsActionPerformed
 
+    private void eraserLabelIcon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserLabelIcon1MouseClicked
+        // Button that clears the search filter
+        try {
+            // TODO add your handling code here:
+            this.productsTable.setAutoCreateRowSorter(false);
+            this.productsTable.setAutoCreateRowSorter(true);
+            this.productsTable.repaint();
+            clearFields();
+            LoadProducts();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        */
+    }//GEN-LAST:event_eraserLabelIcon1MouseClicked
+
     public void clearStockSelection(){
         ProductsOnly.setVisible(true);
         prdlabel.setVisible(true);
@@ -4855,6 +4862,7 @@ public final class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;

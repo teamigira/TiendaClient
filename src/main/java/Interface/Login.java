@@ -198,7 +198,7 @@ static Login Instance;
               try { 
          Connection conn = getConnection();
          Statement stmt = conn.createStatement(); 
-         String sql = "SELECT * FROM sales_staffs"
+         String sql = "SELECT * FROM Tienda.sales_staffs"
          + " where (first_name = '"+username+"' AND password = '"+passcode+"') AND active = '1'"; 
          ResultSet rs = stmt.executeQuery(sql);
          //STEP 4: Extract data from result set
@@ -226,6 +226,7 @@ static Login Instance;
         conn.close();
         }catch(SQLException | ClassNotFoundException | ParseException se) {
             // Handle errors for JDBC
+            se.printStackTrace();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

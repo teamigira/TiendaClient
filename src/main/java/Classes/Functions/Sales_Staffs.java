@@ -57,7 +57,7 @@ public class Sales_Staffs {
             Statement stmt = conna.createStatement();
          // STEP 3: Execute a query 
          stmt = conna.createStatement();  
-         String sqlquery = "SELECT * FROM sales_staffs"; 
+         String sqlquery = "SELECT * FROM Tienda.sales_staffs"; 
          ResultSet rs = stmt.executeQuery(sqlquery);
          while(rs.next()){
            String firstname = rs.getString("first_name");

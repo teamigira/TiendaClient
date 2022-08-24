@@ -37,8 +37,8 @@ public class Reports {
             stmt = conna.createStatement();
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
             String mydate = d1 + "";
-            String query2 = "SELECT * from production_products JOIN production_categories ON production_products.category_id = production_categories.category_id"
-                    + " JOIN production_brands ON production_brands.brand_id = production_products.brand_id JOIN sales_order_items ON sales_order_items.product_id = "
+            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id"
+                    + " JOIN Tienda.production_brands ON Tienda.production_brands.brand_id = production_products.brand_id JOIN sales_order_items ON sales_order_items.product_id = "
                     + "production_products.product_id WHERE date = '" + milliConverter(mydate) + "' ";
             ResultSet rs = stmt.executeQuery(query2);
 
@@ -96,8 +96,8 @@ public class Reports {
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris")).minusDays(7);
             long weekend = milliConverter(String.valueOf(d1));
 
-            String query2 = "SELECT * from production_products JOIN production_categories ON production_products.category_id = production_categories.category_id"
-                    + " JOIN production_brands ON production_brands.brand_id = production_products.brand_id JOIN sales_order_items ON sales_order_items.product_id = "
+            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id"
+                    + " JOIN Tienda.production_brands ON Tienda.production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON Tienda.sales_order_items.product_id = "
                     + "production_products.product_id where sales_order_items.date > '" + weekend + "'";
 
             ResultSet rs = stmt.executeQuery(query2);
@@ -155,8 +155,8 @@ public class Reports {
             LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris")).minusDays(31);
             long weekend = milliConverter(String.valueOf(d1));
 
-            String query2 = "SELECT * from production_products JOIN production_categories ON production_products.category_id = production_categories.category_id"
-                    + " JOIN production_brands ON production_brands.brand_id = production_products.brand_id JOIN sales_order_items ON sales_order_items.product_id = "
+            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id"
+                    + " JOIN Tienda.production_brands ON production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON sales_order_items.product_id = "
                     + "production_products.product_id where sales_order_items.date > '" + weekend + "'";
             ResultSet rs = stmt.executeQuery(query2);
 
@@ -211,8 +211,8 @@ public class Reports {
             stmt = conna.createStatement();
             long fb = milliConverter(db);
 
-            String query2 = "SELECT * from production_products JOIN production_categories ON production_products.category_id = production_categories.category_id"
-                    + " JOIN production_brands ON production_brands.brand_id = production_products.brand_id JOIN sales_order_items ON sales_order_items.product_id = "
+            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id"
+                    + " JOIN Tienda.production_brands ON production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON sales_order_items.product_id = "
                     + "production_products.product_id WHERE date='" + fb + "'";
             ResultSet rs = stmt.executeQuery(query2);
 
@@ -266,8 +266,8 @@ public class Reports {
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
-            String query2 = "SELECT * from production_products JOIN production_categories ON production_products.category_id = production_categories.category_id"
-                    + " JOIN production_brands ON production_brands.brand_id = production_products.brand_id JOIN sales_order_items ON sales_order_items.product_id = "
+            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id"
+                    + " JOIN Tienda.production_brands ON production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON sales_order_items.product_id = "
                     + "production_products.product_id";
             ResultSet rs = stmt.executeQuery(query2);
 
@@ -323,7 +323,7 @@ public class Reports {
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
-            String query2 = "SELECT * from  production_products JOIN production_stocks on production_products.product_id = production_stocks.product_id";
+            String query2 = "SELECT * from  Tienda.production_products JOIN Tienda.production_stocks on production_products.product_id = production_stocks.product_id";
             ResultSet rs = stmt.executeQuery(query2);
 
             int b = 0;
