@@ -11,16 +11,34 @@ import static Classes.Functions.Orders.listOrders;
 
 import Classes.Functions.Products;
 import static Classes.Functions.Products.checkCodeValidity;
+import static Classes.Utilities.OS.path;
+import static Classes.Utilities.OS.systempath;
 import Classes.Utilities.RandomNumbers;
 import static Classes.Utilities.RandomNumbers.generateNumber;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
+import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import static javax.swing.JFileChooser.APPROVE_OPTION;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -60,9 +78,10 @@ public class RegisterProduct extends javax.swing.JFrame {
             }
         }
     };
+    int pos = 0;
 
     public ArrayList<String> prd_details = new ArrayList<>();
-
+     JFileChooser browseFile = new JFileChooser();
     /*End of variables declaration*/
     /**
      *
@@ -74,6 +93,7 @@ public class RegisterProduct extends javax.swing.JFrame {
             ClassNotFoundException, ParseException {
         FlatGitHubIJTheme.setup();
         initComponents();
+        showImage(pos);
         this.setLocationRelativeTo(null);
         this.setResizable(true);
         ReturnList = new ArrayList<>();
@@ -112,7 +132,7 @@ public class RegisterProduct extends javax.swing.JFrame {
         LocationLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        cameraLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         costlabel = new javax.swing.JLabel();
         salepriceicon = new javax.swing.JLabel();
@@ -312,19 +332,25 @@ public class RegisterProduct extends javax.swing.JFrame {
         LocationLabel.setText("Location");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel2MouseClicked(evt);
+            }
+        });
 
         jLabel4.setForeground(new java.awt.Color(204, 204, 204));
         jLabel4.setText("Click here to select the image of this product");
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-camera-64.png"))); // NOI18N
+        cameraLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        cameraLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-camera-64.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(98, 98, 98)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(cameraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -335,8 +361,8 @@ public class RegisterProduct extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(82, 82, 82)
-                .addComponent(jLabel5)
+                .addGap(26, 26, 26)
+                .addComponent(cameraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -494,7 +520,7 @@ public class RegisterProduct extends javax.swing.JFrame {
                         .addGroup(SelectionMeansLayout.createSequentialGroup()
                             .addComponent(jLabel7)
                             .addGap(281, 281, 281))))
-                .addGap(0, 68, Short.MAX_VALUE))
+                .addGap(0, 69, Short.MAX_VALUE))
         );
         SelectionMeansLayout.setVerticalGroup(
             SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -647,7 +673,7 @@ public class RegisterProduct extends javax.swing.JFrame {
             .addGroup(SelectAmountLayout.createSequentialGroup()
                 .addGap(343, 343, 343)
                 .addComponent(SelectionArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(451, Short.MAX_VALUE))
+                .addContainerGap(452, Short.MAX_VALUE))
         );
         SelectAmountLayout.setVerticalGroup(
             SelectAmountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -915,10 +941,15 @@ public class RegisterProduct extends javax.swing.JFrame {
             minimumstocklevelinput.getText(),
             commentsinput.getText()
         };
-        try {
+        File selectedFile = browseFile.getSelectedFile();
+        String filename = browseFile.getSelectedFile().getName();
+          try {
             Products.RegisterProduct(obj);
-        } catch (URISyntaxException | ClassNotFoundException | ParseException ex) {
-            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+              saveImage(selectedFile, filename);
+        } catch (URISyntaxException | ClassNotFoundException |
+                ParseException | IOException ex) {
+            Logger.getLogger(RegisterProduct.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_jLabel10MouseClicked
@@ -944,6 +975,69 @@ public class RegisterProduct extends javax.swing.JFrame {
             codeinput.setEditable(true);
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
+        // Uploading the button into the resources folder
+        FileNameExtensionFilter fnef
+                = new FileNameExtensionFilter("IMAGES",
+                        "png", "jpg", "jpeg");
+        browseFile.addChoosableFileFilter(fnef);
+        int showOpenDialog = browseFile.showOpenDialog(null);
+        if (showOpenDialog == APPROVE_OPTION) {
+            File selectedFile = browseFile.getSelectedFile();
+            String filename = browseFile.getSelectedFile().getName();
+            String SelectedImage = selectedFile.getAbsolutePath();
+            JOptionPane.showMessageDialog(null, SelectedImage);
+            ImageIcon ii = new ImageIcon(SelectedImage);
+            //Resizing unage to fit the JLabel
+            Image image;
+            image = ii.getImage()
+                    .getScaledInstance(cameraLabel.getWidth(),
+                            cameraLabel.getHeight(),
+                            Image.SCALE_SMOOTH);
+            cameraLabel.setIcon(new ImageIcon(image));
+        }
+    }//GEN-LAST:event_jPanel2MouseClicked
+
+    public String[] getImages() {
+        String imageUrl=systempath;
+        File file = new File(systempath);
+        String[] imagesList = file.list();
+        return imagesList;
+    }
+
+    public void showImage(int index) {
+        String[] imagesList = getImages();
+        String imageName = imagesList[index];
+        ImageIcon icon = new ImageIcon(systempath + imageName);
+        System.out.println(systempath + imageName);
+        Image image;
+        image = icon.getImage()
+                .getScaledInstance(cameraLabel.getWidth(),
+                        cameraLabel.getHeight(),
+                        Image.SCALE_SMOOTH);
+        cameraLabel.setIcon(new ImageIcon(image));
+    }
+
+    public void saveImage(File fname, String Selectedfilename) throws IOException {
+        File destinationFile = new File(systempath + Selectedfilename);
+        try {
+        Files.move(fname.toPath(), destinationFile.toPath(),
+        StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            
+       /*
+        JOptionPane.showMessageDialog(null,
+        "Failed to save Image" + e);
+       */
+       System.out.println(e);
+        
+        }
+        /*
+        JOptionPane.showMessageDialog(null,
+        "Successfully saved item");
+        */
+    }
 
     /**
      * @param args the command line arguments
@@ -1031,6 +1125,7 @@ public class RegisterProduct extends javax.swing.JFrame {
     private javax.swing.JTextField barcodeinput;
     private javax.swing.JLabel brand;
     private javax.swing.JTextField brandname;
+    private javax.swing.JLabel cameraLabel;
     private javax.swing.JLabel cancel;
     private javax.swing.JLabel category;
     private javax.swing.JTextField categoryname;
@@ -1047,7 +1142,6 @@ public class RegisterProduct extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
