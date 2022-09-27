@@ -6,6 +6,7 @@ package Interface.Products;
 
 import Classes.AbstractClasses.Order;
 import Classes.AbstractClasses.ProductDetails;
+import static Classes.Functions.Crudes.addFromCSVFile;
 
 import static Classes.Functions.Orders.listOrders;
 
@@ -15,6 +16,8 @@ import static Classes.Utilities.OS.path;
 import static Classes.Utilities.OS.systempath;
 import Classes.Utilities.RandomNumbers;
 import static Classes.Utilities.RandomNumbers.generateNumber;
+import Classes.Utilities.SearchEngine;
+import Interface.Sale;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import java.awt.Image;
 import java.io.BufferedReader;
@@ -34,9 +37,11 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
@@ -45,7 +50,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Nkanabo
  */
-public class RegisterProduct extends javax.swing.JFrame {
+public final class RegisterProduct extends javax.swing.JFrame {
 
     /**
      * Creates new form Return
@@ -80,8 +85,12 @@ public class RegisterProduct extends javax.swing.JFrame {
     };
     int pos = 0;
 
+    //Default list fot auto completion
+    private final DefaultListModel brandsmodel;
+
     public ArrayList<String> prd_details = new ArrayList<>();
-     JFileChooser browseFile = new JFileChooser();
+    JFileChooser browseFile = new JFileChooser();
+
     /*End of variables declaration*/
     /**
      *
@@ -93,6 +102,7 @@ public class RegisterProduct extends javax.swing.JFrame {
             ClassNotFoundException, ParseException {
         FlatGitHubIJTheme.setup();
         initComponents();
+        CSV_Label.setToolTipText("Insert brands from "+systempath);
         showImage(pos);
         this.setLocationRelativeTo(null);
         this.setResizable(true);
@@ -101,6 +111,12 @@ public class RegisterProduct extends javax.swing.JFrame {
         ReturnModel.setColumnIdentifiers(columnNames);
         OrdersTable.setModel(ReturnModel);
         loadJtableValues();
+
+        //Initiating the variables
+        
+        jPopupMenu1.add(Autocomplete);
+        brandsmodel = new DefaultListModel();
+        autocompleteProducts.setModel(brandsmodel);
     }
 
     /**
@@ -112,6 +128,10 @@ public class RegisterProduct extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Autocomplete = new javax.swing.JPanel();
+        autocompleteProducts = new javax.swing.JList<>();
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        BrandsPopMenu = new javax.swing.JPopupMenu();
         Header = new javax.swing.JPanel();
         Data = new javax.swing.JLabel();
         Bundle = new javax.swing.JLabel();
@@ -157,6 +177,8 @@ public class RegisterProduct extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
+        CSV_Label = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         SelectRow = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         OrdersTable = new javax.swing.JTable();
@@ -180,6 +202,40 @@ public class RegisterProduct extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jRadioButton5 = new javax.swing.JRadioButton();
+
+        autocompleteProducts.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        autocompleteProducts.setForeground(new java.awt.Color(0, 153, 255));
+        autocompleteProducts.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        autocompleteProducts.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                autocompleteProductsMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout AutocompleteLayout = new javax.swing.GroupLayout(Autocomplete);
+        Autocomplete.setLayout(AutocompleteLayout);
+        AutocompleteLayout.setHorizontalGroup(
+            AutocompleteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AutocompleteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(autocompleteProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE))
+        );
+        AutocompleteLayout.setVerticalGroup(
+            AutocompleteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AutocompleteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(autocompleteProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPopupMenu1.setFocusable(false);
+
+        BrandsPopMenu.setBackground(new java.awt.Color(204, 204, 255));
+        BrandsPopMenu.setForeground(new java.awt.Color(153, 153, 255));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -363,7 +419,7 @@ public class RegisterProduct extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(cameraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(119, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                     .addContainerGap(174, Short.MAX_VALUE)
@@ -454,73 +510,99 @@ public class RegisterProduct extends javax.swing.JFrame {
         jCheckBox3.setText("Change price during sale");
         jCheckBox3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
+        CSV_Label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-import-csv-16.png"))); // NOI18N
+        CSV_Label.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        CSV_Label.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                CSV_LabelMouseClicked(evt);
+            }
+        });
+
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-tanzania-16.png"))); // NOI18N
+        jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel5MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout SelectionMeansLayout = new javax.swing.GroupLayout(SelectionMeans);
         SelectionMeans.setLayout(SelectionMeansLayout);
         SelectionMeansLayout.setHorizontalGroup(
             SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SelectionMeansLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Code, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(GTIN)
-                    .addComponent(brand)
-                    .addComponent(category)
-                    .addComponent(DescriptionLabel)
-                    .addComponent(LocationLabel))
-                .addGap(36, 36, 36)
-                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(SelectionMeansLayout.createSequentialGroup()
-                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(categoryname, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(SelectionMeansLayout.createSequentialGroup()
-                                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(codeinput, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                                    .addComponent(barcodeinput))
-                                .addGap(18, 18, 18)
-                                .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(23, 23, 23))
-                    .addGroup(SelectionMeansLayout.createSequentialGroup()
-                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(SelectionMeansLayout.createSequentialGroup()
-                                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(unitofmeasure, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(stocklevelinput, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-                                        .addComponent(salepriceinput, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(costinput, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(locationinput, javax.swing.GroupLayout.Alignment.LEADING)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(descriptioninput, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(SelectionMeansLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(SelectionMeansLayout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addGap(79, 79, 79)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel6)
-                    .addComponent(costlabel)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SelectionMeansLayout.createSequentialGroup()
-                        .addComponent(salepriceicon)
-                        .addGap(1017, 1017, 1017))
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(SelectionMeansLayout.createSequentialGroup()
-                            .addComponent(jLabel8)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(minimumstocklevelinput))
-                        .addGroup(SelectionMeansLayout.createSequentialGroup()
-                            .addComponent(jLabel7)
-                            .addGap(281, 281, 281))))
-                .addGap(0, 69, Short.MAX_VALUE))
+                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(SelectionMeansLayout.createSequentialGroup()
+                                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(SelectionMeansLayout.createSequentialGroup()
+                                        .addGap(5, 5, 5)
+                                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(Code, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(GTIN)
+                                            .addComponent(category)
+                                            .addGroup(SelectionMeansLayout.createSequentialGroup()
+                                                .addGap(8, 8, 8)
+                                                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(DescriptionLabel)
+                                                    .addComponent(brand)
+                                                    .addComponent(LocationLabel)
+                                                    .addComponent(costlabel)))))
+                                    .addGroup(SelectionMeansLayout.createSequentialGroup()
+                                        .addGap(11, 11, 11)
+                                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(salepriceicon)
+                                            .addComponent(jLabel6)
+                                            .addComponent(jLabel7))))
+                                .addGap(30, 30, 30))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SelectionMeansLayout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(SelectionMeansLayout.createSequentialGroup()
+                                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(SelectionMeansLayout.createSequentialGroup()
+                                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(codeinput, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                                            .addComponent(barcodeinput))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(categoryname, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(SelectionMeansLayout.createSequentialGroup()
+                                        .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(CSV_Label, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(descriptioninput, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(locationinput, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(23, 23, 23))
+                            .addGroup(SelectionMeansLayout.createSequentialGroup()
+                                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(unitofmeasure, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(stocklevelinput, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+                                        .addComponent(salepriceinput, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(costinput, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addComponent(minimumstocklevelinput, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(SelectionMeansLayout.createSequentialGroup()
+                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(SelectionMeansLayout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addGap(72, 72, 72)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 167, Short.MAX_VALUE))))
         );
         SelectionMeansLayout.setVerticalGroup(
             SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -539,57 +621,61 @@ public class RegisterProduct extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(category)
-                            .addComponent(categoryname, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(categoryname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(brand))
+                            .addComponent(CSV_Label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
                         .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(brand)
-                            .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(descriptioninput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(DescriptionLabel))
+                        .addGap(18, 18, 18)
+                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(locationinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(LocationLabel)))
                     .addGroup(SelectionMeansLayout.createSequentialGroup()
                         .addGap(15, 15, 15)
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(costinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(costlabel))
+                .addGap(18, 18, 18)
+                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(SelectionMeansLayout.createSequentialGroup()
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(salepriceinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(salepriceicon, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jCheckBox3))
+                .addGap(18, 18, 18)
+                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBox2)
+                    .addComponent(stocklevelinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addGap(26, 26, 26)
+                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(unitofmeasure, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addGap(18, 18, 18)
+                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(minimumstocklevelinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(SelectionMeansLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(DescriptionLabel))
+                        .addComponent(jLabel9))
                     .addGroup(SelectionMeansLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(descriptioninput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LocationLabel)
-                    .addComponent(locationinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(42, 42, 42)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(costlabel)
-                    .addComponent(costinput, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(salepriceicon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(salepriceinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jCheckBox3)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(stocklevelinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBox2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(unitofmeasure, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(minimumstocklevelinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
-                .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18))
+                        .addGap(10, 10, 10)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(109, 109, 109))
         );
 
         ReturnSaleBody.add(SelectionMeans, "card2");
@@ -617,13 +703,13 @@ public class RegisterProduct extends javax.swing.JFrame {
         SelectRow.setLayout(SelectRowLayout);
         SelectRowLayout.setHorizontalGroup(
             SelectRowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1199, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1286, Short.MAX_VALUE)
         );
         SelectRowLayout.setVerticalGroup(
             SelectRowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SelectRowLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 843, Short.MAX_VALUE))
         );
 
         ReturnSaleBody.add(SelectRow, "card3");
@@ -673,14 +759,14 @@ public class RegisterProduct extends javax.swing.JFrame {
             .addGroup(SelectAmountLayout.createSequentialGroup()
                 .addGap(343, 343, 343)
                 .addComponent(SelectionArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(452, Short.MAX_VALUE))
+                .addContainerGap(538, Short.MAX_VALUE))
         );
         SelectAmountLayout.setVerticalGroup(
             SelectAmountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SelectAmountLayout.createSequentialGroup()
                 .addGap(123, 123, 123)
                 .addComponent(SelectionArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(253, Short.MAX_VALUE))
+                .addContainerGap(399, Short.MAX_VALUE))
         );
 
         ReturnSaleBody.add(SelectAmount, "card4");
@@ -748,7 +834,7 @@ public class RegisterProduct extends javax.swing.JFrame {
             .addGroup(ReturnMethodLayout.createSequentialGroup()
                 .addGap(55, 55, 55)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(459, Short.MAX_VALUE))
+                .addContainerGap(546, Short.MAX_VALUE))
         );
         ReturnMethodLayout.setVerticalGroup(
             ReturnMethodLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -774,7 +860,7 @@ public class RegisterProduct extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SelectShippingLayout.createSequentialGroup()
                 .addGap(54, 54, 54)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 827, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 914, Short.MAX_VALUE)
                 .addGroup(SelectShippingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jRadioButton5)
                     .addComponent(jLabel3)
@@ -792,7 +878,7 @@ public class RegisterProduct extends javax.swing.JFrame {
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jRadioButton5)
-                .addContainerGap(581, Short.MAX_VALUE))
+                .addContainerGap(727, Short.MAX_VALUE))
         );
 
         ReturnSaleBody.add(SelectShipping, "card6");
@@ -873,7 +959,6 @@ public class RegisterProduct extends javax.swing.JFrame {
                 this.clickcount += 1;
             }
         }
-        System.out.println(clickcount);
     }//GEN-LAST:event_BundleMouseClicked
 
     private void DataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DataMouseClicked
@@ -897,7 +982,6 @@ public class RegisterProduct extends javax.swing.JFrame {
                 this.clickcount -= 1;
             }
         }
-        System.out.println(clickcount);
     }//GEN-LAST:event_DataMouseClicked
 
     private void TaxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TaxMouseClicked
@@ -915,14 +999,6 @@ public class RegisterProduct extends javax.swing.JFrame {
     private void ExpirationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ExpirationMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_ExpirationMouseClicked
-
-    private void brandnameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_brandnameKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_brandnameKeyReleased
-
-    private void categorynameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_categorynameKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_categorynameKeyReleased
 
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
         //Arraylist for storing products
@@ -943,16 +1019,45 @@ public class RegisterProduct extends javax.swing.JFrame {
         };
         File selectedFile = browseFile.getSelectedFile();
         String filename = browseFile.getSelectedFile().getName();
-          try {
+        try {
             Products.RegisterProduct(obj);
-              saveImage(selectedFile, filename);
-        } catch (URISyntaxException | ClassNotFoundException |
-                ParseException | IOException ex) {
+            saveImage(selectedFile, filename);
+        } catch (URISyntaxException | ClassNotFoundException
+                | ParseException | IOException ex) {
             Logger.getLogger(RegisterProduct.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_jLabel10MouseClicked
+
+    private void autocompleteProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_autocompleteProductsMouseClicked
+        //if the products drop down list is created.
+        int index = autocompleteProducts.getSelectedIndex();
+        String s = (String) autocompleteProducts.getSelectedValue();
+        brandname.setText(s);
+    }//GEN-LAST:event_autocompleteProductsMouseClicked
+
+    private void CSV_LabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CSV_LabelMouseClicked
+        // Upload excell mouse button clicked:
+        FileNameExtensionFilter fnef;
+        fnef = new FileNameExtensionFilter("IMAGES",
+                "png", "jpg", "jpeg");
+        JFileChooser csvFileChooser = new JFileChooser();
+        csvFileChooser.addChoosableFileFilter(fnef);
+        int showOpenDialog = csvFileChooser.showOpenDialog(null);
+        if (showOpenDialog == APPROVE_OPTION) {
+            notificationLabel("wait");
+            File selectedFile = csvFileChooser.getSelectedFile();
+            String filename = csvFileChooser.getSelectedFile().getName();
+            String SelectedFile = selectedFile.getAbsolutePath();
+            JOptionPane.showMessageDialog(null, SelectedFile);
+            try {
+                addFromCSVFile();
+            } catch (SQLException | ClassNotFoundException | IOException ex) {
+                Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_CSV_LabelMouseClicked
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         if (jCheckBox1.isSelected()) {
@@ -975,6 +1080,33 @@ public class RegisterProduct extends javax.swing.JFrame {
             codeinput.setEditable(true);
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void categorynameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_categorynameKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_categorynameKeyReleased
+
+    private void brandnameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_brandnameKeyReleased
+        // Searching begins
+        String Search = brandname.getText().trim();
+        if (Search.equals("")) {
+            /* this means there is nothing provided from users end point
+            so as to provide the auto complete queries. */
+        } else {
+            brandsmodel.removeAllElements();
+            SearchEngine searchEngine = new SearchEngine();
+            try {
+                //for(String item:searchEngine.ProductsearchSuggestions(Search)){
+                for (String item : searchEngine.brandSearch(Search)) {
+                    brandsmodel.addElement(item);
+                }
+            } catch (ClassNotFoundException | ParseException | SQLException ex) {
+                Logger.getLogger(RegisterProduct.class.getName())
+                        .log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
+            }
+            jPopupMenu1.show(brandname, 0, brandname.getHeight());
+        }
+    }//GEN-LAST:event_brandnameKeyReleased
 
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // Uploading the button into the resources folder
@@ -999,8 +1131,21 @@ public class RegisterProduct extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jPanel2MouseClicked
 
+    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+        try {
+            // When the user requests for Tienda pre defined world brands
+            addFromCSVFile();
+        } catch (SQLException ex) {
+            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jLabel5MouseClicked
+
     public String[] getImages() {
-        String imageUrl=systempath;
+        String imageUrl = systempath;
         File file = new File(systempath);
         String[] imagesList = file.list();
         return imagesList;
@@ -1010,7 +1155,6 @@ public class RegisterProduct extends javax.swing.JFrame {
         String[] imagesList = getImages();
         String imageName = imagesList[index];
         ImageIcon icon = new ImageIcon(systempath + imageName);
-        System.out.println(systempath + imageName);
         Image image;
         image = icon.getImage()
                 .getScaledInstance(cameraLabel.getWidth(),
@@ -1022,21 +1166,21 @@ public class RegisterProduct extends javax.swing.JFrame {
     public void saveImage(File fname, String Selectedfilename) throws IOException {
         File destinationFile = new File(systempath + Selectedfilename);
         try {
-        Files.move(fname.toPath(), destinationFile.toPath(),
-        StandardCopyOption.REPLACE_EXISTING);
+            Files.move(fname.toPath(), destinationFile.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            
-       /*
+
+            /*
         JOptionPane.showMessageDialog(null,
         "Failed to save Image" + e);
-       */
-       System.out.println(e);
-        
+             */
+            e.printStackTrace();
+
         }
         /*
         JOptionPane.showMessageDialog(null,
         "Successfully saved item");
-        */
+         */
     }
 
     /**
@@ -1056,7 +1200,6 @@ public class RegisterProduct extends javax.swing.JFrame {
         }
         ReturnList = listOrders();
         for (int i = 0; i < ReturnList.size(); i++) {
-            System.out.println("Present sale" + ReturnList.get(i).product);
             Object[] obj = {
                 ReturnList.get(i).selected,
                 (ReturnList.get(i).orderid).toUpperCase(),
@@ -1069,6 +1212,31 @@ public class RegisterProduct extends javax.swing.JFrame {
         }
         OrdersTable.repaint();
         OrdersTable.revalidate();
+    }
+
+    public void notificationLabel(String type) {
+        switch (type) {
+            case "wait":
+                CSV_Label.setIcon(
+                        new javax.swing.ImageIcon(getClass()
+                                .getResource("/resources/images/Reload-0.6s-18px.gif")));
+                break;
+
+            case "complete":
+                CSV_Label.setIcon(
+                        new javax.swing.ImageIcon(getClass()
+                                .getResource("/resources/images/Reload-0.6s-18px.gif")));
+                try {
+                    int secondsToSleep = 2;
+                    Thread.sleep(secondsToSleep * 1000);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+                CSV_Label.setIcon(
+                        new javax.swing.ImageIcon(getClass()
+                                .getResource("/resources/images/icons8-checkmark-32.png")));
+                break;
+        }
     }
 
     /*end of it*/
@@ -1103,7 +1271,10 @@ public class RegisterProduct extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel Autocomplete;
+    private javax.swing.JPopupMenu BrandsPopMenu;
     private javax.swing.JLabel Bundle;
+    private javax.swing.JLabel CSV_Label;
     private javax.swing.JLabel Code;
     private javax.swing.JLabel Data;
     private javax.swing.JLabel DescriptionLabel;
@@ -1122,6 +1293,7 @@ public class RegisterProduct extends javax.swing.JFrame {
     private javax.swing.JPanel SelectionMeans;
     private javax.swing.JLabel Supplies;
     private javax.swing.JLabel Tax;
+    private javax.swing.JList<String> autocompleteProducts;
     private javax.swing.JTextField barcodeinput;
     private javax.swing.JLabel brand;
     private javax.swing.JTextField brandname;
@@ -1142,12 +1314,14 @@ public class RegisterProduct extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
