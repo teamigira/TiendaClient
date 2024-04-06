@@ -13,17 +13,32 @@ public class Staff {
         public String staff_name;
         public String sur_name;
         public String staff_email;
+        public String phone_no;
+        public String store;
+        public String Status;
+        public String manager_id;
         public int role;
+        public String userid;
         
         public Staff(
                 String staff_name,
                 String sur_name,
                 String staff_email,
-                int role)
+                String phone_no,
+                String store,
+                String Status,
+                String manager_id,
+                int role,
+                String userid)
         {
             this.staff_name = staff_name;
             this.sur_name = sur_name;
             this.staff_email = staff_email;
+            this.phone_no = phone_no;
+            this.store = store;
+            this.Status = Status;
+            this.manager_id = manager_id;
             this.role = role;
+            this.userid = userid;
         }
 }

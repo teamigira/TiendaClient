@@ -3,7 +3,8 @@ package Classes.Functions;
 import Classes.AbstractClasses.Email;
 import static Classes.Functions.Notifications.confirmCheck;
 import Database.DBConnection;
-import Interface.UserInterface;
+import Interface.UIv2;
+
 import static com.nkanabo.Tienda.Utilities.DateMilli;
 import static com.nkanabo.Tienda.Utilities.milliConverter;
 import java.net.URISyntaxException;
@@ -114,7 +115,7 @@ public class Notifications {
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
              String message = rs.getString("message");
-             UserInterface.setEmailNotification(message);
+             UIv2.setEmailNotification(message);
             }
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {

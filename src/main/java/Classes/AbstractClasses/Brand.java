@@ -9,12 +9,12 @@ package Classes.AbstractClasses;
  *
  * @author Nkanabo
  */
-public class Brands {
+public class Brand {
         public int id;
         public int brand_id;
         public String brand_name ;
         
-        public Brands(int brand_id, String brand_name)
+        public Brand(int brand_id, String brand_name)
         {
             this.brand_id = brand_id;
             this.brand_name = brand_name;

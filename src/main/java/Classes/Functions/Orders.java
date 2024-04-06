@@ -5,13 +5,13 @@
  */
 package Classes.Functions;
 
+import static Authentication.Sessions.LoggedUser;
 import Classes.AbstractClasses.Order;
 import static Classes.Functions.Products.getProductId;
 import static Classes.Functions.Products.getProductPrice;
 import static Classes.Functions.Products.getProductPricefromName;
 import static Classes.Functions.Stocks.Sales;
 import Database.DBConnection;
-import Interface.UserInterface;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -24,6 +24,10 @@ import static com.nkanabo.Tienda.Utilities.milliConverter;
 import static com.nkanabo.Tienda.Utilities.unique;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -116,6 +120,7 @@ public class Orders {
 
     }
 
+    //Shows orders that are not saved. In  sales order table
     public static ArrayList listOrders() throws SQLException, ClassNotFoundException, ParseException {
 
         ArrayList<Order> list = new ArrayList<Order>();
@@ -126,25 +131,34 @@ public class Orders {
             LocalDate today = LocalDate.now(ZoneId.of("Europe/Paris"));
             String dateToday = String.valueOf(today);
             Long dateofOrder;
+            
             dateofOrder = milliConverter(dateToday);
-            // STEP 3: Execute a query 
+            
             String sqlquery = "SELECT * FROM Tienda.sales_order_items"
-                    + " JOIN production_products ON"
-                    + " sales_order_items.product_id = production_products.product_id"
-                    + " WHERE date = '"+ dateofOrder + "'"
-                    + " ORDER BY order_id DESC";
+                + " JOIN Tienda.production_products ON"
+                + " Tienda.sales_order_items.item_id = Tienda.production_products.code"
+                + " WHERE NOT EXISTS ("
+                + "     SELECT 1 FROM Tienda.sales_orders"
+                + "     WHERE Tienda.sales_order_items.order_id = Tienda.sales_orders.order_id"
+                + ")";
+
+            // STEP 3: Execute a query 
+//            String sqlquery = "SELECT * FROM Tienda.sales_order_items"
+//                    + " JOIN Tienda.production_products ON"
+//                    + " Tienda.sales_order_items.item_id = Tienda.production_products.code"
+//                    + " ORDER BY order_id DESC";
 //             Statement stmt = conna.createStatement();
                     Connection con = dbc.getConnection();
                     Statement stmt;
                     stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
-
                 String quantity = rs.getString("quantity");
                 String listprice = rs.getString("production_products.list_price");
                 String discount = rs.getString("discount");
                 list.add(new Order(false,rs.getString("order_id"),
-                        rs.getString("product_name"),
+                        rs.getString("sales_order_items.product_id"),
+                        rs.getString("production_products.product_name"),
                         quantity,
                         Double.parseDouble(listprice),
                         Double.parseDouble(discount)));
@@ -153,10 +167,12 @@ public class Orders {
             
         } catch (SQLException se) {
             // Handle errors for JDBC
+            se.printStackTrace();
         }
         return list;
     }
     
+    //This is used to fetch specific date report
     public static ArrayList listOrdersDated(String date) throws ParseException, ClassNotFoundException{
        ArrayList<Order> list = new ArrayList<Order>();
         ArrayList rowValues = new ArrayList();
@@ -182,6 +198,7 @@ public class Orders {
                 String listprice = rs.getString("production_products.list_price");
                 String discount = rs.getString("discount");
                 list.add(new Order(false,rs.getString("order_id"),
+                             rs.getString("product_id"),
                         rs.getString("product_name"),
                         quantity,
                         Double.parseDouble(listprice),
@@ -308,11 +325,12 @@ public class Orders {
             String product_id = getProductId(product_name);
             String sql
                     = "INSERT INTO Tienda.sales_order_items"
-                    + "(product_id, quantity, list_price, discount, date) VALUES ('" + product_id + "',"
-                    + "'" + quantity + "','"+ price +"','" + discount + "','" + milliConverter(today) + "')";
+                    + "(product_id, quantity, item_id, discount, date) VALUES ('" + product_id + "',"
+                    + "'" + quantity + "','"+ product_id +"','" + discount + "','" + milliConverter(today) + "')";
             int i = stmt.executeUpdate(sql);
             if (i > 0) {
                 System.out.println(sql);
+                System.out.println("Succesfully inserted");
             } else {
                 return false;
             }
@@ -321,8 +339,74 @@ public class Orders {
 
         } catch (SQLException se) {
             // Handle errors for JDBC
+            se.printStackTrace();
 
         }
         return true;
    }
+   
+   //Checks if the ID is already used.
+   public static boolean checkOrderIdValidity(String code) throws SQLException, ClassNotFoundException {
+        Connection conna
+                = DBConnection.getConnectionInstance()
+                        .getConnection();
+        Statement stmt = conna.createStatement();
+        String id = "0";
+        String check
+                = "SELECT customer_id FROM Tienda.sales_orders"
+                + " WHERE customer_id = '" + code + "'";
+        ResultSet rs = stmt.executeQuery(check);
+        return rs.next();
+    }
+   
+   public static boolean saveOrderItem(
+           String order_id,
+           String product_id,int randomNumber) throws ParseException, ClassNotFoundException {
+        //To change body of generated methods, choose Tools | Templates
+        try {
+        // Get a connection to the database
+        Connection connection = DBConnection.getConnectionInstance().getConnection();
+
+        // Create a statement
+        Statement statement = connection.createStatement();
+
+        // Get the current date and time
+        Date now = new Date();
+
+        // Create a SimpleDateFormat object with the desired date format
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+        // Format the Date object using the SimpleDateFormat object
+        String formattedDate = sdf.format(now);
+
+        // Define other variables needed for the insertion
+        int status = 1;
+        String price = getProductPrice(product_id);
+        
+        // Construct the SQL query for insertion
+        String sql = "INSERT INTO Tienda.sales_orders "
+                   + "(order_id, customer_id, order_status, product, order_date, shipped_date, store_id, staff_id) "
+                   + "VALUES ('" + order_id + "', '" + randomNumber + "', '" + status + "', '" + product_id + "', '"
+                   + formattedDate + "', '"+formattedDate+"', '"+formattedDate+"', '" + status + "')";
+
+        // Execute the SQL query
+        int rowsAffected = statement.executeUpdate(sql);
+
+        // Check if the insertion was successful
+        if (rowsAffected > 0) {
+            System.out.println("Insertion successful: " + sql);
+        } else {
+            System.out.println("Insertion failed: " + sql);
+            return false;
+        }
+
+    } catch (SQLException se) {
+        // Handle SQL exceptions
+        se.printStackTrace();
+        return false;
+    }
+    return true;
+
+   }
+   
 }

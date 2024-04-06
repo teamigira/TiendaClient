@@ -7,9 +7,11 @@ package com.nkanabo.Tienda;
 
 import static Authentication.Auth.Login;
 import static Authentication.Auth.authenticateProduct;
+import static Classes.Utilities.OS.systempath;
 import Database.DBConnection;
 import Database.MasterData;
 import Interface.launcher;
+import UserSettings.UserSettings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -18,7 +20,6 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import UserSettings.UserSettings;
 import java.io.File;
 import java.net.URL;
 
@@ -27,7 +28,8 @@ import java.net.URL;
  * @author Nkanabo
  */
 public class Main {
-    public static final String app_version = "1.0";
+
+    public static final String app_version = "2.0";
     public static final String product_key = "9ZJaYoeC8N0mA3wUg0T55gPvw0HDNaBypu2QNtEoWFU=";
     public static final int KeyExpiryDays = 31;
     public static String resourceName = "resources/application.properties";
@@ -57,26 +59,29 @@ public class Main {
     }
 
     private File getFileFromResource(String fileName) throws URISyntaxException {
-
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(fileName);
         if (resource == null) {
             throw new IllegalArgumentException("file not found! " + fileName);
         } else {
-            // failed if files have whitespaces or special characters
-            //return new File(resource.getFile());
             return new File(resource.toURI());
         }
+    }
 
+    private static void makeFolder() {
+        File theDir = new File(systempath);
+        if (!theDir.exists()) {
+            theDir.mkdirs();
+            System.out.println("Created images folder in ");
+        }
     }
 
     public static void main(String[] args) throws IOException,
-            SQLException, ClassNotFoundException, URISyntaxException {
+            SQLException, ClassNotFoundException, URISyntaxException {         
         System.setProperty("sun.java2d.uiScale", "1");
         //Load user preferences
         UserSettings pref = new UserSettings();
         pref.UserSettings();
-
         Main app = new Main();
         //https://mkyong.com/java/java-read-a-file-from-resources-folder/
         //#:~:text=In%20Java%2C%20we%20can%20use,
@@ -84,7 +89,6 @@ public class Main {
         //String fileName = "database.properties";
         String fileName = resourceName;
         InputStream is = app.getFileFromResourceAsStream(resourceName);
-
         // Load Configuration file
         // for static access, uses the class name directly
         try ( InputStream resourceStream = is) {
@@ -97,7 +101,7 @@ public class Main {
                     configurations.getDBLocation()));
             dBConnection.getConnection();
             /* This is to be used when we want to repeat the prior migration */
-            //dBConnection.repair();
+            // dBConnection.repair();
             dBConnection.migrate();
         }
 
@@ -116,6 +120,7 @@ public class Main {
         } else {
             LaunchLicenseEntry();
         }
+        makeFolder();
     }
 
     public static void LaunchLicenseEntry() {

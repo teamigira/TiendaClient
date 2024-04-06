@@ -11,6 +11,7 @@ import Database.DBConnection;
 import static com.nkanabo.Tienda.Utilities.DoubleConverter;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -29,34 +30,39 @@ public class Stocks {
     public static Double Sales;
 
     public static boolean addStock(String product_id, int quantity)
-            throws ClassNotFoundException {
-        try {
+            throws ClassNotFoundException, SQLException {
+        
             Connection conna = DBConnection.getConnectionInstance().
                     getConnection();
             Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-            String pid;
-            pid = product_id.split(":")[1];
-            String sql
-                    = "INSERT INTO production_stocks (product_id,quantity)"
-                    + "VALUES ('" + pid + "','" + quantity + "')";
-            String sql2
-                    = "INSERT INTO production_stocks_report (store_id,product_id,quantity)"
-                    + "VALUES ('1'," + pid + "','" + quantity + "')";
-            int i = stmt.executeUpdate(sql);
-            int j = stmt.executeUpdate(sql2);
-            if (i > 0) {
-                System.out.println(sql);
-            } else {
-                return false;
+//            String pid;
+//            pid = product_id.split(":")[1];
+            String sql = "INSERT INTO Tienda.production_stocks (product_id, quantity) VALUES (?, ?)";
+            String sql2 = "INSERT INTO Tienda.production_stocks_report (store_id, product_id, quantity) VALUES (?, ?, ?)";
+
+            try (PreparedStatement pstmt1 = conna.prepareStatement(sql);
+                 PreparedStatement pstmt2 = conna.prepareStatement(sql2)) {
+                // Set parameters for the first statement
+                pstmt1.setString(1, product_id);
+                pstmt1.setInt(2, quantity);
+
+                // Set parameters for the second statement
+                pstmt2.setInt(1, 1);  // Assuming store_id is an integer constant
+                pstmt2.setString(2, product_id);
+                pstmt2.setInt(3, quantity);
+
+                // Execute the statements
+                int i = pstmt1.executeUpdate();
+                int j = pstmt2.executeUpdate();
+
+                // Handle the result as needed
+            } catch (SQLException e) {
+                // Handle any SQL exceptions
+                e.printStackTrace();
             }
 
-            // STEP 4: Clean-up environment 
-        } catch (SQLException se) {
-            // Handle errors for JDBC 
-            se.printStackTrace();
-        }
         return true;
     }
 
@@ -101,7 +107,7 @@ public class Stocks {
                 return false;
             }
             String sql
-                    = "UPDATE production_stocks SET quantity ='"+count+"' WHERE product_id='" + id + "'";
+                    = "UPDATE Tienda.production_stocks SET quantity ='"+count+"' WHERE product_id='" + id + "'";
             int i = stmt.executeUpdate(sql);
             if (i > 0) {
                 System.out.println(sql);
@@ -165,7 +171,7 @@ public class Stocks {
             Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-            String sqlquery = "SELECT * FROM Tienda.production_stocks JOIN Tienda.production_products ON production_stocks.product_id=production_products.product_id";
+            String sqlquery = "SELECT * FROM Tienda.production_stocks JOIN Tienda.production_products ON production_stocks.product_id=production_products.code";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
                 //rowValues.add(rs.getInt("brand_id"), rs.getString("brand_name"));

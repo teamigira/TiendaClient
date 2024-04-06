@@ -35,7 +35,7 @@ public class OS {
       
       public static String path(){
         if(getsysEnv().contains("Windows")){ 
-        systempath = "C:\\Program Files\\Tienda\\Files\\images\\";  
+        systempath = "C:\\Tienda\\resources\\usergenerated\\";  
         systemDB = "jdbc:h2:file:\\C:\\Program Files\\Tienda\\DB\\Tienda"
                  + ";USER=root;PASSWORD=tazamaroad";
         System.out.println("Windows");

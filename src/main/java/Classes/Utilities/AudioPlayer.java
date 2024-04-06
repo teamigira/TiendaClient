@@ -65,7 +65,7 @@ public class AudioPlayer implements LineListener {
             while (!playCompleted) {
                 // wait for the playback completes
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
@@ -108,22 +108,28 @@ public class AudioPlayer implements LineListener {
         AudioPlayer player = new AudioPlayer();
         switch(call){
          case "success":
-         URL resource = getClass().getResource("/sounds/success.wav");
+         URL resource = getClass().getResource("/resources/sounds/success.wav");
          File file = Paths.get(resource.toURI()).toFile(); // return a file
          String filepath = Paths.get(resource.toURI()).toFile().getAbsolutePath();;
          player.play(filepath);
          break;
+
+
          case "alert":
-         URL resource1 = getClass().getResource("/sounds/alert.wav");
+         URL resource1 = getClass().getResource("/resources/sounds/alert.wav");
          File file1 = Paths.get(resource1.toURI()).toFile(); // return a file
-         String filepath1 = Paths.get(resource1.toURI()).toFile().getAbsolutePath();;
+         String filepath1 = file1.getAbsolutePath();
          player.play(filepath1);
+         System.out.println(filepath1);
          break;
+
+
          case "failure":
-         URL resource2 = getClass().getResource("/sounds/notification.wav");
+         URL resource2 = getClass().getResource("/resources/sounds/notification.wav");
          File file2 = Paths.get(resource2.toURI()).toFile(); // return a file
          String filepath2 = Paths.get(resource2.toURI()).toFile().getAbsolutePath();;
-         player.play(filepath2);      
+         player.play(filepath2);
+         
         }
     }
  

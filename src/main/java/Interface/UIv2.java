@@ -6,7 +6,7 @@
 package Interface;
 
 import static Authentication.Sessions.LoggedUser;
-import Classes.AbstractClasses.Brands;
+import Classes.AbstractClasses.Brand;
 import Classes.AbstractClasses.Category;
 import Classes.AbstractClasses.DailyReport;
 import Classes.AbstractClasses.Email;
@@ -18,6 +18,7 @@ import Classes.AbstractClasses.Transfer;
 import static Classes.Functions.Accounts.getTransfers;
 import static Classes.Functions.Categories.listBrands;
 import static Classes.Functions.Categories.listCategories;
+import Classes.Functions.Constants;
 import static Classes.Functions.Notifications.listNotifications;
 import Classes.Functions.Orders;
 import static Classes.Functions.Orders.listOrders;
@@ -28,12 +29,12 @@ import static Classes.Functions.Reports.DatedReport;
 import static Classes.Functions.Reports.listDailyReport;
 import static Classes.Functions.Reports.listMonthlyReport;
 import static Classes.Functions.Reports.listWeeklyReport;
+import Classes.Functions.Sales_Staffs;
 import static Classes.Functions.Sales_Staffs.LoadStaffs;
 import static Classes.Functions.Stocks.listStocks;
-import Classes.Utilities.ExcelFormat;
 import Classes.Utilities.Resources;
 import Classes.Utilities.StockThread;
-import Interface.Sales.EditSale;
+import Interface.Sales.SaveSale;
 import Interface.Sales.ReturnProduct;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import static com.nkanabo.Tienda.Utilities.DoubleConverter;
@@ -55,19 +56,20 @@ import java.awt.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import Interface.Products.*;
-
+import Interface.Users.RegisterNewUser;
+import javax.swing.table.JTableHeader;
 /*
  *
  * @author Nkanabo
  */
 public final class UIv2 extends javax.swing.JFrame {
 
-    static UIv2 Instance;
+    public static UIv2 Instance;
 
     int productId;
 
     //Brands
-    ArrayList<Brands> brandlist;
+    ArrayList<Brand> brandlist;
     String brandheaders[] = {"Brand Id", "Brand Name"};
     DefaultTableModel brandsModel;
 
@@ -121,8 +123,12 @@ public final class UIv2 extends javax.swing.JFrame {
     ArrayList<DailyReport> dailyreportlist;
 
     DefaultTableModel StaffsModel;
-    String staffsheader[] = {"First Name", "Last Name", "Email", "Role"};
+    String staffsheader[] = {"First Name", "Last Name", "Email","phone_no","store","Status","manager_id","Role"};
     ArrayList<Staff> staffslist;
+    private ArrayList<Staff> selectedStaff = new ArrayList<>();
+    // Declare a separate data structure to store user IDs
+    ArrayList<String> userIds = new ArrayList<String>();
+
 
     DefaultTableModel TransferModel;
     String transferheader[] = {"Amount", "Date", "Collected by"};
@@ -169,9 +175,9 @@ public final class UIv2 extends javax.swing.JFrame {
         this.setResizable(true);
         this.setExtendedState(getExtendedState() | UIv2.MAXIMIZED_BOTH);
         StockThread th = new StockThread();
-        if (Instance != null) {
-            try {
-                Instance = new UIv2();
+        
+              try {
+                
                 String url = "resources/images/icons8.jpg";
                 Resources rs = new Resources();
                 File is = rs.getFileFromResource(url);
@@ -183,21 +189,25 @@ public final class UIv2 extends javax.swing.JFrame {
             } catch (URISyntaxException ex) {
                 Logger.getLogger(launcher.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            //Orders list 
-            PresentsalesList = new ArrayList<>();
+        if (Instance != null) {
+           Instance = new UIv2();
         }
+        
+               //Orders list 
+        PresentsalesList = new ArrayList<>();
 
         usernameLabel.setText(LoggedUser);
         String today = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
         todays.setText(String.valueOf(Calendar.getInstance().getTime()));
-
+        //Coloring the icons
+        getActiveClass("");
+        
         //Brands
         brandlist = new ArrayList<>();
         brandsModel = new DefaultTableModel(brandheaders, 0);
         brandsTable.setModel(brandsModel);
 
-        //End of Brands
+        //End of Brand
         //Categories
         categorylist = new ArrayList<>();
         categoryModel = new DefaultTableModel(categoryheader, 0);
@@ -238,7 +248,8 @@ public final class UIv2 extends javax.swing.JFrame {
         staffslist = new ArrayList<>();
         StaffsModel = new DefaultTableModel(staffsheader, 0);
         staffTable.setModel(StaffsModel);
-
+        staffTable.setDefaultEditor(Object.class, null);
+       
         //Transfers
         transferedlist = new ArrayList<>();
         TransferModel = new DefaultTableModel(transferheader, 0);
@@ -261,6 +272,8 @@ public final class UIv2 extends javax.swing.JFrame {
         //col.setFont(col.getFont().deriveFont(Font.BOLD, 14f));
 //        col.setCellRenderer(setFont(new Font("Arial", Font.BOLD, 10)));
       
+     
+        
         this.setLocationRelativeTo(null);
         try {
             loadJtableValues();
@@ -334,14 +347,19 @@ public final class UIv2 extends javax.swing.JFrame {
         TablePanel.revalidate();
     }
 
+    //This function loads all the products that are only available in Stock.
     public void LoadStockProducts() throws ClassNotFoundException {
+       
         try {
             stockproductlist = listStockProducts();
         } catch (SQLException ex) {
+            ex.printStackTrace();
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
+      
         allProducts = new String[stockproductlist.size()];
+        
         for (int i = 0; i < stockproductlist.size(); i++) {
             allProducts[i] = stockproductlist.get(i).product_name + " - Tsh "
                     + stockproductlist.get(i).list_price + " : "
@@ -471,14 +489,19 @@ public final class UIv2 extends javax.swing.JFrame {
         StaffsModel.setRowCount(0);
         staffslist = LoadStaffs();
         if (staffslist.isEmpty()) {
-
         } else {
-            for (int i = 0; i < staffslist.size(); i++) {
+            for (int i = 0; i < staffslist.size(); i++) { 
+                userIds.add(staffslist.get(i).userid);
                 Object[] obj = {
                     staffslist.get(i).staff_name,
                     staffslist.get(i).sur_name,
                     staffslist.get(i).staff_email,
-                    staffslist.get(i).role
+                    staffslist.get(i).phone_no,
+                    staffslist.get(i).store,
+                    Constants.getStatusLabel(Integer.parseInt(staffslist.get(i).Status)),
+                    staffslist.get(i).Status,
+                    staffslist.get(i).manager_id,
+                    staffslist.get(i).role,
                 };
                 StaffsModel.addRow(obj);
             }
@@ -526,19 +549,82 @@ public final class UIv2 extends javax.swing.JFrame {
         SetEmailNotification.setText(message);
     }
 
-    public void getActiveClass(String label) {
+    public void getActiveClass(String label) { 
+    // Declare variables to hold the original icons
+    Icon originalSalesIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 Black.png"));
+    Icon originalProductsIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-box-64.png"));
+    Icon originalStatsIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-statistics-64.png"));
+    Icon originalAdminIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64 (1).png"));
+    Icon originalCustomersIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-select-users-64.png"));
+    
+    switch (label) {
+        case "saleslabel":
+            saleslabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 (1).png")));
+            ProductsLabelMenu.setIcon(originalProductsIcon);
+            stats.setIcon(originalStatsIcon);
+            adminilabelmenu.setIcon(originalAdminIcon);
+            customers.setIcon(originalCustomersIcon);
+            // Rest of your code
+            break;
+        case "box":
+            ProductsLabelMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-box-64Blue.png")));
+            saleslabel.setIcon(originalSalesIcon);
+            stats.setIcon(originalStatsIcon);
+            adminilabelmenu.setIcon(originalAdminIcon);
+            customers.setIcon(originalCustomersIcon);
+            // Rest of your code
+            break;
+        case "stats":
+            stats.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-statistics-64Blue.png")));
+            saleslabel.setIcon(originalSalesIcon);
+            ProductsLabelMenu.setIcon(originalProductsIcon);
+            adminilabelmenu.setIcon(originalAdminIcon);
+            customers.setIcon(originalCustomersIcon);
+            // Rest of your code
+            break;
+        case "admin":
+            adminilabelmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64.png")));
+            saleslabel.setIcon(originalSalesIcon);
+            ProductsLabelMenu.setIcon(originalProductsIcon);
+            stats.setIcon(originalStatsIcon);
+            customers.setIcon(originalCustomersIcon);
+            // Rest of your code
+            break;
+        case "customers":
+            customers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-select-users-64Blue.png")));
+            saleslabel.setIcon(originalSalesIcon);
+            ProductsLabelMenu.setIcon(originalProductsIcon);
+            stats.setIcon(originalStatsIcon);
+            adminilabelmenu.setIcon(originalAdminIcon);
+            // Rest of your code
+            break;
+        default:
+            saleslabel.setIcon(originalSalesIcon);
+            ProductsLabelMenu.setIcon(originalProductsIcon);
+            stats.setIcon(originalStatsIcon);
+            adminilabelmenu.setIcon(originalAdminIcon);
+            customers.setIcon(originalCustomersIcon);
+    }
+}
+
+    public void getActiveddClass(String label) { 
         switch (label) {
             case "saleslabel":
                 saleslabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 (1).png"))); // NOI18N
+                //this.removeAll();
+                this.add(SalesTablePanel);
+                this.validate();
                 break;
             case "box":
-                box.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-box-64Blue.png")));
+                ProductsLabelMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-box-64Blue.png")));
+               this.add(ProductsTablePanel);
+                this.validate();
                 break;
             case "stats":
                 stats.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-statistics-64Blue.png")));
                 break;
             case "admin":
-                admin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64.png")));
+                adminilabelmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64.png")));
                 break;
             case "customers":
                 customers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-select-users-64Blue.png"))); // NOI18N
@@ -552,6 +638,7 @@ public final class UIv2 extends javax.swing.JFrame {
     /**
      * End of loading functions
      */
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -567,28 +654,34 @@ public final class UIv2 extends javax.swing.JFrame {
         CancelLabel = new javax.swing.JLabel();
         PrintReceipt = new javax.swing.JLabel();
         ProductsHeader = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        InventoryLabel = new javax.swing.JLabel();
+        newproducy1 = new javax.swing.JLabel();
+        UsersHeader = new javax.swing.JPanel();
+        permissionnRolesLabel = new javax.swing.JLabel();
+        newUserLabel = new javax.swing.JLabel();
         InfoPanel = new javax.swing.JPanel();
         SetEmailNotification = new javax.swing.JLabel();
         usernameLabel = new javax.swing.JLabel();
+        version = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         Sidabar = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         stats = new javax.swing.JLabel();
         saleslabel = new javax.swing.JLabel();
-        box = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        customerslabelmenu = new javax.swing.JLabel();
+        userlabelmenu = new javax.swing.JLabel();
         customers = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        admin = new javax.swing.JLabel();
+        statisticslabelmenu = new javax.swing.JLabel();
+        productslabelmenu = new javax.swing.JLabel();
+        saleslabelmenu = new javax.swing.JLabel();
+        adminilabelmenu = new javax.swing.JLabel();
+        ProductsLabelMenu = new javax.swing.JLabel();
         Submenu1 = new javax.swing.JPanel();
+        userssubmenu1 = new javax.swing.JPanel();
         todays = new javax.swing.JLabel();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
-        jToggleButton3 = new javax.swing.JToggleButton();
+        editlabeluserssumenu = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        salessubmenu1 = new javax.swing.JPanel();
         TablePanel = new javax.swing.JPanel();
         SalesTablePanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -638,11 +731,20 @@ public final class UIv2 extends javax.swing.JFrame {
         CashTablePanel = new javax.swing.JPanel();
         jScrollPane12 = new javax.swing.JScrollPane();
         transferedCash = new javax.swing.JTable();
+        RolesPermissions = new javax.swing.JPanel();
+        jScrollPane13 = new javax.swing.JScrollPane();
+        PermissionsTree = new javax.swing.JTree();
+        jLabel3 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         TopMenu = new javax.swing.JMenu();
         QuitMenu = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        showMenu = new javax.swing.JMenu();
+        CashMenu = new javax.swing.JMenu();
+        BrandsMenu = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -688,7 +790,7 @@ public final class UIv2 extends javax.swing.JFrame {
         OrderLabel.setEnabled(false);
 
         EditLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        EditLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-edit-32.png"))); // NOI18N
+        EditLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/v2icons8-edit-32.png"))); // NOI18N
         EditLabel.setText("Edit");
         EditLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         EditLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -698,7 +800,7 @@ public final class UIv2 extends javax.swing.JFrame {
         });
 
         ExchangeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        ExchangeLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-buying-32.png"))); // NOI18N
+        ExchangeLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/v2icons8-return-32.png"))); // NOI18N
         ExchangeLabel.setText("Exchange/Return");
         ExchangeLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         ExchangeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -739,7 +841,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(CancelLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PrintReceipt)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         SalesHeaderLayout.setVerticalGroup(
             SalesHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -760,13 +862,28 @@ public final class UIv2 extends javax.swing.JFrame {
         ProductsHeader.setBackground(java.awt.Color.white);
         ProductsHeader.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         ProductsHeader.setForeground(new java.awt.Color(153, 153, 153));
+        ProductsHeader.setPreferredSize(new java.awt.Dimension(786, 60));
 
-        jLabel2.setText("New Product");
+        InventoryLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        InventoryLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-inventory-32.png"))); // NOI18N
+        InventoryLabel.setText("Inventory");
+        InventoryLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        InventoryLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                InventoryLabelMouseClicked(evt);
+            }
+        });
 
-        jLabel4.setText("New Brand");
-        jLabel4.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jLabel4KeyPressed(evt);
+        newproducy1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        newproducy1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-new-product-32.png"))); // NOI18N
+        newproducy1.setText("New Product");
+        newproducy1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        newproducy1.setMaximumSize(new java.awt.Dimension(167, 32));
+        newproducy1.setMinimumSize(new java.awt.Dimension(167, 32));
+        newproducy1.setPreferredSize(new java.awt.Dimension(167, 32));
+        newproducy1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                newproducy1MouseClicked(evt);
             }
         });
 
@@ -775,23 +892,72 @@ public final class UIv2 extends javax.swing.JFrame {
         ProductsHeaderLayout.setHorizontalGroup(
             ProductsHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ProductsHeaderLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jLabel2)
-                .addGap(54, 54, 54)
-                .addComponent(jLabel4)
-                .addContainerGap(585, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(newproducy1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(InventoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(441, Short.MAX_VALUE))
         );
         ProductsHeaderLayout.setVerticalGroup(
             ProductsHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProductsHeaderLayout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
-                .addGroup(ProductsHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4))
-                .addGap(17, 17, 17))
+                .addGroup(ProductsHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(InventoryLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+                    .addComponent(newproducy1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         Submenu.add(ProductsHeader, "card2");
+
+        UsersHeader.setBackground(java.awt.Color.white);
+        UsersHeader.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        UsersHeader.setForeground(new java.awt.Color(153, 153, 153));
+        UsersHeader.setPreferredSize(new java.awt.Dimension(786, 60));
+
+        permissionnRolesLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        permissionnRolesLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-access-48.png"))); // NOI18N
+        permissionnRolesLabel.setText("Roles & Permissions");
+        permissionnRolesLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        permissionnRolesLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                permissionnRolesLabelMouseClicked(evt);
+            }
+        });
+
+        newUserLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        newUserLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-add-user-male-48.png"))); // NOI18N
+        newUserLabel.setText("New User");
+        newUserLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        newUserLabel.setMaximumSize(new java.awt.Dimension(167, 32));
+        newUserLabel.setMinimumSize(new java.awt.Dimension(167, 32));
+        newUserLabel.setPreferredSize(new java.awt.Dimension(167, 32));
+        newUserLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                newUserLabelMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout UsersHeaderLayout = new javax.swing.GroupLayout(UsersHeader);
+        UsersHeader.setLayout(UsersHeaderLayout);
+        UsersHeaderLayout.setHorizontalGroup(
+            UsersHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(UsersHeaderLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(newUserLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(permissionnRolesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(402, Short.MAX_VALUE))
+        );
+        UsersHeaderLayout.setVerticalGroup(
+            UsersHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, UsersHeaderLayout.createSequentialGroup()
+                .addGroup(UsersHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(permissionnRolesLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+                    .addComponent(newUserLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        Submenu.add(UsersHeader, "card2");
 
         InfoPanel.setBackground(new java.awt.Color(255, 255, 255));
         InfoPanel.setMaximumSize(new java.awt.Dimension(30000, 30000));
@@ -804,6 +970,12 @@ public final class UIv2 extends javax.swing.JFrame {
         usernameLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/v2icons8-male-user-16.png"))); // NOI18N
         usernameLabel.setText("username");
 
+        version.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        version.setText("Version 2.0.0");
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel1.setText("Premium until 21-Mar-2025");
+
         javax.swing.GroupLayout InfoPanelLayout = new javax.swing.GroupLayout(InfoPanel);
         InfoPanel.setLayout(InfoPanelLayout);
         InfoPanelLayout.setHorizontalGroup(
@@ -812,6 +984,10 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(version)
+                .addGap(18, 18, 18)
                 .addComponent(SetEmailNotification, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
@@ -821,7 +997,10 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addGroup(InfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(InfoPanelLayout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(usernameLabel))
+                        .addGroup(InfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(usernameLabel)
+                            .addComponent(version)
+                            .addComponent(jLabel1)))
                     .addGroup(InfoPanelLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(SetEmailNotification)
@@ -831,55 +1010,62 @@ public final class UIv2 extends javax.swing.JFrame {
 
         Sidabar.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel3.setText("jLabel3");
-
         stats.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-statistics-64.png"))); // NOI18N
+        stats.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         stats.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 statsMouseClicked(evt);
             }
         });
 
+        saleslabel.setBackground(new java.awt.Color(204, 204, 255));
         saleslabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 Black.png"))); // NOI18N
+        saleslabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         saleslabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 saleslabelMouseClicked(evt);
             }
-        });
-
-        box.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-box-64.png"))); // NOI18N
-        box.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                boxMouseClicked(evt);
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                saleslabelMouseEntered(evt);
             }
         });
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel10.setText("Customers");
+        customerslabelmenu.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        customerslabelmenu.setText("Customers");
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel12.setText("Users");
+        userlabelmenu.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        userlabelmenu.setText("Users");
 
         customers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-select-users-64.png"))); // NOI18N
+        customers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         customers.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 customersMouseClicked(evt);
             }
         });
 
-        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel14.setText("Statistics");
+        statisticslabelmenu.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        statisticslabelmenu.setText("Statistics");
 
-        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel15.setText("Products");
+        productslabelmenu.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        productslabelmenu.setText("Products");
 
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel16.setText("Sales");
+        saleslabelmenu.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        saleslabelmenu.setText("Sales");
 
-        admin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64 (1).png"))); // NOI18N
-        admin.addMouseListener(new java.awt.event.MouseAdapter() {
+        adminilabelmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64 (1).png"))); // NOI18N
+        adminilabelmenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        adminilabelmenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                adminMouseClicked(evt);
+                adminilabelmenuMouseClicked(evt);
+            }
+        });
+
+        ProductsLabelMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-box-64.png"))); // NOI18N
+        ProductsLabelMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ProductsLabelMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ProductsLabelMenuMouseClicked(evt);
             }
         });
 
@@ -888,110 +1074,139 @@ public final class UIv2 extends javax.swing.JFrame {
         SidabarLayout.setHorizontalGroup(
             SidabarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SidabarLayout.createSequentialGroup()
-                .addGap(228, 228, 228)
-                .addComponent(jLabel3))
-            .addGroup(SidabarLayout.createSequentialGroup()
-                .addGap(49, 49, 49)
+                .addGap(44, 44, 44)
                 .addGroup(SidabarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(box)
-                    .addComponent(customers)
-                    .addComponent(stats)
-                    .addComponent(saleslabel)
+                    .addGroup(SidabarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(SidabarLayout.createSequentialGroup()
+                            .addGroup(SidabarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(stats, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(statisticslabelmenu)
+                                .addComponent(customerslabelmenu)
+                                .addGroup(SidabarLayout.createSequentialGroup()
+                                    .addGap(15, 15, 15)
+                                    .addComponent(saleslabelmenu))
+                                .addComponent(saleslabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ProductsLabelMenu)
+                                .addComponent(productslabelmenu))
+                            .addGap(203, 203, 203))
+                        .addGroup(SidabarLayout.createSequentialGroup()
+                            .addComponent(adminilabelmenu)
+                            .addGap(224, 224, 224)))
                     .addGroup(SidabarLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
                         .addGroup(SidabarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
+                            .addComponent(customers, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(SidabarLayout.createSequentialGroup()
-                                .addGap(3, 3, 3)
-                                .addComponent(jLabel14))
-                            .addComponent(admin)))
-                    .addGroup(SidabarLayout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel15))))
-            .addGroup(SidabarLayout.createSequentialGroup()
-                .addGap(63, 63, 63)
-                .addComponent(jLabel16))
-            .addGroup(SidabarLayout.createSequentialGroup()
-                .addGap(72, 72, 72)
-                .addComponent(jLabel12))
+                                .addGap(6, 6, 6)
+                                .addComponent(userlabelmenu)))
+                        .addGap(115, 115, 115))))
         );
         SidabarLayout.setVerticalGroup(
             SidabarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SidabarLayout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(saleslabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel16)
-                .addGap(26, 26, 26)
-                .addComponent(box)
+                .addGap(34, 34, 34)
+                .addComponent(saleslabel, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel15)
-                .addGap(32, 32, 32)
+                .addComponent(saleslabelmenu)
+                .addGap(18, 18, 18)
+                .addComponent(ProductsLabelMenu)
+                .addGap(18, 18, 18)
+                .addComponent(productslabelmenu)
+                .addGap(18, 18, 18)
                 .addComponent(stats)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel14)
+                .addComponent(statisticslabelmenu)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(customers, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(customers)
+                .addComponent(customerslabelmenu)
+                .addGap(18, 18, 18)
+                .addComponent(adminilabelmenu)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel10)
-                .addGap(31, 31, 31)
-                .addComponent(admin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel12)
-                .addGap(140, 140, 140)
-                .addComponent(jLabel3)
-                .addGap(273, 273, 273))
+                .addComponent(userlabelmenu)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         Submenu1.setBackground(new java.awt.Color(246, 246, 246));
         Submenu1.setForeground(new java.awt.Color(228, 228, 228));
+        Submenu1.setLayout(new java.awt.CardLayout());
 
-        todays.setText("jLabel4");
+        userssubmenu1.setBackground(new java.awt.Color(239, 235, 235));
 
-        jToggleButton1.setText("Open Orders");
+        todays.setForeground(new java.awt.Color(0, 0, 128));
+        todays.setText("today");
 
-        jToggleButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jToggleButton2.setText("Sales");
-
-        jToggleButton3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jToggleButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-downloads-16.png"))); // NOI18N
-        jToggleButton3.setText("Download Excell");
-        jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton3ActionPerformed(evt);
+        editlabeluserssumenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/v2icons8-edit-32.png"))); // NOI18N
+        editlabeluserssumenu.setText("Edit");
+        editlabeluserssumenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        editlabeluserssumenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                editlabeluserssumenuMouseClicked(evt);
             }
         });
 
-        javax.swing.GroupLayout Submenu1Layout = new javax.swing.GroupLayout(Submenu1);
-        Submenu1.setLayout(Submenu1Layout);
-        Submenu1Layout.setHorizontalGroup(
-            Submenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Submenu1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-ban-32.png"))); // NOI18N
+        jLabel2.setText("Deactivate");
+        jLabel2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel2MouseClicked(evt);
+            }
+        });
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-ok-32.png"))); // NOI18N
+        jLabel4.setText("Activate");
+        jLabel4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel4MouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout userssubmenu1Layout = new javax.swing.GroupLayout(userssubmenu1);
+        userssubmenu1.setLayout(userssubmenu1Layout);
+        userssubmenu1Layout.setHorizontalGroup(
+            userssubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userssubmenu1Layout.createSequentialGroup()
+                .addComponent(editlabeluserssumenu, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
                 .addGap(18, 18, 18)
-                .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jToggleButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(todays, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(131, 131, 131))
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 427, Short.MAX_VALUE)
+                .addComponent(todays)
+                .addGap(64, 64, 64))
         );
-        Submenu1Layout.setVerticalGroup(
-            Submenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Submenu1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(Submenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(todays)
-                    .addComponent(jToggleButton1)
-                    .addComponent(jToggleButton2)
-                    .addComponent(jToggleButton3))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        userssubmenu1Layout.setVerticalGroup(
+            userssubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userssubmenu1Layout.createSequentialGroup()
+                .addGap(0, 9, Short.MAX_VALUE)
+                .addGroup(userssubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(userssubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(jLabel4))
+                    .addGroup(userssubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(todays)
+                        .addComponent(editlabeluserssumenu)))
+                .addContainerGap())
         );
+
+        Submenu1.add(userssubmenu1, "card6");
+
+        javax.swing.GroupLayout salessubmenu1Layout = new javax.swing.GroupLayout(salessubmenu1);
+        salessubmenu1.setLayout(salessubmenu1Layout);
+        salessubmenu1Layout.setHorizontalGroup(
+            salessubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 783, Short.MAX_VALUE)
+        );
+        salessubmenu1Layout.setVerticalGroup(
+            salessubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 47, Short.MAX_VALUE)
+        );
+
+        Submenu1.add(salessubmenu1, "card3");
 
         TablePanel.setLayout(new java.awt.CardLayout());
 
-        SalesTablePanel.setBackground(new java.awt.Color(255, 255, 255));
         SalesTablePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
         SalesTable.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
@@ -1026,13 +1241,13 @@ public final class UIv2 extends javax.swing.JFrame {
         SalesTablePanelLayout.setVerticalGroup(
             SalesTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SalesTablePanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 934, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         TablePanel.add(SalesTablePanel, "card2");
 
-        BrandsTablePanel.setBackground(new java.awt.Color(255, 255, 255));
+        BrandsTablePanel.setBackground(new java.awt.Color(51, 0, 255));
         BrandsTablePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
         brandsTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -1061,7 +1276,7 @@ public final class UIv2 extends javax.swing.JFrame {
             BrandsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BrandsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1096,7 +1311,7 @@ public final class UIv2 extends javax.swing.JFrame {
             categoryTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, categoryTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1131,7 +1346,7 @@ public final class UIv2 extends javax.swing.JFrame {
             ProductsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProductsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1166,7 +1381,7 @@ public final class UIv2 extends javax.swing.JFrame {
             StocksTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, StocksTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1212,7 +1427,7 @@ public final class UIv2 extends javax.swing.JFrame {
             DailyReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DailyReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(DailyReportTablePanelLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
@@ -1258,7 +1473,7 @@ public final class UIv2 extends javax.swing.JFrame {
                     .addComponent(tinvest1)
                     .addComponent(totalreturns1)
                     .addComponent(profit1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1266,7 +1481,7 @@ public final class UIv2 extends javax.swing.JFrame {
             WeeklyReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, WeeklyReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(WeeklyReportTablePanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
@@ -1312,7 +1527,7 @@ public final class UIv2 extends javax.swing.JFrame {
                     .addComponent(tinvest2)
                     .addComponent(totalreturns2)
                     .addComponent(profit2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1320,7 +1535,7 @@ public final class UIv2 extends javax.swing.JFrame {
             MonthlyReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MonthlyReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(MonthlyReportTablePanelLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
@@ -1374,7 +1589,7 @@ public final class UIv2 extends javax.swing.JFrame {
             DateReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DateReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(DateReportTablePanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
@@ -1390,7 +1605,16 @@ public final class UIv2 extends javax.swing.JFrame {
 
         UsersTablePanel.setBackground(new java.awt.Color(255, 255, 255));
         UsersTablePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        UsersTablePanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                UsersTablePanelMouseClicked(evt);
+            }
+        });
 
+        staffTable.setAutoCreateRowSorter(true);
+        staffTable.setBackground(new java.awt.Color(242, 242, 242));
+        staffTable.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, java.awt.Color.lightGray, new java.awt.Color(153, 153, 153)));
+        staffTable.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         staffTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -1402,6 +1626,15 @@ public final class UIv2 extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        staffTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        staffTable.setOpaque(false);
+        staffTable.setRowHeight(40);
+        staffTable.setShowGrid(true);
+        staffTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                staffTableMouseClicked(evt);
+            }
+        });
         jScrollPane10.setViewportView(staffTable);
 
         javax.swing.GroupLayout UsersTablePanelLayout = new javax.swing.GroupLayout(UsersTablePanel);
@@ -1417,7 +1650,7 @@ public final class UIv2 extends javax.swing.JFrame {
             UsersTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, UsersTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1452,7 +1685,7 @@ public final class UIv2 extends javax.swing.JFrame {
             NotificationsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NotificationsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1472,6 +1705,12 @@ public final class UIv2 extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        transferedCash.setFocusable(false);
+        transferedCash.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                transferedCashMouseClicked(evt);
+            }
+        });
         jScrollPane12.setViewportView(transferedCash);
 
         javax.swing.GroupLayout CashTablePanelLayout = new javax.swing.GroupLayout(CashTablePanel);
@@ -1487,11 +1726,43 @@ public final class UIv2 extends javax.swing.JFrame {
             CashTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CashTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 928, Short.MAX_VALUE)
+                .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         TablePanel.add(CashTablePanel, "card2");
+
+        PermissionsTree.setBackground(new java.awt.Color(225, 204, 204));
+        PermissionsTree.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        PermissionsTree.setForeground(new java.awt.Color(0, 0, 255));
+        jScrollPane13.setViewportView(PermissionsTree);
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(51, 0, 255));
+        jLabel3.setText("Roles and Permission");
+
+        javax.swing.GroupLayout RolesPermissionsLayout = new javax.swing.GroupLayout(RolesPermissions);
+        RolesPermissions.setLayout(RolesPermissionsLayout);
+        RolesPermissionsLayout.setHorizontalGroup(
+            RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(RolesPermissionsLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        RolesPermissionsLayout.setVerticalGroup(
+            RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RolesPermissionsLayout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        TablePanel.add(RolesPermissions, "card14");
 
         javax.swing.GroupLayout menuLayout = new javax.swing.GroupLayout(menu);
         menu.setLayout(menuLayout);
@@ -1502,8 +1773,8 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(Sidabar, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Submenu, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(Submenu1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(Submenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(TablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
         );
         menuLayout.setVerticalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1524,7 +1795,7 @@ public final class UIv2 extends javax.swing.JFrame {
         getContentPane().add(LeftPanel, java.awt.BorderLayout.CENTER);
 
         jMenuBar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jMenuBar1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jMenuBar1.setFont(new java.awt.Font("Segoe UI Black", 0, 96)); // NOI18N
 
         TopMenu.setText("File");
         TopMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -1540,11 +1811,48 @@ public final class UIv2 extends javax.swing.JFrame {
 
         jMenuBar1.add(TopMenu);
 
-        jMenu2.setText("Show");
-        jMenu2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jMenuBar1.add(jMenu2);
+        showMenu.setText("Show");
+        showMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jMenuBar1.add(showMenu);
 
-        jMenu1.setText("Cash");
+        CashMenu.setText("Cash");
+        jMenuBar1.add(CashMenu);
+
+        BrandsMenu.setText("Brands");
+        BrandsMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                BrandsMenuMouseClicked(evt);
+            }
+        });
+
+        jMenuItem1.setText("View");
+        jMenuItem1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenuItem1MouseClicked(evt);
+            }
+        });
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        BrandsMenu.add(jMenuItem1);
+
+        jMenuItem2.setText("Register");
+        BrandsMenu.add(jMenuItem2);
+
+        jMenuBar1.add(BrandsMenu);
+
+        jMenu1.setText("Inventory");
+
+        jMenuItem3.setText("Manage");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -1557,45 +1865,50 @@ public final class UIv2 extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_QuitMenuActionPerformed
 
-    private void jLabel4KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jLabel4KeyPressed
-        // TODO add your handling code here:
-        CreateBrands cb = new CreateBrands();
-    }//GEN-LAST:event_jLabel4KeyPressed
-
     private void newsaleLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newsaleLabelMouseClicked
         // TODO add your handling code here:
         this.setVisible(false);
         try {
             Sale sale = new Sale();
-        } catch (SQLException ex) {
-            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
+        } catch (SQLException | ClassNotFoundException | ParseException ex) {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_newsaleLabelMouseClicked
 
     private void saleslabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saleslabelMouseClicked
-        // TODO add your handling code here:
-        getActiveClass("saleslabel");
+        TablePanel.removeAll();
+        TablePanel.add(SalesTablePanel);
+        TablePanel.repaint();
+        TablePanel.revalidate();
+        
+        
+        Submenu.removeAll();
+        Submenu.add(SalesHeader);
+        Submenu.repaint();
+        Submenu.revalidate();
+        
+        Submenu1.removeAll();
+        Submenu1.add(salessubmenu1);
+        Submenu1.repaint();
+        Submenu1.revalidate();
+        
+        try {
+            // TODO add your handling code here:
+            getActiveClass("saleslabel");
+            loadJtableValues();
+        } catch (SQLException | ClassNotFoundException | ParseException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_saleslabelMouseClicked
-
-    private void boxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boxMouseClicked
-        // TODO add your handling code here:
-        getActiveClass("box");
-        RegisterProduct.main(null);
-    }//GEN-LAST:event_boxMouseClicked
 
     private void statsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statsMouseClicked
         // TODO add your handling code here:
+        TablePanel.removeAll();
+        TablePanel.add(DailyReportTablePanel);
+        TablePanel.repaint();
+        TablePanel.revalidate();
         getActiveClass("stats");
     }//GEN-LAST:event_statsMouseClicked
-
-    private void adminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminMouseClicked
-        // TODO add your handling code here:
-        getActiveClass("admin");
-    }//GEN-LAST:event_adminMouseClicked
 
     private void customersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customersMouseClicked
         // TODO add your handling code here:
@@ -1642,27 +1955,13 @@ public final class UIv2 extends javax.swing.JFrame {
         Boolean selected = ((Boolean)SellingModel.getValueAt(row, 0));
         if(selected == true){
             try {
-                EditSale editSale;
-                EditSale.setMeUp(getProductDetails());
+                SaveSale editSale;
+                SaveSale.setMeUp(getProductDetails());
             } catch (ClassNotFoundException | ParseException ex) {
                 Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_EditLabelMouseClicked
-
-    private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
-        // Fetch the Excell file
-        ExcelFormat exft = new ExcelFormat();
-        JFileChooser fchoose = new JFileChooser();
-        int option = fchoose.showSaveDialog(UIv2.this);
-        if (option == JFileChooser.APPROVE_OPTION) {
-            String name = fchoose.getSelectedFile().getName();
-            String path = fchoose.getSelectedFile().getParentFile().getPath();
-            String file = path + "\\" + name + ".xls";
-            exft.export(SalesTable, new File(file));
-        }
-
-    }//GEN-LAST:event_jToggleButton3ActionPerformed
 
     public ArrayList<String> getProductDetails() {
         return prd_details;
@@ -1700,6 +1999,310 @@ public final class UIv2 extends javax.swing.JFrame {
         ReturnProduct.main(null);
     }//GEN-LAST:event_ExchangeLabelMouseClicked
 
+    private void saleslabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saleslabelMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_saleslabelMouseEntered
+
+    private void adminilabelmenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminilabelmenuMouseClicked
+     adminIconClicked();
+    }//GEN-LAST:event_adminilabelmenuMouseClicked
+
+    private void ProductsLabelMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ProductsLabelMenuMouseClicked
+        TablePanel.removeAll();
+        TablePanel.add(ProductsTablePanel);
+        TablePanel.repaint();
+        TablePanel.revalidate(); 
+        
+        Submenu.removeAll();
+        Submenu.add(ProductsHeader);
+        Submenu.repaint();
+        Submenu.revalidate(); 
+        getActiveClass("box"); 
+       
+    }//GEN-LAST:event_ProductsLabelMenuMouseClicked
+
+    private void jMenuItem1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MouseClicked
+        // TODO add your handling code here:
+        //See all the brands.
+    }//GEN-LAST:event_jMenuItem1MouseClicked
+
+    private void BrandsMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BrandsMenuMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BrandsMenuMouseClicked
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+         this.add(SalesTablePanel);
+         this.validate();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+                // TODO add your handling code here:
+      
+        try {
+            LoadStocks();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        TablePanel.removeAll();
+        TablePanel.add(StocksTablePanel);
+        TablePanel.repaint();
+        TablePanel.revalidate();
+
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void InventoryLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InventoryLabelMouseClicked
+        // TODO add your handling code here:
+      
+        try {
+            LoadStocks();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        TablePanel.removeAll();
+        TablePanel.add(StocksTablePanel);
+        TablePanel.repaint();
+        TablePanel.revalidate();
+    }//GEN-LAST:event_InventoryLabelMouseClicked
+
+    private void newproducy1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newproducy1MouseClicked
+        // TODO add your handling code here:
+        RegisterProduct.main(allCats);
+    }//GEN-LAST:event_newproducy1MouseClicked
+
+    private void permissionnRolesLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_permissionnRolesLabelMouseClicked
+        // TODO add your handling code here:
+        TablePanel.removeAll();
+        TablePanel.add(RolesPermissions);
+        TablePanel.repaint();
+        TablePanel.revalidate();
+    }//GEN-LAST:event_permissionnRolesLabelMouseClicked
+
+    private void newUserLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newUserLabelMouseClicked
+        try {
+            Staff staff = staffslist.get(0);       
+            RegisterNewUser.main(staff,1);
+        } catch (ClassNotFoundException | ParseException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_newUserLabelMouseClicked
+
+    private void transferedCashMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_transferedCashMouseClicked
+   
+    }//GEN-LAST:event_transferedCashMouseClicked
+
+    private void UsersTablePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UsersTablePanelMouseClicked
+        // TODO add your handling code here:
+       
+        
+    }//GEN-LAST:event_UsersTablePanelMouseClicked
+
+    private void editlabeluserssumenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editlabeluserssumenuMouseClicked
+       try {
+            // TODO add your handling code here:
+            Staff staff = selectedStaff.get(selectedStaff.size() - 1);
+            RegisterNewUser.main(staff,0);
+        } catch (ClassNotFoundException | ParseException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_editlabeluserssumenuMouseClicked
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+        // TODO add your handling code here:
+        int selectedRow = staffTable.getSelectedRow();
+        String staffName = (String) StaffsModel.getValueAt(selectedRow, 0);    
+        String userId = userIds.get(selectedRow);
+        String message = "<html><div style='font-size:14px;'>Are you sure you want to disable" + staffName + "?</div></html>";
+        int confirm = JOptionPane.showConfirmDialog(null, message, "Confirmation", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Call the function to update user status
+            boolean updated = false;
+            try {
+                updated = updateStaffStatus(userId,0);
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (updated) {
+                JOptionPane.showMessageDialog(null,
+                        "User status updated successfully.");
+                
+                    try {
+                        LoadSatffs();
+                    } catch (ParseException ex) {
+                        Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    TablePanel.removeAll();
+                    TablePanel.add(UsersTablePanel);
+                    TablePanel.repaint();
+                    TablePanel.revalidate();
+
+                } else {
+                JOptionPane.showMessageDialog(null, "Failed to update user status.");
+            }
+        }
+        //Sales_Staffs.addtestUsers();
+    }//GEN-LAST:event_jLabel2MouseClicked
+
+       public static boolean updateStaffStatus(String staffId, int type) throws SQLException, ClassNotFoundException {
+            // Call the editStaff method with the staff ID
+       try {
+            return Sales_Staffs.StaffStatus(staffId,type);    
+        } catch(SQLException | ClassNotFoundException ex){
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+            // Log the exception
+            return false; // Return false in case of exception
+        }
+
+    }
+       
+    private void staffTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_staffTableMouseClicked
+        row = staffTable.getSelectedRow();
+        column = staffTable.getColumnCount();
+        int selectedRow = staffTable.getSelectedRow();
+       
+        // Check if a row is selected
+        if (selectedRow != -1) {
+            // Get the values from the selected row
+            String staffName = (String) StaffsModel.getValueAt(selectedRow, 0);
+            String surName = (String) StaffsModel.getValueAt(selectedRow, 1);
+            String staffEmail = (String) StaffsModel.getValueAt(selectedRow, 2);
+            String phoneNo = (String) StaffsModel.getValueAt(selectedRow, 3);
+            String store = (String) StaffsModel.getValueAt(selectedRow, 4);
+            String statusLabel = (String) StaffsModel.getValueAt(selectedRow, 5);
+            String status =   (String) StaffsModel.getValueAt(selectedRow, 5);
+            String managerId = (String) StaffsModel.getValueAt(selectedRow, 6);
+            String userId = userIds.get(selectedRow);
+
+            Object roleObj = StaffsModel.getValueAt(selectedRow, 7);
+            int role;
+            if (roleObj instanceof Integer) {
+                role = (int) roleObj;
+            } else if (roleObj instanceof String) {
+                try {
+                    role = Integer.parseInt((String) roleObj);
+                } catch (NumberFormatException e) {
+                    // Handle the case where the value cannot be parsed to an integer
+                    e.printStackTrace();
+                    // Provide a default value or handle the error as appropriate
+                    role = 0; // Default value or whatever you deem suitable
+                }
+            } else {
+                // Handle the case where the value is neither an integer nor a string
+                role = 0; // Default value or appropriate handling
+            }
+
+
+            // Create an object with the retrieved values
+            // Create a new Staff object and add it to the userDetails ArrayList
+            selectedStaff.add(new Staff(staffName, surName,
+           staffEmail, phoneNo, store, statusLabel, 
+           managerId, role,userId));
+            // Pass the object to the editUser me       
+        } else {
+            // No row is selected
+           JOptionPane.showMessageDialog(null, "No row is selected.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_staffTableMouseClicked
+
+    private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
+        // TODO add your handling code here:
+        int selectedRow = staffTable.getSelectedRow();
+        String staffName = (String) StaffsModel.getValueAt(selectedRow, 0);    
+        String userId = userIds.get(selectedRow);
+        String message = "<html><div style='font-size:14px;'>Are you sure you want to enable " + staffName + "?</div></html>";
+        int confirm = JOptionPane.showConfirmDialog(null, message, "Confirmation", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Call the function to update user status
+            boolean updated = false;
+            try {
+                updated = updateStaffStatus(userId,1);
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (updated) {
+                JOptionPane.showMessageDialog(null, 
+                        "User status updated successfully.");
+                    try {
+                        LoadSatffs();
+                    } catch (ParseException | ClassNotFoundException ex) {
+                        Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    TablePanel.removeAll();
+                    TablePanel.add(UsersTablePanel);
+                    TablePanel.repaint();
+                    TablePanel.revalidate();
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to update user status.");
+            }
+        }
+    }//GEN-LAST:event_jLabel4MouseClicked
+
+      // Method to get the instance of UIv2
+        public static UIv2 getInstance() {
+            if (Instance == null) {
+                try {
+                    Instance = new UIv2();
+                } catch (ClassNotFoundException | ParseException ex) {
+                    Logger.getLogger(RegisterNewUser.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            return Instance;
+        }
+        
+      public static void callAdminIconClicked() {
+        // Get the existing instance of UIv2
+        UIv2 uiv = UIv2.getInstance();
+
+        // Call the adminIconClicked() method
+        uiv.adminIconClicked();
+        }
+      
+      public void adminIconClicked() {
+        try {
+            LoadSatffs();
+        } catch (ParseException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        JTableHeader Sheader = staffTable.getTableHeader();
+        Sheader.setBackground(new Color(194, 218, 245));
+        Sheader.setForeground(new Color(0, 0, 128));
+        Sheader.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+
+        // Align the header text to the left
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) staffTable.getTableHeader().getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+
+        getActiveClass("admin");
+
+        TablePanel.removeAll();
+        TablePanel.add(UsersTablePanel);
+        TablePanel.repaint();
+        TablePanel.revalidate();
+
+        Submenu.removeAll();
+        Submenu.add(UsersHeader);
+        Submenu.repaint();
+        Submenu.revalidate();
+
+        Submenu1.removeAll();
+        Submenu1.add(userssubmenu1);
+        Submenu1.repaint();
+        Submenu1.revalidate();
+    }
+
+
     /**
      * @throws java.sql.SQLException
      * @throws java.lang.ClassNotFoundException
@@ -1725,7 +2328,10 @@ public final class UIv2 extends javax.swing.JFrame {
         SalesTable.repaint();
         SalesTable.revalidate();
     }
+    
+    
 
+   
     public static void main(String args[])
             throws UnsupportedLookAndFeelException {
         SplashJava.main(null);
@@ -1739,9 +2345,12 @@ public final class UIv2 extends javax.swing.JFrame {
             }
         });
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu BrandsMenu;
     private javax.swing.JPanel BrandsTablePanel;
     private javax.swing.JLabel CancelLabel;
+    private javax.swing.JMenu CashMenu;
     private javax.swing.JPanel CashTablePanel;
     private javax.swing.JPanel DailyReportTablePanel;
     private javax.swing.JPanel DateReportTablePanel;
@@ -1749,14 +2358,18 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JTable EmailTable;
     private javax.swing.JLabel ExchangeLabel;
     private javax.swing.JPanel InfoPanel;
+    private javax.swing.JLabel InventoryLabel;
     private javax.swing.JPanel LeftPanel;
     private javax.swing.JPanel MonthlyReportTablePanel;
     private javax.swing.JPanel NotificationsTablePanel;
     private javax.swing.JLabel OrderLabel;
+    private javax.swing.JTree PermissionsTree;
     private javax.swing.JLabel PrintReceipt;
     private javax.swing.JPanel ProductsHeader;
+    private javax.swing.JLabel ProductsLabelMenu;
     private javax.swing.JPanel ProductsTablePanel;
     private javax.swing.JMenuItem QuitMenu;
+    private javax.swing.JPanel RolesPermissions;
     private javax.swing.JPanel SalesHeader;
     private javax.swing.JTable SalesTable;
     private javax.swing.JPanel SalesTablePanel;
@@ -1765,33 +2378,34 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JPanel StocksTablePanel;
     private javax.swing.JPanel Submenu;
     private javax.swing.JPanel Submenu1;
-    private javax.swing.JPanel TablePanel;
+    public javax.swing.JPanel TablePanel;
     private javax.swing.JMenu TopMenu;
-    private javax.swing.JPanel UsersTablePanel;
+    private javax.swing.JPanel UsersHeader;
+    public javax.swing.JPanel UsersTablePanel;
     private javax.swing.JPanel WeeklyReportTablePanel;
-    private javax.swing.JLabel admin;
-    private javax.swing.JLabel box;
+    public static javax.swing.JLabel adminilabelmenu;
     private javax.swing.JTable brandsTable;
     private javax.swing.JTable categoryTable;
     private javax.swing.JPanel categoryTablePanel;
     private javax.swing.JLabel customers;
+    private javax.swing.JLabel customerslabelmenu;
     private javax.swing.JTable dailySalesTable;
     private javax.swing.JTable datedreporttable;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel editlabeluserssumenu;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
+    private javax.swing.JScrollPane jScrollPane13;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -1800,19 +2414,24 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JPanel menu;
     private javax.swing.JTable monthlyreporttable;
+    private javax.swing.JLabel newUserLabel;
+    private javax.swing.JLabel newproducy1;
     private javax.swing.JLabel newsaleLabel;
+    private javax.swing.JLabel permissionnRolesLabel;
     private javax.swing.JTable productsTable;
+    private javax.swing.JLabel productslabelmenu;
     private javax.swing.JLabel profit;
     private javax.swing.JLabel profit1;
     private javax.swing.JLabel profit2;
     private javax.swing.JLabel profit3;
     private javax.swing.JLabel saleslabel;
+    private javax.swing.JLabel saleslabelmenu;
+    private javax.swing.JPanel salessubmenu1;
+    private javax.swing.JMenu showMenu;
     private javax.swing.JTable staffTable;
+    private javax.swing.JLabel statisticslabelmenu;
     private javax.swing.JLabel stats;
     private javax.swing.JTable stocksTable;
     private javax.swing.JLabel tinvest;
@@ -1825,12 +2444,14 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JLabel totalreturns2;
     private javax.swing.JLabel totalreturns3;
     private javax.swing.JTable transferedCash;
+    private javax.swing.JLabel userlabelmenu;
     private javax.swing.JLabel usernameLabel;
+    private javax.swing.JPanel userssubmenu1;
+    private javax.swing.JLabel version;
     private javax.swing.JTable weeklyreporttable;
     // End of variables declaration//GEN-END:variables
+
 }
-
-
 // Customize the code to set the color for each column in JTable
 class MyRenderer extends DefaultTableCellRenderer 
 {

@@ -355,12 +355,11 @@ public class Reports {
                         date)); */
             }        
          }
-        
-             catch (SQLException se) {
+            catch (SQLException se) {
             // Handle errors for JDBC 
             se.printStackTrace();
         }
         NumericalFormats nft = new NumericalFormats();
-        return nft.accountsFormat(String.valueOf(overlInvestment));
+        return "";//nft.accountsFormat(String.valueOf(overlInvestment));
     }
 }

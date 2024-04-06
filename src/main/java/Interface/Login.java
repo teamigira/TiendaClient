@@ -7,13 +7,9 @@ package Interface;
 
 import Authentication.Encrpytion;
 import Authentication.Sessions;
-import Classes.Utilities.AudioPlayer;
 import static Database.DBConnect.getConnection;
-import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkSoftIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
-import java.awt.Dimension;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -87,7 +83,7 @@ static Login Instance;
         jLabel39.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         jLabel39.setText("User Login");
 
-        user.setText("administrator");
+        user.setText("admin");
 
         jLabel1.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         jLabel1.setText("User");
@@ -102,9 +98,16 @@ static Login Instance;
                 jButton1ActionPerformed(evt);
             }
         });
+        jButton1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButton1KeyPressed(evt);
+            }
+        });
 
         errormsg.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         errormsg.setForeground(new java.awt.Color(255, 51, 51));
+
+        password.setText("12345");
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/Loginicons8-user-64.png"))); // NOI18N
 
@@ -234,6 +237,53 @@ static Login Instance;
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_logincloselabelMouseClicked
+
+    private void jButton1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton1KeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+                    // TODO add your handling code here:
+        String username = user.getText();
+        String pass = password.getText();
+        
+        Encrpytion enc = new Encrpytion();
+        String passcode = enc.encrypt(pass);
+        
+              try { 
+         Connection conn = getConnection();
+         Statement stmt = conn.createStatement(); 
+         String sql = "SELECT * FROM Tienda.sales_staffs"
+         + " where (first_name = '"+username+"' AND password = '"+passcode+"') AND active = '1'"; 
+         ResultSet rs = stmt.executeQuery(sql);
+         //STEP 4: Extract data from result set
+         if(rs.next()) { 
+            //Retrieve by column name
+            String fname  = rs.getString("first_name");
+            String lname = rs.getString("last_name");
+            //response
+            this.dispose();
+            String user = fname+" " +lname;
+            Sessions ssl = new Sessions();
+            ssl.setLoggedUser(user);
+            //FlatGitHubIJTheme.setup();
+            UIv2 UI = new UIv2();
+         } 
+         else {
+             errormsg.setText("Password incorrect! Try again");
+             /* AudioPlayer Aud = new AudioPlayer();
+                Aud.Playme("failure"); */
+         }
+        // STEP 5: Clean-up environment 
+        rs.close();
+        // finally block used to close resources
+        stmt.close();
+        conn.close();
+        }catch(SQLException | ClassNotFoundException | ParseException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+
+        }
+    }//GEN-LAST:event_jButton1KeyPressed
 
     /**
      * @param args the command line arguments

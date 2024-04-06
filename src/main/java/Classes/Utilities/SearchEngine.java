@@ -4,7 +4,9 @@
  */
 package Classes.Utilities;
 
+import Classes.AbstractClasses.Brand;
 import Classes.AbstractClasses.Product;
+import Classes.Functions.Crudes;
 import Classes.Functions.Products;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,12 +60,29 @@ public class SearchEngine {
 
     public String[] productsSearch(String Search) throws ClassNotFoundException, ParseException, SQLException {
         ArrayList<Product> products = Products.listProductOnly();
+        System.out.println("calling search");
+        System.out.println(products.size());
         List<Product> line = products.stream().filter(p -> (p.product_name.contains(Search))).toList();
+        System.out.println(line);
         String[] ch = new String[line.size() + 1];
+        System.out.println("searching");
         for (int i = 0; i < line.size(); i++) {
             Product po = line.get(i);
             ch[i] = po.product_name;
-
+            System.out.println(ch[i]);
+        }
+        return ch;
+          
+    }
+    
+        public String[] brandSearch(String Search) throws ClassNotFoundException, ParseException, SQLException {
+        ArrayList<Brand> brands = Crudes.listBrands();
+        List<Brand> line = brands.stream().filter(p -> (p.brand_name.contains(Search))).toList();
+        String[] ch = new String[line.size() + 1];
+        
+        for (int i = 0; i < line.size(); i++) {
+            Brand po = line.get(i);
+            ch[i] = po.brand_name;
         }
         return ch;
 

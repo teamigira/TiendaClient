@@ -32,9 +32,12 @@ import javax.swing.ImageIcon;
  * @author Nkanabo
  */
 public class launcher extends javax.swing.JFrame {
-static launcher Instance;
+
+    static launcher Instance;
+
     /**
      * Creates new form Login
+     *
      * @throws java.net.URISyntaxException
      */
     public launcher() throws URISyntaxException, IOException {
@@ -47,12 +50,12 @@ static launcher Instance;
                 Instance = new launcher();
                 String url = "resources/images/icons8.jpg";
                 File is = Instance.getFileFromResource(url);
-                
+
                 String filepath = Paths.get(is.toURI()).toFile().getAbsolutePath();
                 ImageIcon icon = new ImageIcon(filepath);
-                System.out.println("icon is me "+icon);
-                setIconImage(icon.getImage()); 
-        
+                System.out.println("icon is me " + icon);
+                setIconImage(icon.getImage());
+
             } catch (URISyntaxException ex) {
                 Logger.getLogger(launcher.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -89,6 +92,12 @@ static launcher Instance;
         KeyLabel.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         KeyLabel.setText("Enter the Product Code");
 
+        key1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                key1KeyReleased(evt);
+            }
+        });
+
         jButton1.setText("SUBMIT");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -104,6 +113,29 @@ static launcher Instance;
         jButton1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jButton1KeyPressed(evt);
+            }
+        });
+
+        key3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                key3KeyReleased(evt);
+            }
+        });
+
+        key4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                key4KeyReleased(evt);
+            }
+        });
+
+        key2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                key2MouseReleased(evt);
+            }
+        });
+        key2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                key2KeyReleased(evt);
             }
         });
 
@@ -256,10 +288,71 @@ static launcher Instance;
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     */
+    private void key1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_key1KeyReleased
+        // TODO add your handling code here:
+        if (key1.getText().length() == 4) {
+            key2.requestFocus();
+        }
+
+    }//GEN-LAST:event_key1KeyReleased
+
+    private void key2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_key2MouseReleased
+
+    }//GEN-LAST:event_key2MouseReleased
+
+    private void key2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_key2KeyReleased
+        if (key2.getText().length() == 4) {
+            this.requestFocusInWindow();
+            key3.requestFocus();
+
+        }
+    }//GEN-LAST:event_key2KeyReleased
+
+    private void key3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_key3KeyReleased
+        // TODO add your handling code here:
+        if (key3.getText().length() == 4) {
+            this.requestFocusInWindow();
+            key4.requestFocus();
+        }
+    }//GEN-LAST:event_key3KeyReleased
+
+    private void key4KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_key4KeyReleased
+        // TODO add your handling code here:
+        if (key4.getText().length() == 4) {
+         notificationLabel("wait");
+         jButton1ActionPerformed(null);
+         notificationLabel("complete");
+        }
+    }//GEN-LAST:event_key4KeyReleased
+
+    
+    public void notificationLabel(String type) {
+        switch (type) {
+            case "wait":
+                jButton1.setEnabled(false);
+                jButton1.setIcon(
+                        new javax.swing.ImageIcon(getClass()
+                                .getResource("/resources/images/loader.gif")));
+                break;
+
+            case "complete":
+                jButton1.setEnabled(false);
+                jButton1.setIcon(
+                        new javax.swing.ImageIcon(getClass()
+                                .getResource("/resources/images/loader.gif")));
+                try {
+                    int secondsToSleep = 5;
+                    Thread.sleep(secondsToSleep * 1000);
+                    jButton1.setEnabled(true);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+                break;
+        }
+    }
+    
     public static void launcher() {
-        
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -297,8 +390,8 @@ static launcher Instance;
             }
         });
     }
-    
-     private InputStream getFileFromResourceAsStream(String fileName) {
+
+    private InputStream getFileFromResourceAsStream(String fileName) {
 
         // The class loader that loaded the class
         ClassLoader classLoader = getClass().getClassLoader();
@@ -312,8 +405,8 @@ static launcher Instance;
         }
 
     }
-    
-    private File getFileFromResource(String fileName) throws URISyntaxException{
+
+    private File getFileFromResource(String fileName) throws URISyntaxException {
 
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(fileName);
@@ -323,7 +416,6 @@ static launcher Instance;
 
             // failed if files have whitespaces or special characters
             //return new File(resource.getFile());
-
             return new File(resource.toURI());
         }
 

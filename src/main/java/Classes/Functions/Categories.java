@@ -6,7 +6,7 @@
 package Classes.Functions;
 
 import Classes.AbstractClasses.Category;
-import Classes.AbstractClasses.Brands;
+import Classes.AbstractClasses.Brand;
 import Database.DBConnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -97,7 +97,7 @@ public class Categories {
 
     public static ArrayList listBrands() throws SQLException, ClassNotFoundException {
 
-        ArrayList<Brands> list = new ArrayList<Brands>();
+        ArrayList<Brand> list = new ArrayList<Brand>();
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
@@ -108,7 +108,7 @@ public class Categories {
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
 //           rowValues.add(rs.getInt("brand_id"), rs.getString("brand_name"));
-                list.add(new Brands(Integer.parseInt(rs.getString("brand_id")), rs.getString("brand_name")));
+                list.add(new Brand(Integer.parseInt(rs.getString("brand_id")), rs.getString("brand_name")));
             }
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {

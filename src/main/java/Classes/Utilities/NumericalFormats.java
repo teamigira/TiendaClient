@@ -15,16 +15,16 @@ import java.util.Locale;
  */
 public class NumericalFormats {
     
-    public static String accountsFormat(String amount){
-        Double cash = Double.parseDouble(amount);
-        Locale tzs = new Locale("en", "US");
-        Currency tsh = Currency.getInstance(tzs);
+    public static String accountsFormat(Double amount){
+        //Locale tzs = new Locale("en", "US");
+        Locale tanzaniaLocale = new Locale("sw", "TZ");
+        Currency tsh = Currency.getInstance(tanzaniaLocale);
         // Create a formatter given the Locale
-        NumberFormat tshFormat = NumberFormat.getCurrencyInstance(tzs);
+        NumberFormat tshFormat = NumberFormat.getCurrencyInstance(tanzaniaLocale);
         // Format the Number into a Currency String
-        System.out.println(tsh.getDisplayName() + ": " + tshFormat.format(cash));
+//        System.out.println(tsh.getDisplayName() + ": " + tshFormat.format(cash));
         
-        String formatedAmount = tsh.getDisplayName() + ": " + tshFormat.format(cash);
+        String formatedAmount = tsh.getDisplayName() + ": " + tshFormat.format(amount);
         return formatedAmount;
     }
 }

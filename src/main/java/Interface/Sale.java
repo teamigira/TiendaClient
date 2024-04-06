@@ -7,9 +7,12 @@ package Interface;
 
 import Classes.AbstractClasses.Order;
 import Classes.Functions.Orders;
+import static Classes.Functions.Orders.checkOrderIdValidity;
 import static Classes.Functions.Orders.listOrders;
 import Classes.Functions.Products;
 import Classes.Functions.Stocks;
+import Classes.Utilities.NumericalFormats;
+import static Classes.Utilities.RandomNumbers.generateNumber;
 import Classes.Utilities.SearchEngine;
 import UserSettings.UserSettings;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
@@ -48,7 +51,7 @@ public class Sale extends javax.swing.JFrame {
     int row, column;
       
     ArrayList<Order> orderlist;
-    String headers[] = {"Order Id", "Product", "Quantity", "List price", "Discount"};
+    String headers[] = {"Order Id", "Product Id","Product", "Quantity", "List price", "Discount"};
     DefaultTableModel ordersModel;
 
     public Sale() throws SQLException, ClassNotFoundException, ParseException {
@@ -83,8 +86,10 @@ public class Sale extends javax.swing.JFrame {
         Double b;
         b = DoubleConverter(qtyfield.getText());
         //quantitylabelSales.
-        pricelabel.setText("Price: " + product_price);
-        totallabel.setText("Total: " + a * b);
+        String Totalprice = NumericalFormats.accountsFormat(a*b);
+        String prd_price = NumericalFormats.accountsFormat(a);
+        pricelabel.setText("Price: " + prd_price);
+        totallabel.setText("Total: " + Totalprice);
         return 0;
     }
     
@@ -97,6 +102,7 @@ public class Sale extends javax.swing.JFrame {
         for (int i = 0; i < orderlist.size(); i++) {
             Object[] obj = {
                 orderlist.get(i).orderid,
+                orderlist.get(i).productid,
                 orderlist.get(i).product,
                 orderlist.get(i).quantity,
                 orderlist.get(i).listprice,
@@ -110,12 +116,16 @@ public class Sale extends javax.swing.JFrame {
     public final void setTotal(){
           Double Total = 0.0;
           int c =   ordersModel.getRowCount();
+          
+         
           for(int i=0; i<c; i++){
-          Total += DoubleConverter(ordersModel.getValueAt(i, 3).toString());
+          Double qty = DoubleConverter(ordersModel.getValueAt(i, 3).toString());
+          Double price = DoubleConverter(ordersModel.getValueAt(i, 4).toString());
+          Total += qty*price;
           }
           UserSettings us = new UserSettings();
-          TotalLabel.setText(us.getSystemCurrency(Total));
-          System.out.println(us.getSystemCurrency(Total));
+          NumericalFormats nf = new NumericalFormats();
+          TotalLabel.setText(nf.accountsFormat(Total));
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -242,17 +252,19 @@ public class Sale extends javax.swing.JFrame {
         );
         salePanelLayout.setVerticalGroup(
             salePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
         );
 
         totalPanel.setBorder(new javax.swing.border.MatteBorder(null));
 
+        TotalLabel.setBackground(new java.awt.Color(204, 204, 255));
         TotalLabel.setFont(new java.awt.Font("Segoe UI Semibold", 1, 24)); // NOI18N
-        TotalLabel.setForeground(new java.awt.Color(0, 153, 255));
+        TotalLabel.setForeground(new java.awt.Color(102, 102, 102));
+        TotalLabel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 204, 255), 1, true));
 
         TotalLabel1.setFont(new java.awt.Font("Segoe UI Semibold", 1, 24)); // NOI18N
         TotalLabel1.setForeground(new java.awt.Color(0, 153, 255));
-        TotalLabel1.setText("Total =");
+        TotalLabel1.setText("Total :");
 
         javax.swing.GroupLayout totalPanelLayout = new javax.swing.GroupLayout(totalPanel);
         totalPanel.setLayout(totalPanelLayout);
@@ -261,17 +273,18 @@ public class Sale extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, totalPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(TotalLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(TotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(TotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
         );
         totalPanelLayout.setVerticalGroup(
             totalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, totalPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(totalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(totalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(TotalLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TotalLabel)))
+                    .addComponent(TotalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 204));
@@ -328,7 +341,7 @@ public class Sale extends javax.swing.JFrame {
         totallabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         totallabel.setText("Total:");
 
-        qtyfield.setBackground(new java.awt.Color(255, 255, 204));
+        qtyfield.setBackground(new java.awt.Color(242, 242, 242));
         qtyfield.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         qtyfield.setForeground(new java.awt.Color(0, 153, 255));
         qtyfield.setText("1");
@@ -358,14 +371,14 @@ public class Sale extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(SearchProductForm, javax.swing.GroupLayout.PREFERRED_SIZE, 736, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(quantitylabelSales)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(qtyfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pricelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(totallabel)
+                .addComponent(pricelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(totallabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SaveLabel)
                 .addContainerGap())
@@ -391,8 +404,14 @@ public class Sale extends javax.swing.JFrame {
         topSalePanel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         saveLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        saveLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-checkmark-16.png"))); // NOI18N
         saveLabel.setText("Save (F2)");
         saveLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        saveLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                saveLabelMouseClicked(evt);
+            }
+        });
 
         discountlabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         discountlabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/v2icons8-discount.png"))); // NOI18N
@@ -454,7 +473,7 @@ public class Sale extends javax.swing.JFrame {
                 .addComponent(adminlabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 218, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
                 .addComponent(closelabel)
                 .addContainerGap())
         );
@@ -632,35 +651,82 @@ public class Sale extends javax.swing.JFrame {
     }//GEN-LAST:event_qtyfieldKeyReleased
 
     private void SaveLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveLabelMouseClicked
-        try {
-            //Save the order:
-            Double quantity;
-            Double discount=0.0;
-            quantity = Double.parseDouble(qtyfield.getText());
-            String product_id = SearchProductForm.getText();
-            SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
-            //String backdated = dcn.format(backdate.getDate());
-            String backdated = "";
-            if (Orders.addOrderFromName(product_id, quantity, discount, backdated)) {
+            try {                                       
+                //Save the order:
+                Double quantity;
+                Double discount=0.0;
+                quantity = Double.parseDouble(qtyfield.getText());
+                String product_id = SearchProductForm.getText();
+                SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
+                //String backdated = dcn.format(backdate.getDate());
+                String backdated = "";
                 boolean stockUpdate = false;
                 setTotal();
                 try {
                     stockUpdate = Stocks.editStock(product_id, quantity);
+                    if( stockUpdate == true) {
+                        if (Orders.addOrderFromName(product_id, quantity, discount, backdated)) {
+                            JOptionPane.showMessageDialog(this, "Succesfully");
+                        }
+                    }
+                    else
+                        if (stockUpdate == false) {
+                            JOptionPane.showMessageDialog(this, "Item Out of stock");
+                        }
                 } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
                     Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (stockUpdate == false) {
-                    JOptionPane.showMessageDialog(this, "Error in Updating stock");
-                }
-                JOptionPane.showMessageDialog(this, "Succesfully");
+                
+                
                 loadJtableValues();
                 SearchProductForm.setText("Code, Product name, Bar code scanner");
-//                LoadStockProducts();
-            }
-        } catch (ParseException | ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//                LoadStockProducts();        
+            } catch (SQLException | ClassNotFoundException | ParseException ex) {
+                    Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
+                }
     }//GEN-LAST:event_SaveLabelMouseClicked
+
+    private void saveLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveLabelMouseClicked
+        // TODO add your handling code here:
+            int randomNumber = generateNumber();
+            try {
+                // Here i am setting text of the code to something random:
+                if (!checkOrderIdValidity(
+                        String.valueOf(randomNumber)
+                )) {
+                    row = OrdersTable.getSelectedRow();
+                    column = OrdersTable.getColumnCount();
+                    
+                    
+                    //Saving all orders that exists on the table.
+                    //Initialising counter.
+                    int c =   ordersModel.getRowCount();  
+                    try {
+                          for(int i=0; i<c; i++){
+                        //The lists of Ids
+                        String orderId = ordersModel.getValueAt(i, 0).toString();
+                        String product_id = ordersModel.getValueAt(i, 1).toString();
+                        System.out.println(i+"  "+orderId+"   "+product_id+"   "+randomNumber);
+                        Orders.saveOrderItem(orderId,product_id, randomNumber);
+                        }
+                        
+                            JOptionPane.showMessageDialog(this,
+                                    "Order saved succesfully");
+                            loadJtableValues();
+                            salePanel.repaint();
+                            salePanel.revalidate();
+                    } catch (ParseException ex) {
+                        Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                        System.out.println("Random number fail 687.Sale");
+                }
+
+            } catch (SQLException | ClassNotFoundException ex) {
+                ex.printStackTrace();
+            }
+    }//GEN-LAST:event_saveLabelMouseClicked
 
     public String[] searchSuggestions(String search) throws MalformedURLException, IOException, org.json.simple.parser.ParseException {
         JSONParser parser = new JSONParser();

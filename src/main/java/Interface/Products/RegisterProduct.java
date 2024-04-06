@@ -12,20 +12,26 @@ import static Classes.Functions.Orders.listOrders;
 
 import Classes.Functions.Products;
 import static Classes.Functions.Products.checkCodeValidity;
+import Classes.Functions.Stocks;
+import static Classes.Utilities.OS.hash;
 import static Classes.Utilities.OS.path;
 import static Classes.Utilities.OS.systempath;
 import Classes.Utilities.RandomNumbers;
 import static Classes.Utilities.RandomNumbers.generateNumber;
+import Classes.Utilities.RandomString;
 import Classes.Utilities.SearchEngine;
 import Interface.Sale;
+import Interface.UIv2;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import java.awt.Image;
+import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.Integer.parseInt;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,6 +63,9 @@ public final class RegisterProduct extends javax.swing.JFrame {
      */
     /*Sales variables declaration*/
     int row, column, clickcount;
+    private int changeable_price;
+    private int controllable_stock;
+    
     Object[] columnNames = {"Select", "Order Id", "Product",
         "Quantity", "List price", "Discount"
     };
@@ -102,7 +111,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
             ClassNotFoundException, ParseException {
         FlatGitHubIJTheme.setup();
         initComponents();
-        CSV_Label.setToolTipText("Insert brands from "+systempath);
+        CSV_Label.setToolTipText("Insert brands from " + systempath);
         showImage(pos);
         this.setLocationRelativeTo(null);
         this.setResizable(true);
@@ -113,7 +122,6 @@ public final class RegisterProduct extends javax.swing.JFrame {
         loadJtableValues();
 
         //Initiating the variables
-        
         jPopupMenu1.add(Autocomplete);
         brandsmodel = new DefaultListModel();
         autocompleteProducts.setModel(brandsmodel);
@@ -140,7 +148,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
         Supplies = new javax.swing.JLabel();
         Options = new javax.swing.JLabel();
         Expiration = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        saveProductForm = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
         ReturnSaleBody = new javax.swing.JPanel();
         SelectionMeans = new javax.swing.JPanel();
@@ -175,8 +183,8 @@ public final class RegisterProduct extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         commentsinput = new javax.swing.JTextArea();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
+        controllablestock = new javax.swing.JCheckBox();
+        changeableprice = new javax.swing.JCheckBox();
         CSV_Label = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         SelectRow = new javax.swing.JPanel();
@@ -305,13 +313,16 @@ public final class RegisterProduct extends javax.swing.JFrame {
             }
         });
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-checkmark-32.png"))); // NOI18N
-        jLabel10.setText("Save");
-        jLabel10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel10.addMouseListener(new java.awt.event.MouseAdapter() {
+        saveProductForm.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        saveProductForm.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-checkmark-32.png"))); // NOI18N
+        saveProductForm.setText("Save");
+        saveProductForm.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        saveProductForm.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel10MouseClicked(evt);
+                saveProductFormMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                saveProductFormMouseEntered(evt);
             }
         });
 
@@ -325,7 +336,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HeaderLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(saveProductForm, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cancel)
                 .addGap(5, 5, 5)
@@ -356,7 +367,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
                     .addComponent(Supplies)
                     .addComponent(Options)
                     .addComponent(Expiration)
-                    .addComponent(jLabel10)))
+                    .addComponent(saveProductForm)))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, HeaderLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSeparator3)
@@ -419,7 +430,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(cameraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                     .addContainerGap(174, Short.MAX_VALUE)
@@ -482,7 +493,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
         stocklevelinput.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
 
         unitofmeasure.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
-        unitofmeasure.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        unitofmeasure.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Quantity", "Kilograms", "Liters", "Cubic Meters","CBM" }));
 
         minimumstocklevelinput.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
 
@@ -500,15 +511,25 @@ public final class RegisterProduct extends javax.swing.JFrame {
             }
         });
 
-        jCheckBox2.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
-        jCheckBox2.setForeground(new java.awt.Color(102, 102, 102));
-        jCheckBox2.setText("Do not Control stock");
-        jCheckBox2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        controllablestock.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
+        controllablestock.setForeground(new java.awt.Color(102, 102, 102));
+        controllablestock.setText("Do not Control stock");
+        controllablestock.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        controllablestock.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                controllablestockItemStateChanged(evt);
+            }
+        });
 
-        jCheckBox3.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
-        jCheckBox3.setForeground(new java.awt.Color(102, 102, 102));
-        jCheckBox3.setText("Change price during sale");
-        jCheckBox3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        changeableprice.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
+        changeableprice.setForeground(new java.awt.Color(102, 102, 102));
+        changeableprice.setText("Change price during sale");
+        changeableprice.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        changeableprice.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                changeablepriceItemStateChanged(evt);
+            }
+        });
 
         CSV_Label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-import-csv-16.png"))); // NOI18N
         CSV_Label.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -591,8 +612,8 @@ public final class RegisterProduct extends javax.swing.JFrame {
                                     .addComponent(minimumstocklevelinput, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(controllablestock, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(changeableprice, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(SelectionMeansLayout.createSequentialGroup()
                         .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -609,7 +630,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
             .addGroup(SelectionMeansLayout.createSequentialGroup()
                 .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(SelectionMeansLayout.createSequentialGroup()
-                        .addGap(66, 66, 66)
+                        .addGap(72, 72, 72)
                         .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Code)
                             .addComponent(codeinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -652,10 +673,10 @@ public final class RegisterProduct extends javax.swing.JFrame {
                         .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(salepriceinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(salepriceicon, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jCheckBox3))
+                    .addComponent(changeableprice))
                 .addGap(18, 18, 18)
                 .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox2)
+                    .addComponent(controllablestock)
                     .addComponent(stocklevelinput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(26, 26, 26)
@@ -1000,9 +1021,44 @@ public final class RegisterProduct extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_ExpirationMouseClicked
 
-    private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
+    private void saveProductFormMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveProductFormMouseClicked
         //Arraylist for storing products
         ArrayList<ProductDetails> product = new ArrayList<>();
+        String filefolder;
+        //Image file of the product.
+        if (browseFile.getSelectedFile() != null) {
+            //JOptionPane.showMessageDialog(frame, "Chosen File Name: " +
+            //importFileChooser.getSelectedFile().getName());
+            File selectedFile = browseFile.getSelectedFile();
+            String filename = browseFile.getSelectedFile().getName();
+            filefolder = RandomString.getRandomString(15);
+            try {
+                makeImageFolder(filefolder);
+                saveImage(selectedFile, filename, filefolder);
+            } catch (IOException ex) {
+                Logger.getLogger(RegisterProduct.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+        } else {
+            filefolder = null;
+        }
+        String units = (String) unitofmeasure.getSelectedItem();
+        int unit_of_measure;
+        switch (units){
+            case "Quantity":
+                unit_of_measure = 1;
+            case "Kilograms":
+                unit_of_measure = 2;
+            case "Liters":
+                unit_of_measure = 3;
+            case "Cubic Meters":
+                unit_of_measure = 4;
+            case "CBM":
+                unit_of_measure = 5;
+            default:
+                unit_of_measure = 1;
+        }
+        
         Object[] obj = {
             codeinput.getText(),
             barcodeinput.getText(),
@@ -1013,22 +1069,24 @@ public final class RegisterProduct extends javax.swing.JFrame {
             costinput.getText(),
             salepriceinput.getText(),
             stocklevelinput.getText(),
-            unitofmeasure.getSelectedItem(),
+            unit_of_measure,
             minimumstocklevelinput.getText(),
-            commentsinput.getText()
+            commentsinput.getText(),
+            changeable_price,
+            controllable_stock,
+            filefolder
         };
-        File selectedFile = browseFile.getSelectedFile();
-        String filename = browseFile.getSelectedFile().getName();
+
         try {
             Products.RegisterProduct(obj);
-            saveImage(selectedFile, filename);
-        } catch (URISyntaxException | ClassNotFoundException
-                | ParseException | IOException ex) {
-            Logger.getLogger(RegisterProduct.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            Stocks.addStock(codeinput.getText(),parseInt(stocklevelinput.getText()));
+            JOptionPane.showMessageDialog(this, "Succesfully");
+          
+           
+        } catch (URISyntaxException | ClassNotFoundException | ParseException | SQLException ex) {
+            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-    }//GEN-LAST:event_jLabel10MouseClicked
+    }//GEN-LAST:event_saveProductFormMouseClicked
 
     private void autocompleteProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_autocompleteProductsMouseClicked
         //if the products drop down list is created.
@@ -1144,6 +1202,32 @@ public final class RegisterProduct extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jLabel5MouseClicked
 
+    private void saveProductFormMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveProductFormMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_saveProductFormMouseEntered
+
+    private void changeablepriceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_changeablepriceItemStateChanged
+        // TODO add your handling code here:
+          if (evt.getStateChange() == ItemEvent.SELECTED) {
+                    changeable_price = 1;
+                    // Perform actions when checkbox is selected
+                } else {
+                    changeable_price = 0;
+                    // Perform actions when checkbox is deselected
+                }
+    }//GEN-LAST:event_changeablepriceItemStateChanged
+
+    private void controllablestockItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_controllablestockItemStateChanged
+        // TODO add your handling code here:
+             if (evt.getStateChange() == ItemEvent.SELECTED) {
+                    controllable_stock = 1;
+                    // Perform actions when checkbox is selected
+                } else {
+                    controllable_stock = 0;
+                    // Perform actions when checkbox is deselected
+                }
+    }//GEN-LAST:event_controllablestockItemStateChanged
+
     public String[] getImages() {
         String imageUrl = systempath;
         File file = new File(systempath);
@@ -1163,8 +1247,16 @@ public final class RegisterProduct extends javax.swing.JFrame {
         cameraLabel.setIcon(new ImageIcon(image));
     }
 
-    public void saveImage(File fname, String Selectedfilename) throws IOException {
-        File destinationFile = new File(systempath + Selectedfilename);
+    private static void makeImageFolder(String filefolder) {
+        File theDir = new File(systempath + hash + filefolder  + hash);
+        if (!theDir.exists()) {
+            theDir.mkdirs();
+            System.out.println("Created images folder in ");
+        }
+    }
+
+    public void saveImage(File fname, String Selectedfilename, String filefolder) throws IOException {
+        File destinationFile = new File(systempath + filefolder + hash + Selectedfilename);
         try {
             Files.move(fname.toPath(), destinationFile.toPath(),
                     StandardCopyOption.REPLACE_EXISTING);
@@ -1301,16 +1393,15 @@ public final class RegisterProduct extends javax.swing.JFrame {
     private javax.swing.JLabel cancel;
     private javax.swing.JLabel category;
     private javax.swing.JTextField categoryname;
+    private javax.swing.JCheckBox changeableprice;
     private javax.swing.JTextField codeinput;
     private javax.swing.JTextArea commentsinput;
+    private javax.swing.JCheckBox controllablestock;
     private javax.swing.JTextField costinput;
     private javax.swing.JLabel costlabel;
     private javax.swing.JTextField descriptioninput;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1342,6 +1433,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
     private javax.swing.JLabel qtyamounttobereturned;
     private javax.swing.JLabel salepriceicon;
     private javax.swing.JTextField salepriceinput;
+    private javax.swing.JLabel saveProductForm;
     private javax.swing.JButton savebutton;
     private javax.swing.JTextField stocklevelinput;
     private javax.swing.JComboBox<String> unitofmeasure;

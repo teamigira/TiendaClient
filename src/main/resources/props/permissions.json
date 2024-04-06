@@ -1,0 +1,18 @@
+{
+  "Users_Permissions": ["view_users", "edit_users", "disable_users", "enable_users", "activate_users", "roles_permissions"],
+  "Sales_Permissions": ["edit_sale", "sale", "offer_discount"]
+}
+
+
+C:\Users\Nkanabo\AppData\Local\Programs\Python\Python311\Scripts\;
+C:\Users\Nkanabo\AppData\Local\Programs\Python\Python311\;
+C:\Program Files\Common Files\Oracle\Java\javapath;
+C:\Program Files (x86)\Common Files\Oracle\Java\javapath;
+C:\ProgramData\ComposerSetup\bin;C:\Program Files\PuTTY\;
+C:\Program Files\Java\jdk-9.0.1\bin;%M2_HOME%\bin;
+C:\Program Files\nodejs
+;C:\Program Files\apache-maven-3.8.5\bin;
+C:\Program Files\Git\cmd;
+C:\ProgramData\chocolatey\bin;
+%NVM_HOME%;%NVM_SYMLINK%;
+C:\Program Files\nodejs\

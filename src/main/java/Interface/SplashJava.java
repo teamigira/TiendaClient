@@ -17,7 +17,7 @@ public class SplashJava extends JWindow {
    Image splashScreen;
    ImageIcon imageIcon;
    public SplashJava() {
-      splashScreen = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/images/R.jpg"));
+      splashScreen = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/images/R.gif"));
       // Create ImageIcon from Image
       imageIcon = new ImageIcon(splashScreen);
       // Set JWindow size from image size

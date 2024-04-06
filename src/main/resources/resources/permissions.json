@@ -1,0 +1,4 @@
+{
+  "Users_Permissions": ["view_users", "edit_users", "disable_users", "enable_users", "activate_users", "roles_permissions"],
+  "Sales_Permissions": ["edit_sale", "sale", "offer_discount"]
+}

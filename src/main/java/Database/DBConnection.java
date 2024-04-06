@@ -72,7 +72,7 @@ public class DBConnection {
             }
 
             connection = DriverManager.getConnection(
-                    "jdbc:h2:" + url.get() + "/Tienda;SCHEMA="+"Tienda;"+"DATABASE_TO_UPPER=false;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE",
+                    "jdbc:h2:" + url.get() + "/Tienda;" + "DATABASE_TO_UPPER=false;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE",
                     username.get(),
                     password.get()
             );
@@ -141,8 +141,8 @@ public class DBConnection {
                         .cleanDisabled(false)
                         .load()
                         .clean();
-
     }
+//
 
     public void migrate() {
         String uri = "jdbc:h2:" + url.get() + "/Tienda;IFEXISTS=FALSE;DATABASE_TO_UPPER=false";
