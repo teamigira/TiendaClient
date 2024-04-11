@@ -6,7 +6,6 @@ package Interface.Sales;
 
 import Classes.AbstractClasses.Order;
 import static Classes.Functions.Orders.listOrders;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -56,7 +55,6 @@ public class ReturnProduct extends javax.swing.JFrame {
 
     /*End of variables declaration*/
     public ReturnProduct() throws SQLException, ClassNotFoundException, ParseException {
-        FlatGitHubIJTheme.setup();
         initComponents();
         this.setLocationRelativeTo(null);
         this.setResizable(true);

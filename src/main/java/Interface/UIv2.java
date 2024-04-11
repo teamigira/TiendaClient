@@ -59,8 +59,6 @@ import Classes.Utilities.StockThread;
 import Interface.Sales.SaveSale;
 import Interface.Sales.ReturnProduct;
 
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import static com.nkanabo.Tienda.Utilities.DoubleConverter;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import java.io.File;
@@ -210,7 +208,6 @@ public final class UIv2 extends javax.swing.JFrame {
      * @throws java.text.ParseException
      */
     public UIv2() throws ClassNotFoundException, ParseException, SQLException {
-        FlatGitHubIJTheme.setup();
         initComponents();
         //<editor-fold defaultstate="collapsed" desc="comment">
 

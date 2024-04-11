@@ -7,7 +7,6 @@ package Interface.Sales;
 import Classes.Functions.Orders;
 import Classes.Functions.Stocks;
 import Classes.Utilities.SearchEngine;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import static com.nkanabo.Tienda.Utilities.DoubleConverter;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
 import java.awt.Component;
@@ -39,7 +38,6 @@ public class SaveSale extends javax.swing.JFrame {
     public static String discountoffere;
 
     public SaveSale() throws ClassNotFoundException, ParseException {
-        FlatGitHubIJTheme.setup();
         initComponents();
         this.setLocationRelativeTo(null);
         this.setResizable(true);

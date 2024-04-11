@@ -10,8 +10,6 @@ import Authentication.Sessions;
 import Classes.Utilities.Resources;
 import static Database.DBConnect.getConnection;
 
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -45,7 +43,6 @@ public class Login extends javax.swing.JFrame {
      * @throws java.net.URISyntaxException
      */
     public Login() throws URISyntaxException {
-        FlatGitHubIJTheme.setup();
         initComponents();
 
         ImageIcon originalIcon = new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8.jpg")); // NOI18N
@@ -269,7 +266,6 @@ public class Login extends javax.swing.JFrame {
                     String user = fname + " " + lname;
                     Sessions ssl = new Sessions();
                     ssl.setLoggedUser(user);
-                    //FlatGitHubIJTheme.setup();
                     UIv2 UI = new UIv2();
                 } else {
                     errormsg.setText("Credentials not correct / Suspended! Try again");
@@ -322,7 +318,6 @@ public class Login extends javax.swing.JFrame {
                 ssl.setLoggedUser(user);
                 ssl.setLoggedUserId(userid);
                 ssl.setCurrentUserRole(myrole);
-                //FlatGitHubIJTheme.setup();
                 UIv2 UI = new UIv2();
             } else {
                 errormsg.setText("Credentials not correct / Suspended! Try again");
@@ -345,7 +340,6 @@ public class Login extends javax.swing.JFrame {
      * @throws UnsupportedLookAndFeelException 
      */
     public static void login() throws UnsupportedLookAndFeelException {
-//         FlatGitHubIJTheme.setup();
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -371,7 +365,6 @@ public class Login extends javax.swing.JFrame {
 
         /* Create and display the form */
 
-        UIManager.setLookAndFeel(new FlatIntelliJLaf());
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

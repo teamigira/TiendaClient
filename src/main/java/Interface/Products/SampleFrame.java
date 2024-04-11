@@ -4,7 +4,6 @@
  */
 package Interface.Products;
 
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 
 /**
  *
@@ -16,7 +15,6 @@ public class SampleFrame extends javax.swing.JFrame {
      * Creates new form SampleFrame
      */
     public SampleFrame() {
-        FlatGitHubIJTheme.setup();
         initComponents();
         this.setLocationRelativeTo(null);
         this.setResizable(true);  

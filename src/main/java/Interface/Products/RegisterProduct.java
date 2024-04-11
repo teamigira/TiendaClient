@@ -14,40 +14,27 @@ import Classes.Functions.Products;
 import static Classes.Functions.Products.checkCodeValidity;
 import Classes.Functions.Stocks;
 import static Classes.Utilities.OS.hash;
-import static Classes.Utilities.OS.path;
 import static Classes.Utilities.OS.systempath;
-import Classes.Utilities.RandomNumbers;
 import static Classes.Utilities.RandomNumbers.generateNumber;
 import Classes.Utilities.RandomString;
 import Classes.Utilities.SearchEngine;
-import Interface.Sale;
-import Interface.UIv2;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import java.awt.Image;
 import java.awt.event.ItemEvent;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import static java.lang.Integer.parseInt;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
@@ -109,7 +96,6 @@ public final class RegisterProduct extends javax.swing.JFrame {
      */
     public RegisterProduct() throws SQLException,
             ClassNotFoundException, ParseException {
-        FlatGitHubIJTheme.setup();
         initComponents();
         CSV_Label.setToolTipText("Insert brands from " + systempath);
         showImage(pos);

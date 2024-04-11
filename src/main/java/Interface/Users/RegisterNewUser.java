@@ -9,7 +9,6 @@ import Classes.AbstractClasses.Staff;
 
 import static Classes.Functions.Permissions.PermissionFileManager.loadRoles;
 import Classes.Functions.Sales_Staffs;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import java.awt.Color;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -73,7 +72,6 @@ public class RegisterNewUser extends javax.swing.JFrame {
     managerMap.put(2, "Jane Doe");
     managerMap.put(3, "Julius Doe");
        
-    FlatGitHubIJTheme.setup();
     initComponents();
     errormessage.setVisible(false);
     this.setLocationRelativeTo(null);

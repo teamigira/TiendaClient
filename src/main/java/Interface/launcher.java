@@ -11,7 +11,6 @@ import Classes.Utilities.Resources;
 import static Database.DBConnect.getConnection;
 import UserSettings.UserSettings;
 
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import static com.nkanabo.Tienda.Utilities.milliConverter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,7 +48,6 @@ public class launcher extends javax.swing.JFrame {
      */
     public launcher() throws URISyntaxException, IOException {
 //        setPreferredSize(new Dimension(450, 260));
-        FlatGitHubIJTheme.setup();
         initComponents();
 
         if (Instance != null) {

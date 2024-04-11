@@ -15,7 +15,6 @@ import Classes.Utilities.NumericalFormats;
 import static Classes.Utilities.RandomNumbers.generateNumber;
 import Classes.Utilities.SearchEngine;
 import UserSettings.UserSettings;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import static com.nkanabo.Tienda.Utilities.DoubleConverter;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,7 +54,6 @@ public class Sale extends javax.swing.JFrame {
     DefaultTableModel ordersModel;
 
     public Sale() throws SQLException, ClassNotFoundException, ParseException {
-        FlatGitHubIJTheme.setup();
         initComponents();
         this.setVisible(true);
         this.setLocationRelativeTo(null);

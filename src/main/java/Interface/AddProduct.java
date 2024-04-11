@@ -4,7 +4,6 @@
  */
 package Interface;
 
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 
 /**
  *
@@ -16,7 +15,6 @@ public class AddProduct extends javax.swing.JFrame {
      * Creates new form Product
      */
     public AddProduct() {
-        FlatGitHubIJTheme.setup();
         initComponents();
         
         this.setLocationRelativeTo(null);
