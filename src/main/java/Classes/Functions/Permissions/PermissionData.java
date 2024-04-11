@@ -6,15 +6,27 @@ package Classes.Functions.Permissions;
 
 import java.util.List;
 
-/**
- *
- * @author Nkanabo
- */
-public class Permissions {
+public class PermissionData {
+    private String heading;
     private List<String> permissions;
 
-    public Permissions(List<String> permissions) {
+    // Default constructor
+    public PermissionData() {
+    }
+
+    // Constructor
+    public PermissionData(String heading, List<String> permissions) {
+        this.heading = heading;
         this.permissions = permissions;
+    }
+
+    // Getter and setter methods
+    public String getHeading() {
+        return heading;
+    }
+
+    public void setHeading(String heading) {
+        this.heading = heading;
     }
 
     public List<String> getPermissions() {

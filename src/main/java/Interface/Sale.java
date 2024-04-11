@@ -527,7 +527,7 @@ public class Sale extends javax.swing.JFrame {
         try {
             this.dispose();
             new UIv2();
-        } catch (ClassNotFoundException | ParseException ex) {
+        } catch (ClassNotFoundException | ParseException | SQLException ex) {
             Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_closelabelMouseClicked

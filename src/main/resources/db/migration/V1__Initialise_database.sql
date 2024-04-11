@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS Tienda;
+
 CREATE TABLE IF NOT EXISTS production_products(
   product_id bigint  NOT NULL AUTO_INCREMENT, 
   code VARCHAR(255) NULL, 
@@ -90,7 +92,7 @@ CREATE TABLE IF NOT EXISTS system_app_key(
   PRIMARY  KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS system_ccounts(
+CREATE TABLE IF NOT EXISTS system_accounts(
   id bigint AUTO_INCREMENT  NOT NULL, 
   amount VARCHAR(55), 
   date VARCHAR(55), 

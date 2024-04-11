@@ -34,7 +34,9 @@ public class Resources {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(fileName);
         if (resource == null) {
+            System.out.println("haipo"+resource);
             throw new IllegalArgumentException("file not found! " + fileName);
+            
         } else {
 
             // failed if files have whitespaces or special characters

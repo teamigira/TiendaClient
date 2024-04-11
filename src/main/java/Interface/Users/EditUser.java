@@ -4,13 +4,21 @@
  */
 package Interface.Users;
 
+import Classes.AbstractClasses.EditedUser;
+import Classes.AbstractClasses.EditedUserData;
 import Classes.AbstractClasses.Roles;
+import Classes.AbstractClasses.SelectedStaff;
 import Classes.AbstractClasses.Staff;
-
+import Classes.AbstractClasses.UserData;
+import Classes.Functions.Permissions.PermissionFileManager;
 import static Classes.Functions.Permissions.PermissionFileManager.loadRoles;
 import Classes.Functions.Sales_Staffs;
+import Classes.Utilities.NotificationManager.NotificationType;
+import static Classes.Utilities.NotificationManager.showPopupNotification;
+import Database.DBConnection;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
-import java.awt.Color;
+import java.awt.event.ItemEvent;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -18,81 +26,98 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.border.Border;
 
 /**
  *
  * @author Nkanabo
  */
-public class RegisterNewUser extends javax.swing.JFrame {
+public class EditUser extends javax.swing.JFrame {
 
     /**
      * Creates new form EditSale
      */
- 
-    private static int roleid;
-    private static String staffname;
+    private static int roleId;
+    private static String staffName;
     private static String email;
-    private static String last_name;
+    private static String lastName;
     private static String phone;
-    private static String pass;
-    private static String confirmpassword;
-    private static int str;
-    private static int manager;
-    private static int active;
-    private static int type;
-    private static boolean changePassword;
+    private static String password;
+    private static String confirmPassword;
+    private static int storeId;
+    private static int managerId;
+    private static String activeStatus;
+    private static int userType;
+    private static boolean isPasswordChanged;
     private Map<Integer, String> rolesMap;
     private Map<Integer, String> storeMap;
     private Map<Integer, String> managerMap;
     private static String userId;
+
     /**
      *
      */
-   public RegisterNewUser() throws ClassNotFoundException, ParseException {
-   
-    // Initialize the map to map IDs to corresponding texts
-    rolesMap = new HashMap<>();
-    
-    ArrayList<Roles> rolelist = loadRoles();
-       // Populate the rolesMap with role names from roleList
-    for (Roles role : rolelist) {
-        rolesMap.put(role.role_id, role.getRoleName());
-    }
-    
-    storeMap = new HashMap<>();
-    storeMap.put(1, "MAIN BRANCH");
-    storeMap.put(2, "REGIONAL");
-    
-    managerMap = new HashMap<>();
-    managerMap.put(1, "John Doe");
-    managerMap.put(2, "Jane Doe");
-    managerMap.put(3, "Julius Doe");
-       
-    FlatGitHubIJTheme.setup();
-    initComponents();
-    errormessage.setVisible(false);
-    this.setLocationRelativeTo(null);
-    this.setResizable(true);
-     //this.setExtendedState(getExtendedState() | RegisterNewUser.MAXIMIZED_BOTH);
-     // Initialize the combo box and populate it with the texts
+    public EditUser(SelectedStaff selectedStaff) throws ClassNotFoundException, ParseException, SQLException {
+        // Extract details from the Staff instance
+        // Extract details from the SelectedStaff instance
+        
+        Connection connection = DBConnection.getConnectionInstance().getConnection();
+        roleId = PermissionFileManager.getRoleId(selectedStaff.role, connection);
+        staffName = selectedStaff.staff_name;
+        email = selectedStaff.staff_email;
+        lastName = selectedStaff.sur_name;
+        phone = selectedStaff.phone_no;
+        password = "";
+        confirmPassword = "";
+        storeId = Integer.parseInt(selectedStaff.store);
+        managerId = Integer.parseInt(selectedStaff.manager_id);
+        activeStatus = selectedStaff.Status;
+        isPasswordChanged = false;
+        userId = selectedStaff.userid;
+
+        // Initialize the map to map IDs to corresponding texts
+        rolesMap = new HashMap<>();
+
+        ArrayList<Roles> rolelist = loadRoles();
+        // Populate the rolesMap with role names from roleList
+        for (Roles role : rolelist) {
+            rolesMap.put(role.role_id, role.getRoleName());
+        }
+
+        storeMap = new HashMap<>();
+        storeMap.put(1, "MAIN BRANCH");
+        storeMap.put(2, "REGIONAL");
+
+        managerMap = new HashMap<>();
+        managerMap.put(1, "John Doe");
+        managerMap.put(2, "Jane Doe");
+        managerMap.put(3, "Julius Doe");
+
+        FlatGitHubIJTheme.setup();
+        initComponents();
+        errormessage.setVisible(false);
+        this.setLocationRelativeTo(null);
+        this.setResizable(true);
+        //this.setExtendedState(getExtendedState() | EditUser.MAXIMIZED_BOTH);
+
+        // Initialize the combo box and populate it with the texts
+        int r = roleId;
+        
+        int m = managerId;
+        int s = storeId;
         for (String text : rolesMap.values()) {
             Roles.addItem(text);
         }
         
-         for (String text : storeMap.values()) {
+
+        for (String text : storeMap.values()) {
             store.addItem(text);
         }
-         
+
         for (String text : managerMap.values()) {
             mngr.addItem(text);
         }
-    
-}
+         editUser(r,m,s);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -133,6 +158,8 @@ public class RegisterNewUser extends javax.swing.JFrame {
         confirmlabel = new javax.swing.JLabel();
         password_field = new javax.swing.JPasswordField();
         confirmpass = new javax.swing.JPasswordField();
+        passwordseparator = new javax.swing.JSeparator();
+        changepassword = new javax.swing.JCheckBox();
         errormessage = new javax.swing.JLabel();
 
         autocompleteProducts.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -142,11 +169,7 @@ public class RegisterNewUser extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        autocompleteProducts.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                autocompleteProductsMouseClicked(evt);
-            }
-        });
+       
 
         jLabel8.setText("Image");
 
@@ -262,11 +285,7 @@ public class RegisterNewUser extends javax.swing.JFrame {
 
         userfullname.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         userfullname.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        userfullname.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                userfullnameActionPerformed(evt);
-            }
-        });
+       
 
         store.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -279,11 +298,7 @@ public class RegisterNewUser extends javax.swing.JFrame {
 
         phoneno.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         phoneno.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        phoneno.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                phonenoActionPerformed(evt);
-            }
-        });
+     
 
         returnquantitylabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         returnquantitylabel4.setText("Phone No");
@@ -300,6 +315,19 @@ public class RegisterNewUser extends javax.swing.JFrame {
         confirmlabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         confirmlabel.setText("Confirm  Password");
 
+        passwordseparator.setForeground(new java.awt.Color(51, 204, 255));
+        passwordseparator.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 153, 255)));
+
+        changepassword.setText("Change Password");
+        changepassword.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+     
+        
+        changepassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changepasswordActionPerformed(evt);
+            }
+        });
+
         errormessage.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         errormessage.setForeground(new java.awt.Color(255, 51, 51));
         errormessage.setText("Error message");
@@ -310,10 +338,22 @@ public class RegisterNewUser extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(passwordlabel)
-                    .addComponent(returnquantitylabel4))
-                .addContainerGap(750, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(passwordlabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(confirmlabel, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(password_field, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                            .addComponent(confirmpass))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(changepassword, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(returnquantitylabel4)
+                            .addComponent(passwordseparator, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -326,20 +366,13 @@ public class RegisterNewUser extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(returnquantitylabel1)
-                            .addComponent(returnquantitylabel3)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(confirmlabel)))
-                .addGap(25, 25, 25)
+                            .addComponent(returnquantitylabel3))))
+                .addGap(71, 71, 71)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(confirmpass, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(userfullname, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                            .addComponent(phoneno, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                            .addComponent(password_field, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(phoneno, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -390,18 +423,19 @@ public class RegisterNewUser extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(phoneno, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(returnquantitylabel4))
+                .addGap(22, 22, 22)
+                .addComponent(changepassword)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(passwordseparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(passwordlabel))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(password_field, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(28, 28, 28)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(passwordlabel)
+                    .addComponent(password_field, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(confirmpass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(confirmlabel))
-                .addContainerGap(183, Short.MAX_VALUE))
+                .addContainerGap(144, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout EditSalePanelLayout = new javax.swing.GroupLayout(EditSalePanel);
@@ -453,9 +487,6 @@ public class RegisterNewUser extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void autocompleteProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_autocompleteProductsMouseClicked
-        //if the products drop down list is created.
-    }//GEN-LAST:event_autocompleteProductsMouseClicked
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         // TODO add your handling code here:
@@ -472,7 +503,30 @@ public class RegisterNewUser extends javax.swing.JFrame {
         mngr.setSelectedIndex(0); // Reset
     }//GEN-LAST:event_jLabel2MouseClicked
 
-    public Staff collectUserData() {
+    public void editUser(int r,int m, int s) throws ClassNotFoundException, ParseException {
+        first_name.setText(staffName);
+        useremail.setText(email);
+        userfullname.setText(lastName);
+        phoneno.setText(phone);
+
+        // Reverse the key-value mapping of storeMap
+        Map<String, Integer> reverseStoreMap = new HashMap<>();
+        for (Map.Entry<Integer, String> entry : storeMap.entrySet()) {
+            reverseStoreMap.put(entry.getValue(), entry.getKey());
+        }
+
+        // Set the selected item of the JComboBox based on the ID
+        String selectedStoreName = storeMap.get(s);
+        store.setSelectedItem(selectedStoreName);
+
+        String selectedRole = rolesMap.get(r);
+        Roles.setSelectedItem(selectedRole);
+
+        String selectedManager = managerMap.get(m);
+        mngr.setSelectedItem(selectedManager);
+    }
+
+    private EditedUserData collectUserData() {
         // Retrieve data from UI components
         String enteredStaffName = first_name.getText();
         String enteredLastName = userfullname.getText();
@@ -516,102 +570,88 @@ public class RegisterNewUser extends javax.swing.JFrame {
             }
         }
 
+        // Determine if password should be changed
+        boolean isPasswordChangeRequested = changepassword.isSelected();
         String status = "1";
         String enteredPassword = new String(this.password_field.getPassword());
         // Reset the fields of SelectedStaff
         //    SelectedStaff.reset();
         // Create a new Staff object
-        Staff newStaff = new Staff(enteredStaffName, enteredLastName, enteredUserEmail, enteredUserPhone, String.valueOf(selectedStoreId),
+        EditedUser editedStaff = new EditedUser(enteredStaffName, enteredLastName, enteredUserEmail, enteredUserPhone, String.valueOf(selectedStoreId),
                 status, String.valueOf(selectedManagerId), selectedRoleId, userId, enteredPassword);
         // Return UserData object containing the Staff object and the boolean value
-        return newStaff;
+        return new EditedUserData(editedStaff, isPasswordChangeRequested);
     }
 
 
     private void SaveLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveLabelMouseClicked
-        Staff newUser = collectUserData();    
+        EditedUserData editedUser = collectUserData();
         try {
-            Sales_Staffs.addStaff(newUser);
-                    } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(RegisterNewUser.class.getName()).log(Level.SEVERE, null, ex);
+            // Call the editStaff method in the Sales_Staffs class and pass the collected data
+            Sales_Staffs.editStaff(editedUser);
+            // Optionally, display a success message
+            // Close the EditUser JFrame or perform any other action as needed
+            this.dispose();
+        } catch (Exception e) {
+            // Handle any exceptions or display error messages
+            e.printStackTrace();
         }
     }//GEN-LAST:event_SaveLabelMouseClicked
 
-    private static void highlightField(JComponent component) {
-    Border border = BorderFactory.createLineBorder(Color.RED);
-    // Set the border to the component
-    component.setBorder(border);
-       errormessage.setVisible(true);
-       errormessage.setText("Fill the required fields");
-    }
-    
-     private static boolean isValidEmail(String email) {
-        // Regular expression for email validation
-        String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-    
-    private static boolean isValidPhoneNumber(String phone) {
-        // Regular expression for phone number validation
-        String regex = "^\\+\\d(?:\\s?\\d){9,}$"; // Assuming a 10-digit phone number format
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(phone);
-        return matcher.matches();
-    }
-       
-    private void userfullnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userfullnameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_userfullnameActionPerformed
 
-    private void phonenoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phonenoActionPerformed
+    private void changepasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changepasswordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_phonenoActionPerformed
+        password_field.setVisible(true);
+        passwordlabel.setVisible(true);
+        confirmpass.setVisible(true);
+        confirmlabel.setVisible(true);
+        passwordseparator.setVisible(true);
+    }//GEN-LAST:event_changepasswordActionPerformed
 
     private void RolesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_RolesItemStateChanged
-             String selectedText = (String) Roles.getSelectedItem();
-                // Find the corresponding ID
-                for (Map.Entry<Integer, String> entry : rolesMap.entrySet()) {
-                    if (entry.getValue().equals(selectedText)) {
-                        roleid = entry.getKey();
-                        break;
-                    }
-                }
+        String selectedText = (String) Roles.getSelectedItem();
+        // Find the corresponding ID
+        for (Map.Entry<Integer, String> entry : rolesMap.entrySet()) {
+            if (entry.getValue().equals(selectedText)) {
+                roleId = entry.getKey();
+                break;
+            }
+        }
     }//GEN-LAST:event_RolesItemStateChanged
+
 
     private void storeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_storeItemStateChanged
         // TODO add your handling code here:
-                String selectedText = (String) store.getSelectedItem();
-                // Find the corresponding ID
-                for (Map.Entry<Integer, String> entry : storeMap.entrySet()) {
-                    if (entry.getValue().equals(selectedText)) {
-                        str = entry.getKey();
-                        break;
-                    }
-                }
+        String selectedText = (String) store.getSelectedItem();
+        // Find the corresponding ID
+        for (Map.Entry<Integer, String> entry : storeMap.entrySet()) {
+            if (entry.getValue().equals(selectedText)) {
+                storeId = entry.getKey();
+                break;
+            }
+        }
     }//GEN-LAST:event_storeItemStateChanged
 
     private void mngrItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_mngrItemStateChanged
         // TODO add your handling code here:
-                        String selectedText = (String) mngr.getSelectedItem();
-                // Find the corresponding ID
-                for (Map.Entry<Integer, String> entry : managerMap.entrySet()) {
-                    if (entry.getValue().equals(selectedText)) {
-                        manager = entry.getKey();
-                        break;
-                    }
-                }
+        String selectedText = (String) mngr.getSelectedItem();
+        // Find the corresponding ID
+        for (Map.Entry<Integer, String> entry : managerMap.entrySet()) {
+            if (entry.getValue().equals(selectedText)) {
+                managerId = entry.getKey();
+                break;
+            }
+        }
     }//GEN-LAST:event_mngrItemStateChanged
 
     /**
+     * @param selectedStaff
      * @throws java.lang.ClassNotFoundException
      * @throws java.text.ParseException
      */
-    
-    
-    public static void main() throws ClassNotFoundException,
+    public static void main(SelectedStaff selectedStaff) throws ClassNotFoundException,
             ParseException {
+       
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -620,13 +660,13 @@ public class RegisterNewUser extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RegisterNewUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new RegisterNewUser().setVisible(true);
-            } catch (ClassNotFoundException | ParseException ex) {
-                Logger.getLogger(RegisterNewUser.class.getName()).log(Level.SEVERE, null, ex);
+                new EditUser(selectedStaff).setVisible(true);
+            } catch (ClassNotFoundException | ParseException | SQLException ex) {
+                Logger.getLogger(EditUser.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
@@ -637,6 +677,7 @@ public class RegisterNewUser extends javax.swing.JFrame {
     private static javax.swing.JComboBox<String> Roles;
     public static javax.swing.JLabel SaveLabel;
     private javax.swing.JList<String> autocompleteProducts;
+    private javax.swing.JCheckBox changepassword;
     private javax.swing.JLabel confirmlabel;
     private static javax.swing.JPasswordField confirmpass;
     private static javax.swing.JLabel errormessage;
@@ -652,6 +693,7 @@ public class RegisterNewUser extends javax.swing.JFrame {
     private static javax.swing.JComboBox<String> mngr;
     private static javax.swing.JPasswordField password_field;
     private javax.swing.JLabel passwordlabel;
+    private javax.swing.JSeparator passwordseparator;
     public static javax.swing.JTextField phoneno;
     private javax.swing.JLabel returnquantitylabel;
     private javax.swing.JLabel returnquantitylabel1;

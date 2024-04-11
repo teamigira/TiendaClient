@@ -5,13 +5,19 @@
  */
 package Interface;
 
+import Authentication.Sessions;
 import static Authentication.Sessions.LoggedUser;
+import static Authentication.Sessions.currentUserRole;
 import Classes.AbstractClasses.Brand;
 import Classes.AbstractClasses.Category;
 import Classes.AbstractClasses.DailyReport;
 import Classes.AbstractClasses.Email;
 import Classes.AbstractClasses.Order;
+import Classes.AbstractClasses.Permissions;
 import Classes.AbstractClasses.Product;
+import Classes.AbstractClasses.RolePermissionMapping;
+import Classes.AbstractClasses.Roles;
+import Classes.AbstractClasses.SelectedStaff;
 import Classes.AbstractClasses.Staff;
 import Classes.AbstractClasses.Stock;
 import Classes.AbstractClasses.Transfer;
@@ -22,6 +28,16 @@ import Classes.Functions.Constants;
 import static Classes.Functions.Notifications.listNotifications;
 import Classes.Functions.Orders;
 import static Classes.Functions.Orders.listOrders;
+import Classes.Functions.Permissions.PermissionFileManager;
+import static Classes.Functions.Permissions.PermissionFileManager.addRole;
+import static Classes.Functions.Permissions.PermissionFileManager.deletePermissionRow;
+import static Classes.Functions.Permissions.PermissionFileManager.deleteRow;
+import static Classes.Functions.Permissions.PermissionFileManager.loadPermissions;
+import static Classes.Functions.Permissions.PermissionFileManager.loadRolePermissions;
+import static Classes.Functions.Permissions.PermissionFileManager.loadRoles;
+import static Classes.Functions.Permissions.PermissionFileManager.renameRole;
+import Classes.Functions.Permissions.PermissionGroup;
+import Classes.Functions.Permissions.RoleInputDialog;
 import static Classes.Functions.Products.listProductOnly;
 import static Classes.Functions.Products.listProducts;
 import static Classes.Functions.Products.listStockProducts;
@@ -31,11 +47,19 @@ import static Classes.Functions.Reports.listMonthlyReport;
 import static Classes.Functions.Reports.listWeeklyReport;
 import Classes.Functions.Sales_Staffs;
 import static Classes.Functions.Sales_Staffs.LoadStaffs;
+import static Classes.Functions.Sales_Staffs.addtestUsers;
 import static Classes.Functions.Stocks.listStocks;
+import Classes.Utilities.NotificationManager;
+import Classes.Utilities.NotificationManager.NotificationType;
+
+import static Classes.Utilities.NotificationManager.showConsoleNotification;
+import static Classes.Utilities.NotificationManager.showPopupNotification;
 import Classes.Utilities.Resources;
 import Classes.Utilities.StockThread;
 import Interface.Sales.SaveSale;
 import Interface.Sales.ReturnProduct;
+
+import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import static com.nkanabo.Tienda.Utilities.DoubleConverter;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
@@ -53,11 +77,19 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import Interface.Products.*;
+import Interface.Users.EditUser;
 import Interface.Users.RegisterNewUser;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.table.JTableHeader;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+
 /*
  *
  * @author Nkanabo
@@ -74,27 +106,27 @@ public final class UIv2 extends javax.swing.JFrame {
     DefaultTableModel brandsModel;
 
     ArrayList<Order> PresentsalesList;
-    Object[] columnNames  = {"Select","Order Id", "Product", "Quantity", "List price", "Discount"};
-    DefaultTableModel SellingModel = new DefaultTableModel(0, 0){
+    Object[] columnNames = {"Select", "Order Id", "Product", "Quantity", "List price", "Discount"};
+    DefaultTableModel SellingModel = new DefaultTableModel(0, 0) {
         @Override
-         public Class getColumnClass(int columnIndex) {
-             switch (columnIndex) {
-                    case 0:
-                        return Boolean.class;
-                    case 1:
-                        return String.class;
-                    case 2:
-                        return String.class;
-                    case 3:
-                        return String.class;
-                    case 4:
-                        return String.class;
-                    case 5:
-                        return String.class;
-                    default:
-                        return String.class;
-                }
-         }
+        public Class getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return Boolean.class;
+                case 1:
+                    return String.class;
+                case 2:
+                    return String.class;
+                case 3:
+                    return String.class;
+                case 4:
+                    return String.class;
+                case 5:
+                    return String.class;
+                default:
+                    return String.class;
+            }
+        }
     };
     // add header of the table
     //end of brands
@@ -112,6 +144,10 @@ public final class UIv2 extends javax.swing.JFrame {
     DefaultTableModel productModel;
     //End of products
 
+    ArrayList<Roles> rolelist;
+    private DefaultListModel<String> listModel;
+    private Map<String, List<String>> permissionsByCategory = new HashMap<>();
+
     //Products
     ArrayList<Stock> stocklist;
     String stockheader[] = {"Product Id", "Product", "Quantity"};
@@ -123,12 +159,11 @@ public final class UIv2 extends javax.swing.JFrame {
     ArrayList<DailyReport> dailyreportlist;
 
     DefaultTableModel StaffsModel;
-    String staffsheader[] = {"First Name", "Last Name", "Email","phone_no","store","Status","manager_id","Role"};
+    String staffsheader[] = {"First Name", "Last Name", "Email", "phone_no", "store", "Status", "manager_id", "Role"};
     ArrayList<Staff> staffslist;
-    private ArrayList<Staff> selectedStaff = new ArrayList<>();
+    private ArrayList<SelectedStaff> selectedStaff = new ArrayList<>();
     // Declare a separate data structure to store user IDs
     ArrayList<String> userIds = new ArrayList<String>();
-
 
     DefaultTableModel TransferModel;
     String transferheader[] = {"Amount", "Date", "Collected by"};
@@ -155,7 +190,18 @@ public final class UIv2 extends javax.swing.JFrame {
     String[] nonStock;
     String[] productonly;
     public ArrayList<String> prd_details = new ArrayList<String>();
-     private TableColumn col;
+    private TableColumn col;
+
+    //For roles and permissions JTree
+    String selectedNode, selectedValue;
+
+    Component SelectedComponent = new JList();
+
+    
+    private Map<String, List<String>> rolePermissionsMap;
+
+     // Permissions map: component name -> associated permission
+     private Map<String, String> loadedpermissions;
 
     /**
      * Creates new form UIv2
@@ -163,7 +209,7 @@ public final class UIv2 extends javax.swing.JFrame {
      * @throws java.lang.ClassNotFoundException
      * @throws java.text.ParseException
      */
-    public UIv2() throws ClassNotFoundException, ParseException {
+    public UIv2() throws ClassNotFoundException, ParseException, SQLException {
         FlatGitHubIJTheme.setup();
         initComponents();
         //<editor-fold defaultstate="collapsed" desc="comment">
@@ -175,33 +221,33 @@ public final class UIv2 extends javax.swing.JFrame {
         this.setResizable(true);
         this.setExtendedState(getExtendedState() | UIv2.MAXIMIZED_BOTH);
         StockThread th = new StockThread();
-        
-              try {
-                
-                String url = "resources/images/icons8.jpg";
-                Resources rs = new Resources();
-                File is = rs.getFileFromResource(url);
 
-                String filepath = Paths.get(is.toURI()).toFile().getAbsolutePath();
-                ImageIcon icon = new ImageIcon(filepath);
-                setIconImage(icon.getImage());
+        try {
 
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(launcher.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        if (Instance != null) {
-           Instance = new UIv2();
+            String url = "resources/images/icons8.jpg";
+            Resources rs = new Resources();
+            File is = rs.getFileFromResource(url);
+
+            String filepath = Paths.get(is.toURI()).toFile().getAbsolutePath();
+            ImageIcon icon = new ImageIcon(filepath);
+            setIconImage(icon.getImage());
+
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(launcher.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-               //Orders list 
+        if (Instance != null) {
+            Instance = new UIv2();
+        }
+
+        //Orders list 
         PresentsalesList = new ArrayList<>();
 
-        usernameLabel.setText(LoggedUser);
+        usernameLabel.setText(LoggedUser + " ["+currentUserRole+"]");
         String today = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
         todays.setText(String.valueOf(Calendar.getInstance().getTime()));
         //Coloring the icons
         getActiveClass("");
-        
+
         //Brands
         brandlist = new ArrayList<>();
         brandsModel = new DefaultTableModel(brandheaders, 0);
@@ -221,6 +267,10 @@ public final class UIv2 extends javax.swing.JFrame {
         productModel = new DefaultTableModel(productheader, 0);
         productsTable.setModel(productModel);
         //End of categories
+
+        //Roles
+        rolelist = new ArrayList<>();
+        listModel = new DefaultListModel<>();
 
         //Stocks
         stocklist = new ArrayList<>();
@@ -249,7 +299,7 @@ public final class UIv2 extends javax.swing.JFrame {
         StaffsModel = new DefaultTableModel(staffsheader, 0);
         staffTable.setModel(StaffsModel);
         staffTable.setDefaultEditor(Object.class, null);
-       
+
         //Transfers
         transferedlist = new ArrayList<>();
         TransferModel = new DefaultTableModel(transferheader, 0);
@@ -263,34 +313,148 @@ public final class UIv2 extends javax.swing.JFrame {
         // add header in table model     
         SellingModel.setColumnIdentifiers(columnNames);
         SalesTable.setModel(SellingModel);
-        
-          //get the 2nd column
+
+        //get the 2nd column
         col = SalesTable.getColumnModel().getColumn(3);
         //define the renderer
         //The preferred blue 102,102,102
-        col.setCellRenderer(new MyRenderer(new Color (255,255,255), new Color (0,102,51)));
+        col.setCellRenderer(new MyRenderer(new Color(255, 255, 255), new Color(0, 102, 51)));
         //col.setFont(col.getFont().deriveFont(Font.BOLD, 14f));
 //        col.setCellRenderer(setFont(new Font("Arial", Font.BOLD, 10)));
-      
-     
-        
+
         this.setLocationRelativeTo(null);
-        try {
-            loadJtableValues();
-            loadBrandsJtableValues();
-            LoadCategories();
-            LoadProducts();
-            LoadStockProducts();
-            LoadProductsOnly();
-            LoadStocks();
-            LoadNotificationsEmails();
-        } catch (SQLException ex) {
-            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
         
+
+        loadJtableValues();
+//            loadBrandsJtableValues();
+//            LoadCategories();
+//            LoadProducts();
+//            LoadStockProducts();
+//            LoadProductsOnly();
+//            LoadStocks();
+//            LoadNotificationsEmails();
+//            Simulated permissions map (can be fetched from database)
+//            Map to store permissions associated with each role
+//            private Map<String, List<String>> rolePermissionsMap;
+        initializeLoadedPermissions();
+        initializeRolePermissionsMap();
+        validatePermissions();
 
     }
 
+    
+    /*FUNCTIONS TO MANAE ROAL PERMISSIONS*/
+
+    private void initializeLoadedPermissions() {
+        // Load permissions from the database or other source
+        // For demonstration purposes, let's assume some hardcoded values
+        loadedpermissions = new HashMap<>();
+        loadedpermissions.put("adminLabelMenu", "view_users");
+        loadedpermissions.put("customers", "view_customers");
+        loadedpermissions.put("stats", "view_reports");
+        loadedpermissions.put("ProductsLabelMenu","view_products");
+        loadedpermissions.put("saleslabel","view_sales");
+
+
+        // Add other permissions...
+    }
+
+    
+     // Initialize the rolePermissionsMap during initialization
+    private void initializeRolePermissionsMap() {
+        rolePermissionsMap = new HashMap<>();
+        ArrayList<RolePermissionMapping> rolePermissions = loadRolePermissions();
+        
+        
+        for (RolePermissionMapping mapping : rolePermissions) {
+            // Access properties of each RolePermissionMapping object
+            int roleId = mapping.getRoleId();
+            int permissionId = mapping.getPermissionId();
+            String roleName = mapping.getRoleName();
+            String permissionName = mapping.getPermissionName();
+            String category = mapping.getCategory();
+
+            // Print or process the properties as needed
+            System.out.println("Role ID: " + roleId);
+            System.out.println("Permission ID: " + permissionId);
+            System.out.println("Role Name: " + roleName);
+            System.out.println("Permission Name: " + permissionName);
+            System.out.println("Category: " + category);
+        }
+
+        // Populate the rolePermissionsMap
+        for (RolePermissionMapping mapping : rolePermissions) {
+            String roleName = mapping.getRoleName();
+            String permissionName = mapping.getPermissionName();
+                System.out.println("LINE 365 -->rOLE"+roleName+"Has ->"+permissionName);
+            // Add the permission to the list associated with the role
+            rolePermissionsMap.computeIfAbsent(roleName, k -> new ArrayList<>()).add(permissionName);
+        }
+    }
+    
+    private boolean userHasPermission(String role, String permission) {
+        // Check if the rolePermissionsMap is initialized
+        if (rolePermissionsMap == null) {
+            initializeRolePermissionsMap();
+            System.out.println("374 rolepermissionmao not null");
+        }
+        System.out.println("Your role is"+role+"and perm is "+permission);
+        // Get the list of permissions associated with the role
+        List<String> permissions = rolePermissionsMap.get(role);
+          // Loop through the permissions list and print each permission
+        for (String permit : permissions) {
+            System.out.println("Permission: " + permit);
+        }
+                
+        System.out.println(permissions.contains(permission));
+        // Check if the permission exists in the list
+        return permissions != null && permissions.contains(permission);
+    }
+
+    private void validatePermissions() {
+        // Check if the current user has permission for each icon
+   // Get the current user's role
+    String currentUserRole = Sessions.getInstance().getCurrentUserRole();
+    
+    // Check if the current user has permission for each UI component
+    for (Map.Entry<String, String> entry : loadedpermissions.entrySet()) {
+        String componentName = entry.getKey();
+        String associatedPermission = entry.getValue();
+
+        // Check if the associated permission exists in the user's role
+        if (userHasPermission(currentUserRole, associatedPermission)) {
+            // Enable the UI component
+            System.out.println("enabled");
+            enableUIComponent(componentName);
+        }
+    }
+    }
+
+    // Method to enable the specified UI component
+    private void enableUIComponent(String componentName) {
+        // Enable the UI component based on its name
+        switch (componentName) {
+            case "adminLabelMenu":
+                adminilabelmenu.setEnabled(true);
+                break;
+            case "customers":
+            customers.setEnabled(true);
+            break;
+            case "stats":
+            stats.setEnabled(true);
+            break;
+            case "ProductsLabelMenu":
+            ProductsLabelMenu.setEnabled(true);
+            break;
+            case "saleslabel":
+            saleslabel.setEnabled(true);
+            break;
+            // Add more cases for other UI components if needed
+        }
+    }
+    /*END OF PERMISSIONS MAP*/
+    
     public final void loadBrandsJtableValues() throws SQLException, ClassNotFoundException {
         brandsModel.setRowCount(0);
         brandlist = listBrands();
@@ -306,6 +470,7 @@ public final class UIv2 extends javax.swing.JFrame {
         TablePanel.revalidate();
     }
 
+
     public final void LoadCategories() throws SQLException, ClassNotFoundException {
         categoryModel.setRowCount(0);
         categorylist = listCategories();
@@ -317,6 +482,93 @@ public final class UIv2 extends javax.swing.JFrame {
                 categorylist.get(i).category_name};
             categoryModel.addRow(obj);
         }
+        TablePanel.repaint();
+        TablePanel.revalidate();
+    }
+
+    public void LoadRoles() {
+        rolelist = loadRoles();
+        listModel.clear();
+        int size = rolelist.size();
+        for (Roles role : rolelist) {
+            listModel.addElement(role.getRoleName());
+        }
+        rolesJlist.setModel(listModel);
+        // Set tooltip text
+        rolesJlist.setToolTipText("Select the role and then select permission"
+                + "map permission to add permission in a new role");
+        TablePanel.repaint();
+        TablePanel.revalidate();
+    }
+
+    public void LoadPermissions() {
+        ArrayList<Permissions> permissionList = loadPermissions();
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Permissions");
+
+        // Group permissions by category
+        for (Permissions permission : permissionList) {
+            String category = permission.getCategory();
+            permissionsByCategory.computeIfAbsent(category, k -> new ArrayList<>()).add(permission.getPermissionName());
+        }
+
+        // Add categories as parent nodes
+        for (String category : permissionsByCategory.keySet()) {
+            DefaultMutableTreeNode categoryNode = new DefaultMutableTreeNode(category);
+            rootNode.add(categoryNode);
+
+            // Add permissions as child nodes
+            for (String permission : permissionsByCategory.get(category)) {
+                DefaultMutableTreeNode permissionNode = new DefaultMutableTreeNode(permission);
+                categoryNode.add(permissionNode);
+            }
+        }
+
+        DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+        PermissionsTree.setModel(treeModel);
+//        PermissionsTree.setCellRenderer(new CustomTreeCellRenderer()); // Apply custom renderer
+        TablePanel.repaint();
+        TablePanel.revalidate();
+    }
+
+    public void LoadPermissionsRoles() {
+        ArrayList<RolePermissionMapping> rolePermissionMappings = loadRolePermissions();
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Roles");
+
+        // Group permissions by role
+        Map<String, Map<String, List<String>>> permissionsByRole = new HashMap<>();
+        for (RolePermissionMapping mapping : rolePermissionMappings) {
+            String roleName = mapping.getRoleName();
+            String permissionName = mapping.getPermissionName();
+            String category = mapping.getCategory();
+
+            permissionsByRole
+                    .computeIfAbsent(roleName, k -> new HashMap<>())
+                    .computeIfAbsent(category, k -> new ArrayList<>())
+                    .add(permissionName);
+        }
+
+        // Add roles as parent nodes
+        for (String roleName : permissionsByRole.keySet()) {
+            DefaultMutableTreeNode roleNode = new DefaultMutableTreeNode(roleName);
+            rootNode.add(roleNode);
+
+            // Add categories as child nodes
+            Map<String, List<String>> categoryMap = permissionsByRole.get(roleName);
+            for (String category : categoryMap.keySet()) {
+                DefaultMutableTreeNode categoryNode = new DefaultMutableTreeNode(category);
+                roleNode.add(categoryNode);
+
+                // Add permissions as child nodes
+                List<String> permissionList = categoryMap.get(category);
+                for (String permission : permissionList) {
+                    DefaultMutableTreeNode permissionNode = new DefaultMutableTreeNode(permission);
+                    categoryNode.add(permissionNode);
+                }
+            }
+        }
+
+        DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+        mappedTree.setModel(treeModel);
         TablePanel.repaint();
         TablePanel.revalidate();
     }
@@ -349,7 +601,7 @@ public final class UIv2 extends javax.swing.JFrame {
 
     //This function loads all the products that are only available in Stock.
     public void LoadStockProducts() throws ClassNotFoundException {
-       
+
         try {
             stockproductlist = listStockProducts();
         } catch (SQLException ex) {
@@ -357,9 +609,9 @@ public final class UIv2 extends javax.swing.JFrame {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
-      
+
         allProducts = new String[stockproductlist.size()];
-        
+
         for (int i = 0; i < stockproductlist.size(); i++) {
             allProducts[i] = stockproductlist.get(i).product_name + " - Tsh "
                     + stockproductlist.get(i).list_price + " : "
@@ -485,13 +737,15 @@ public final class UIv2 extends javax.swing.JFrame {
         TablePanel.revalidate();
     }
 
-    public void LoadSatffs() throws ParseException, ClassNotFoundException {
+    public void LoadSatffs() throws ParseException, ClassNotFoundException, SQLException {
         StaffsModel.setRowCount(0);
         staffslist = LoadStaffs();
         if (staffslist.isEmpty()) {
         } else {
-            for (int i = 0; i < staffslist.size(); i++) { 
+            for (int i = 0; i < staffslist.size(); i++) {
                 userIds.add(staffslist.get(i).userid);
+                int rolem = staffslist.get(i).role;
+                String roleName = PermissionFileManager.getRoleName(rolem);
                 Object[] obj = {
                     staffslist.get(i).staff_name,
                     staffslist.get(i).sur_name,
@@ -499,10 +753,8 @@ public final class UIv2 extends javax.swing.JFrame {
                     staffslist.get(i).phone_no,
                     staffslist.get(i).store,
                     Constants.getStatusLabel(Integer.parseInt(staffslist.get(i).Status)),
-                    staffslist.get(i).Status,
                     staffslist.get(i).manager_id,
-                    staffslist.get(i).role,
-                };
+                    roleName,};
                 StaffsModel.addRow(obj);
             }
         }
@@ -549,65 +801,65 @@ public final class UIv2 extends javax.swing.JFrame {
         SetEmailNotification.setText(message);
     }
 
-    public void getActiveClass(String label) { 
-    // Declare variables to hold the original icons
-    Icon originalSalesIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 Black.png"));
-    Icon originalProductsIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-box-64.png"));
-    Icon originalStatsIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-statistics-64.png"));
-    Icon originalAdminIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64 (1).png"));
-    Icon originalCustomersIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-select-users-64.png"));
-    
-    switch (label) {
-        case "saleslabel":
-            saleslabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 (1).png")));
-            ProductsLabelMenu.setIcon(originalProductsIcon);
-            stats.setIcon(originalStatsIcon);
-            adminilabelmenu.setIcon(originalAdminIcon);
-            customers.setIcon(originalCustomersIcon);
-            // Rest of your code
-            break;
-        case "box":
-            ProductsLabelMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-box-64Blue.png")));
-            saleslabel.setIcon(originalSalesIcon);
-            stats.setIcon(originalStatsIcon);
-            adminilabelmenu.setIcon(originalAdminIcon);
-            customers.setIcon(originalCustomersIcon);
-            // Rest of your code
-            break;
-        case "stats":
-            stats.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-statistics-64Blue.png")));
-            saleslabel.setIcon(originalSalesIcon);
-            ProductsLabelMenu.setIcon(originalProductsIcon);
-            adminilabelmenu.setIcon(originalAdminIcon);
-            customers.setIcon(originalCustomersIcon);
-            // Rest of your code
-            break;
-        case "admin":
-            adminilabelmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64.png")));
-            saleslabel.setIcon(originalSalesIcon);
-            ProductsLabelMenu.setIcon(originalProductsIcon);
-            stats.setIcon(originalStatsIcon);
-            customers.setIcon(originalCustomersIcon);
-            // Rest of your code
-            break;
-        case "customers":
-            customers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-select-users-64Blue.png")));
-            saleslabel.setIcon(originalSalesIcon);
-            ProductsLabelMenu.setIcon(originalProductsIcon);
-            stats.setIcon(originalStatsIcon);
-            adminilabelmenu.setIcon(originalAdminIcon);
-            // Rest of your code
-            break;
-        default:
-            saleslabel.setIcon(originalSalesIcon);
-            ProductsLabelMenu.setIcon(originalProductsIcon);
-            stats.setIcon(originalStatsIcon);
-            adminilabelmenu.setIcon(originalAdminIcon);
-            customers.setIcon(originalCustomersIcon);
-    }
-}
+    public void getActiveClass(String label) {
+        // Declare variables to hold the original icons
+        Icon originalSalesIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 Black.png"));
+        Icon originalProductsIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-box-64.png"));
+        Icon originalStatsIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-statistics-64.png"));
+        Icon originalAdminIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64 (1).png"));
+        Icon originalCustomersIcon = new ImageIcon(getClass().getResource("/resources/images/icons8-select-users-64.png"));
 
-    public void getActiveddClass(String label) { 
+        switch (label) {
+            case "saleslabel":
+                saleslabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 (1).png")));
+                ProductsLabelMenu.setIcon(originalProductsIcon);
+                stats.setIcon(originalStatsIcon);
+                adminilabelmenu.setIcon(originalAdminIcon);
+                customers.setIcon(originalCustomersIcon);
+                // Rest of your code
+                break;
+            case "box":
+                ProductsLabelMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-box-64Blue.png")));
+                saleslabel.setIcon(originalSalesIcon);
+                stats.setIcon(originalStatsIcon);
+                adminilabelmenu.setIcon(originalAdminIcon);
+                customers.setIcon(originalCustomersIcon);
+                // Rest of your code
+                break;
+            case "stats":
+                stats.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-statistics-64Blue.png")));
+                saleslabel.setIcon(originalSalesIcon);
+                ProductsLabelMenu.setIcon(originalProductsIcon);
+                adminilabelmenu.setIcon(originalAdminIcon);
+                customers.setIcon(originalCustomersIcon);
+                // Rest of your code
+                break;
+            case "admin":
+                adminilabelmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64.png")));
+                saleslabel.setIcon(originalSalesIcon);
+                ProductsLabelMenu.setIcon(originalProductsIcon);
+                stats.setIcon(originalStatsIcon);
+                customers.setIcon(originalCustomersIcon);
+                // Rest of your code
+                break;
+            case "customers":
+                customers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-select-users-64Blue.png")));
+                saleslabel.setIcon(originalSalesIcon);
+                ProductsLabelMenu.setIcon(originalProductsIcon);
+                stats.setIcon(originalStatsIcon);
+                adminilabelmenu.setIcon(originalAdminIcon);
+                // Rest of your code
+                break;
+            default:
+                saleslabel.setIcon(originalSalesIcon);
+                ProductsLabelMenu.setIcon(originalProductsIcon);
+                stats.setIcon(originalStatsIcon);
+                adminilabelmenu.setIcon(originalAdminIcon);
+                customers.setIcon(originalCustomersIcon);
+        }
+    }
+
+    public void getActiveddClass(String label) {
         switch (label) {
             case "saleslabel":
                 saleslabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 (1).png"))); // NOI18N
@@ -617,7 +869,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 break;
             case "box":
                 ProductsLabelMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-box-64Blue.png")));
-               this.add(ProductsTablePanel);
+                this.add(ProductsTablePanel);
                 this.validate();
                 break;
             case "stats":
@@ -638,7 +890,6 @@ public final class UIv2 extends javax.swing.JFrame {
     /**
      * End of loading functions
      */
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -682,6 +933,9 @@ public final class UIv2 extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         salessubmenu1 = new javax.swing.JPanel();
+        rolesnpermissionsubmenu1 = new javax.swing.JPanel();
+        editpermrole = new javax.swing.JLabel();
+        deleteRowPermissisonLabel = new javax.swing.JLabel();
         TablePanel = new javax.swing.JPanel();
         SalesTablePanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -735,6 +989,16 @@ public final class UIv2 extends javax.swing.JFrame {
         jScrollPane13 = new javax.swing.JScrollPane();
         PermissionsTree = new javax.swing.JTree();
         jLabel3 = new javax.swing.JLabel();
+        NewRole = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane14 = new javax.swing.JScrollPane();
+        rolesJlist = new javax.swing.JList<>();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane15 = new javax.swing.JScrollPane();
+        mappedTree = new javax.swing.JTree();
+        description = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         TopMenu = new javax.swing.JMenu();
         QuitMenu = new javax.swing.JMenuItem();
@@ -745,6 +1009,7 @@ public final class UIv2 extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -823,6 +1088,11 @@ public final class UIv2 extends javax.swing.JFrame {
         PrintReceipt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-print-32.png"))); // NOI18N
         PrintReceipt.setText("Print Receipt");
         PrintReceipt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        PrintReceipt.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PrintReceiptMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout SalesHeaderLayout = new javax.swing.GroupLayout(SalesHeader);
         SalesHeader.setLayout(SalesHeaderLayout);
@@ -841,7 +1111,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(CancelLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PrintReceipt)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         SalesHeaderLayout.setVerticalGroup(
             SalesHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -896,7 +1166,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(newproducy1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(InventoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(441, Short.MAX_VALUE))
+                .addContainerGap(434, Short.MAX_VALUE))
         );
         ProductsHeaderLayout.setVerticalGroup(
             ProductsHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -946,7 +1216,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(newUserLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(permissionnRolesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(402, Short.MAX_VALUE))
+                .addContainerGap(395, Short.MAX_VALUE))
         );
         UsersHeaderLayout.setVerticalGroup(
             UsersHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1012,6 +1282,7 @@ public final class UIv2 extends javax.swing.JFrame {
 
         stats.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-statistics-64.png"))); // NOI18N
         stats.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        stats.setEnabled(false);
         stats.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 statsMouseClicked(evt);
@@ -1021,6 +1292,7 @@ public final class UIv2 extends javax.swing.JFrame {
         saleslabel.setBackground(new java.awt.Color(204, 204, 255));
         saleslabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-best-sales-64 Black.png"))); // NOI18N
         saleslabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        saleslabel.setEnabled(false);
         saleslabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 saleslabelMouseClicked(evt);
@@ -1038,6 +1310,7 @@ public final class UIv2 extends javax.swing.JFrame {
 
         customers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-select-users-64.png"))); // NOI18N
         customers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        customers.setEnabled(false);
         customers.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 customersMouseClicked(evt);
@@ -1051,10 +1324,12 @@ public final class UIv2 extends javax.swing.JFrame {
         productslabelmenu.setText("Products");
 
         saleslabelmenu.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        saleslabelmenu.setLabelFor(saleslabel);
         saleslabelmenu.setText("Sales");
 
         adminilabelmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-administrator-male-64 (1).png"))); // NOI18N
         adminilabelmenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        adminilabelmenu.setEnabled(false);
         adminilabelmenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 adminilabelmenuMouseClicked(evt);
@@ -1063,6 +1338,7 @@ public final class UIv2 extends javax.swing.JFrame {
 
         ProductsLabelMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-box-64.png"))); // NOI18N
         ProductsLabelMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ProductsLabelMenu.setEnabled(false);
         ProductsLabelMenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ProductsLabelMenuMouseClicked(evt);
@@ -1172,14 +1448,14 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 427, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 420, Short.MAX_VALUE)
                 .addComponent(todays)
                 .addGap(64, 64, 64))
         );
         userssubmenu1Layout.setVerticalGroup(
             userssubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userssubmenu1Layout.createSequentialGroup()
-                .addGap(0, 9, Short.MAX_VALUE)
+                .addGap(0, 30, Short.MAX_VALUE)
                 .addGroup(userssubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(userssubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
@@ -1192,18 +1468,62 @@ public final class UIv2 extends javax.swing.JFrame {
 
         Submenu1.add(userssubmenu1, "card6");
 
+        salessubmenu1.setBackground(new java.awt.Color(239, 235, 235));
+
         javax.swing.GroupLayout salessubmenu1Layout = new javax.swing.GroupLayout(salessubmenu1);
         salessubmenu1.setLayout(salessubmenu1Layout);
         salessubmenu1Layout.setHorizontalGroup(
             salessubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 783, Short.MAX_VALUE)
+            .addGap(0, 776, Short.MAX_VALUE)
         );
         salessubmenu1Layout.setVerticalGroup(
             salessubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 47, Short.MAX_VALUE)
+            .addGap(0, 68, Short.MAX_VALUE)
         );
 
         Submenu1.add(salessubmenu1, "card3");
+
+        rolesnpermissionsubmenu1.setBackground(new java.awt.Color(239, 235, 235));
+
+        editpermrole.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/v2icons8-edit-32.png"))); // NOI18N
+        editpermrole.setText("Edit Role");
+        editpermrole.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        editpermrole.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                editpermroleMouseClicked(evt);
+            }
+        });
+
+        deleteRowPermissisonLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/deleteicon.png"))); // NOI18N
+        deleteRowPermissisonLabel.setText("Delete Role/Permission");
+        deleteRowPermissisonLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        deleteRowPermissisonLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deleteRowPermissisonLabelMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout rolesnpermissionsubmenu1Layout = new javax.swing.GroupLayout(rolesnpermissionsubmenu1);
+        rolesnpermissionsubmenu1.setLayout(rolesnpermissionsubmenu1Layout);
+        rolesnpermissionsubmenu1Layout.setHorizontalGroup(
+            rolesnpermissionsubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rolesnpermissionsubmenu1Layout.createSequentialGroup()
+                .addComponent(editpermrole)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(deleteRowPermissisonLabel)
+                .addContainerGap(515, Short.MAX_VALUE))
+        );
+        rolesnpermissionsubmenu1Layout.setVerticalGroup(
+            rolesnpermissionsubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rolesnpermissionsubmenu1Layout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addGroup(rolesnpermissionsubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(editpermrole)
+                    .addComponent(deleteRowPermissisonLabel))
+                .addContainerGap())
+        );
+
+        Submenu1.add(rolesnpermissionsubmenu1, "card3");
 
         TablePanel.setLayout(new java.awt.CardLayout());
 
@@ -1235,13 +1555,13 @@ public final class UIv2 extends javax.swing.JFrame {
         SalesTablePanelLayout.setHorizontalGroup(
             SalesTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SalesTablePanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 768, Short.MAX_VALUE)
                 .addContainerGap())
         );
         SalesTablePanelLayout.setVerticalGroup(
             SalesTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SalesTablePanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1269,14 +1589,14 @@ public final class UIv2 extends javax.swing.JFrame {
             BrandsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BrandsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
                 .addContainerGap())
         );
         BrandsTablePanelLayout.setVerticalGroup(
             BrandsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BrandsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1304,14 +1624,14 @@ public final class UIv2 extends javax.swing.JFrame {
             categoryTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(categoryTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
                 .addContainerGap())
         );
         categoryTablePanelLayout.setVerticalGroup(
             categoryTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, categoryTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1339,14 +1659,14 @@ public final class UIv2 extends javax.swing.JFrame {
             ProductsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ProductsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
                 .addContainerGap())
         );
         ProductsTablePanelLayout.setVerticalGroup(
             ProductsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProductsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1374,14 +1694,14 @@ public final class UIv2 extends javax.swing.JFrame {
             StocksTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(StocksTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
                 .addContainerGap())
         );
         StocksTablePanelLayout.setVerticalGroup(
             StocksTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, StocksTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1419,7 +1739,7 @@ public final class UIv2 extends javax.swing.JFrame {
                     .addComponent(tinvest)
                     .addComponent(totalreturns)
                     .addComponent(profit))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1427,7 +1747,7 @@ public final class UIv2 extends javax.swing.JFrame {
             DailyReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DailyReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(DailyReportTablePanelLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
@@ -1473,7 +1793,7 @@ public final class UIv2 extends javax.swing.JFrame {
                     .addComponent(tinvest1)
                     .addComponent(totalreturns1)
                     .addComponent(profit1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1481,7 +1801,7 @@ public final class UIv2 extends javax.swing.JFrame {
             WeeklyReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, WeeklyReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(WeeklyReportTablePanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
@@ -1527,7 +1847,7 @@ public final class UIv2 extends javax.swing.JFrame {
                     .addComponent(tinvest2)
                     .addComponent(totalreturns2)
                     .addComponent(profit2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1535,7 +1855,7 @@ public final class UIv2 extends javax.swing.JFrame {
             MonthlyReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MonthlyReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(MonthlyReportTablePanelLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
@@ -1581,7 +1901,7 @@ public final class UIv2 extends javax.swing.JFrame {
                     .addComponent(tinvest3)
                     .addComponent(totalreturns3)
                     .addComponent(profit3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1589,7 +1909,7 @@ public final class UIv2 extends javax.swing.JFrame {
             DateReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DateReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(DateReportTablePanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
@@ -1643,14 +1963,14 @@ public final class UIv2 extends javax.swing.JFrame {
             UsersTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(UsersTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
                 .addContainerGap())
         );
         UsersTablePanelLayout.setVerticalGroup(
             UsersTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, UsersTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1678,14 +1998,14 @@ public final class UIv2 extends javax.swing.JFrame {
             NotificationsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NotificationsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
                 .addContainerGap())
         );
         NotificationsTablePanelLayout.setVerticalGroup(
             NotificationsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NotificationsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1706,11 +2026,7 @@ public final class UIv2 extends javax.swing.JFrame {
             }
         ));
         transferedCash.setFocusable(false);
-        transferedCash.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                transferedCashMouseClicked(evt);
-            }
-        });
+    
         jScrollPane12.setViewportView(transferedCash);
 
         javax.swing.GroupLayout CashTablePanelLayout = new javax.swing.GroupLayout(CashTablePanel);
@@ -1719,27 +2035,90 @@ public final class UIv2 extends javax.swing.JFrame {
             CashTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CashTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
+                .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
                 .addContainerGap())
         );
         CashTablePanelLayout.setVerticalGroup(
             CashTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CashTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         TablePanel.add(CashTablePanel, "card2");
 
-        PermissionsTree.setBackground(new java.awt.Color(225, 204, 204));
-        PermissionsTree.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        PermissionsTree.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.light"));
+        PermissionsTree.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Permissions", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 14), new java.awt.Color(0, 51, 255))); // NOI18N
+        PermissionsTree.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         PermissionsTree.setForeground(new java.awt.Color(0, 0, 255));
+        PermissionsTree.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        PermissionsTree.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PermissionsTreeMouseClicked(evt);
+            }
+        });
         jScrollPane13.setViewportView(PermissionsTree);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(51, 0, 255));
         jLabel3.setText("Roles and Permission");
+
+        NewRole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NewRoleActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel5.setText("Role Name");
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-save-32.png"))); // NOI18N
+        jLabel6.setText("Save");
+        jLabel6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel6MouseClicked(evt);
+            }
+        });
+
+        rolesJlist.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Roles", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 14), new java.awt.Color(0, 51, 255))); // NOI18N
+        rolesJlist.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        rolesJlist.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        rolesJlist.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        rolesJlist.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rolesJlistMouseClicked(evt);
+            }
+        });
+        jScrollPane14.setViewportView(rolesJlist);
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-save-32.png"))); // NOI18N
+        jLabel8.setText("Map Permission");
+        jLabel8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel8MouseClicked(evt);
+            }
+        });
+
+        mappedTree.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        mappedTree.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        mappedTree.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mappedTreeMouseClicked(evt);
+            }
+        });
+        jScrollPane15.setViewportView(mappedTree);
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel9.setText("Description");
 
         javax.swing.GroupLayout RolesPermissionsLayout = new javax.swing.GroupLayout(RolesPermissions);
         RolesPermissions.setLayout(RolesPermissionsLayout);
@@ -1748,17 +2127,53 @@ public final class UIv2 extends javax.swing.JFrame {
             .addGroup(RolesPermissionsLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(RolesPermissionsLayout.createSequentialGroup()
+                        .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(37, 37, 37)
+                        .addComponent(jScrollPane15))
+                    .addGroup(RolesPermissionsLayout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(NewRole, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(description, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel6)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         RolesPermissionsLayout.setVerticalGroup(
             RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RolesPermissionsLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(RolesPermissionsLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(NewRole, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel9)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RolesPermissionsLayout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addGroup(RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(description, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(RolesPermissionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RolesPermissionsLayout.createSequentialGroup()
+                        .addComponent(jScrollPane14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel8))
+                    .addComponent(jScrollPane15)
+                    .addComponent(jScrollPane13))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1795,7 +2210,7 @@ public final class UIv2 extends javax.swing.JFrame {
         getContentPane().add(LeftPanel, java.awt.BorderLayout.CENTER);
 
         jMenuBar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jMenuBar1.setFont(new java.awt.Font("Segoe UI Black", 0, 96)); // NOI18N
+        jMenuBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         TopMenu.setText("File");
         TopMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -1855,6 +2270,14 @@ public final class UIv2 extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
+        jMenu2.setText("Test Data");
+        jMenu2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu2ActionPerformed(evt);
+            }
+        });
+        jMenuBar1.add(jMenu2);
+
         setJMenuBar(jMenuBar1);
 
         pack();
@@ -1880,18 +2303,17 @@ public final class UIv2 extends javax.swing.JFrame {
         TablePanel.add(SalesTablePanel);
         TablePanel.repaint();
         TablePanel.revalidate();
-        
-        
+
         Submenu.removeAll();
         Submenu.add(SalesHeader);
         Submenu.repaint();
         Submenu.revalidate();
-        
+
         Submenu1.removeAll();
         Submenu1.add(salessubmenu1);
         Submenu1.repaint();
         Submenu1.revalidate();
-        
+
         try {
             // TODO add your handling code here:
             getActiveClass("saleslabel");
@@ -1919,8 +2341,8 @@ public final class UIv2 extends javax.swing.JFrame {
         // Deleting or Cancelling the sale:
         int reply
                 = JOptionPane.showConfirmDialog(this, "Are you sure?,"
-                + " Cancelling will delete this sale permanently",
-           "Confirm", JOptionPane.YES_NO_OPTION);
+                        + " Cancelling will delete this sale permanently",
+                        "Confirm", JOptionPane.YES_NO_OPTION);
 
         if (reply == JOptionPane.YES_OPTION) {
 
@@ -1952,8 +2374,8 @@ public final class UIv2 extends javax.swing.JFrame {
     }//GEN-LAST:event_CancelLabelMouseClicked
 
     private void EditLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditLabelMouseClicked
-        Boolean selected = ((Boolean)SellingModel.getValueAt(row, 0));
-        if(selected == true){
+        Boolean selected = ((Boolean) SellingModel.getValueAt(row, 0));
+        if (selected == true) {
             try {
                 SaveSale editSale;
                 SaveSale.setMeUp(getProductDetails());
@@ -1983,11 +2405,11 @@ public final class UIv2 extends javax.swing.JFrame {
     }//GEN-LAST:event_SalesTableMouseClicked
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
-     
+
     }//GEN-LAST:event_formFocusGained
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-           try {
+        try {
             loadJtableValues();
         } catch (SQLException | ClassNotFoundException | ParseException ex) {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
@@ -2004,21 +2426,25 @@ public final class UIv2 extends javax.swing.JFrame {
     }//GEN-LAST:event_saleslabelMouseEntered
 
     private void adminilabelmenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminilabelmenuMouseClicked
-     adminIconClicked();
+        try {
+            adminIconClicked();
+        } catch (SQLException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_adminilabelmenuMouseClicked
 
     private void ProductsLabelMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ProductsLabelMenuMouseClicked
         TablePanel.removeAll();
         TablePanel.add(ProductsTablePanel);
         TablePanel.repaint();
-        TablePanel.revalidate(); 
-        
+        TablePanel.revalidate();
+
         Submenu.removeAll();
         Submenu.add(ProductsHeader);
         Submenu.repaint();
-        Submenu.revalidate(); 
-        getActiveClass("box"); 
-       
+        Submenu.revalidate();
+        getActiveClass("box");
+
     }//GEN-LAST:event_ProductsLabelMenuMouseClicked
 
     private void jMenuItem1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MouseClicked
@@ -2032,14 +2458,14 @@ public final class UIv2 extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-         this.add(SalesTablePanel);
-         this.validate();
+        this.add(SalesTablePanel);
+        this.validate();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
-                // TODO add your handling code here:
-      
+        // TODO add your handling code here:
+
         try {
             LoadStocks();
         } catch (ClassNotFoundException ex) {
@@ -2054,7 +2480,7 @@ public final class UIv2 extends javax.swing.JFrame {
 
     private void InventoryLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InventoryLabelMouseClicked
         // TODO add your handling code here:
-      
+
         try {
             LoadStocks();
         } catch (ClassNotFoundException ex) {
@@ -2072,38 +2498,47 @@ public final class UIv2 extends javax.swing.JFrame {
     }//GEN-LAST:event_newproducy1MouseClicked
 
     private void permissionnRolesLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_permissionnRolesLabelMouseClicked
-        // TODO add your handling code here:
+
+        java.util.List<PermissionGroup> permissionGroups = null;
+        //Panels showing:
         TablePanel.removeAll();
         TablePanel.add(RolesPermissions);
         TablePanel.repaint();
         TablePanel.revalidate();
+
+        Submenu1.removeAll();
+        Submenu1.add(rolesnpermissionsubmenu1);
+        Submenu1.repaint();
+        Submenu1.revalidate();
+
+        LoadRoles();
+        LoadPermissions();
+        LoadPermissionsRoles();
+
     }//GEN-LAST:event_permissionnRolesLabelMouseClicked
 
     private void newUserLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newUserLabelMouseClicked
         try {
-            Staff staff = staffslist.get(0);       
-            RegisterNewUser.main(staff,1);
+            RegisterNewUser.main();
         } catch (ClassNotFoundException | ParseException ex) {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-    }//GEN-LAST:event_newUserLabelMouseClicked
 
-    private void transferedCashMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_transferedCashMouseClicked
-   
-    }//GEN-LAST:event_transferedCashMouseClicked
+    }//GEN-LAST:event_newUserLabelMouseClicked
 
     private void UsersTablePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UsersTablePanelMouseClicked
         // TODO add your handling code here:
-       
-        
+
+
     }//GEN-LAST:event_UsersTablePanelMouseClicked
 
     private void editlabeluserssumenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editlabeluserssumenuMouseClicked
-       try {
-            // TODO add your handling code here:
-            Staff staff = selectedStaff.get(selectedStaff.size() - 1);
-            RegisterNewUser.main(staff,0);
+
+        // TODO add your handling code here:
+        SelectedStaff selectedstaff = selectedStaff.get(selectedStaff.size() - 1);
+        System.out.println("2537 line UIv2 "+selectedstaff.role);
+        try {
+            EditUser.main(selectedstaff);
         } catch (ClassNotFoundException | ParseException ex) {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2112,7 +2547,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
         // TODO add your handling code here:
         int selectedRow = staffTable.getSelectedRow();
-        String staffName = (String) StaffsModel.getValueAt(selectedRow, 0);    
+        String staffName = (String) StaffsModel.getValueAt(selectedRow, 0);
         String userId = userIds.get(selectedRow);
         String message = "<html><div style='font-size:14px;'>Are you sure you want to disable" + staffName + "?</div></html>";
         int confirm = JOptionPane.showConfirmDialog(null, message, "Confirmation", JOptionPane.YES_NO_OPTION);
@@ -2121,92 +2556,85 @@ public final class UIv2 extends javax.swing.JFrame {
             // Call the function to update user status
             boolean updated = false;
             try {
-                updated = updateStaffStatus(userId,0);
+                updated = updateStaffStatus(userId, 0);
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (updated) {
                 JOptionPane.showMessageDialog(null,
                         "User status updated successfully.");
-                
-                    try {
-                        LoadSatffs();
-                    } catch (ParseException ex) {
-                        Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-                    }
 
-                    TablePanel.removeAll();
-                    TablePanel.add(UsersTablePanel);
-                    TablePanel.repaint();
-                    TablePanel.revalidate();
+                try {
+                    LoadSatffs();
+                } catch (ParseException | ClassNotFoundException | SQLException ex) {
+                    Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-                } else {
+                TablePanel.removeAll();
+                TablePanel.add(UsersTablePanel);
+                TablePanel.repaint();
+                TablePanel.revalidate();
+
+            } else {
                 JOptionPane.showMessageDialog(null, "Failed to update user status.");
             }
         }
         //Sales_Staffs.addtestUsers();
     }//GEN-LAST:event_jLabel2MouseClicked
 
-       public static boolean updateStaffStatus(String staffId, int type) throws SQLException, ClassNotFoundException {
-            // Call the editStaff method with the staff ID
-       try {
-            return Sales_Staffs.StaffStatus(staffId,type);    
-        } catch(SQLException | ClassNotFoundException ex){
+    public static boolean updateStaffStatus(String staffId, int type) throws SQLException, ClassNotFoundException {
+        // Call the editStaff method with the staff ID
+        try {
+            return Sales_Staffs.StaffStatus(staffId, type);
+        } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
             // Log the exception
             return false; // Return false in case of exception
         }
 
     }
-       
+
     private void staffTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_staffTableMouseClicked
         row = staffTable.getSelectedRow();
         column = staffTable.getColumnCount();
         int selectedRow = staffTable.getSelectedRow();
-       
         // Check if a row is selected
         if (selectedRow != -1) {
             // Get the values from the selected row
-            String staffName = (String) StaffsModel.getValueAt(selectedRow, 0);
-            String surName = (String) StaffsModel.getValueAt(selectedRow, 1);
-            String staffEmail = (String) StaffsModel.getValueAt(selectedRow, 2);
-            String phoneNo = (String) StaffsModel.getValueAt(selectedRow, 3);
-            String store = (String) StaffsModel.getValueAt(selectedRow, 4);
-            String statusLabel = (String) StaffsModel.getValueAt(selectedRow, 5);
-            String status =   (String) StaffsModel.getValueAt(selectedRow, 5);
-            String managerId = (String) StaffsModel.getValueAt(selectedRow, 6);
+            String staffName = StaffsModel.getValueAt(selectedRow, 0).toString();
+            String surName = StaffsModel.getValueAt(selectedRow, 1).toString();
+            String staffEmail = StaffsModel.getValueAt(selectedRow, 2).toString();
+            String phoneNo = StaffsModel.getValueAt(selectedRow, 3).toString();
+            String store = StaffsModel.getValueAt(selectedRow, 4).toString();
+            String status = StaffsModel.getValueAt(selectedRow, 5).toString();
+            String managerId = StaffsModel.getValueAt(selectedRow, 6).toString();
             String userId = userIds.get(selectedRow);
-
             Object roleObj = StaffsModel.getValueAt(selectedRow, 7);
-            int role;
+            String role = null;
             if (roleObj instanceof Integer) {
-                role = (int) roleObj;
+                role = (String) roleObj;
             } else if (roleObj instanceof String) {
                 try {
-                    role = Integer.parseInt((String) roleObj);
+                    role = (String) roleObj;
+                    
                 } catch (NumberFormatException e) {
                     // Handle the case where the value cannot be parsed to an integer
                     e.printStackTrace();
                     // Provide a default value or handle the error as appropriate
-                    role = 0; // Default value or whatever you deem suitable
                 }
             } else {
                 // Handle the case where the value is neither an integer nor a string
-                role = 0; // Default value or appropriate handling
             }
-
 
             // Create an object with the retrieved values
             // Create a new Staff object and add it to the userDetails ArrayList
-            selectedStaff.add(new Staff(staffName, surName,
-           staffEmail, phoneNo, store, statusLabel, 
-           managerId, role,userId));
+            selectedStaff.add(new SelectedStaff(staffName, surName,
+                    staffEmail, phoneNo, store, status,
+                    managerId, role, userId));
             // Pass the object to the editUser me       
         } else {
             // No row is selected
-           JOptionPane.showMessageDialog(null, "No row is selected.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "No row is selected.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_staffTableMouseClicked
@@ -2214,7 +2642,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         // TODO add your handling code here:
         int selectedRow = staffTable.getSelectedRow();
-        String staffName = (String) StaffsModel.getValueAt(selectedRow, 0);    
+        String staffName = (String) StaffsModel.getValueAt(selectedRow, 0);
         String userId = userIds.get(selectedRow);
         String message = "<html><div style='font-size:14px;'>Are you sure you want to enable " + staffName + "?</div></html>";
         int confirm = JOptionPane.showConfirmDialog(null, message, "Confirmation", JOptionPane.YES_NO_OPTION);
@@ -2223,55 +2651,182 @@ public final class UIv2 extends javax.swing.JFrame {
             // Call the function to update user status
             boolean updated = false;
             try {
-                updated = updateStaffStatus(userId,1);
+                updated = updateStaffStatus(userId, 1);
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (updated) {
-                JOptionPane.showMessageDialog(null, 
+                JOptionPane.showMessageDialog(null,
                         "User status updated successfully.");
-                    try {
-                        LoadSatffs();
-                    } catch (ParseException | ClassNotFoundException ex) {
-                        Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                try {
+                    LoadSatffs();
+                } catch (ParseException | ClassNotFoundException | SQLException ex) {
+                    Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-                    TablePanel.removeAll();
-                    TablePanel.add(UsersTablePanel);
-                    TablePanel.repaint();
-                    TablePanel.revalidate();
+                TablePanel.removeAll();
+                TablePanel.add(UsersTablePanel);
+                TablePanel.repaint();
+                TablePanel.revalidate();
             } else {
                 JOptionPane.showMessageDialog(null, "Failed to update user status.");
             }
         }
     }//GEN-LAST:event_jLabel4MouseClicked
 
-      // Method to get the instance of UIv2
-        public static UIv2 getInstance() {
-            if (Instance == null) {
-                try {
-                    Instance = new UIv2();
-                } catch (ClassNotFoundException | ParseException ex) {
-                    Logger.getLogger(RegisterNewUser.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            return Instance;
+    private void jMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu2ActionPerformed
+        try {
+            // TODO add your handling code here:
+            addtestUsers();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-      public static void callAdminIconClicked() {
+    }//GEN-LAST:event_jMenu2ActionPerformed
+
+    private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
+        // TODO add your handling code here:
+        String roleName = NewRole.getText();
+        String desc = description.getText();
+        try {
+            addRole(roleName, desc);
+        } catch (SQLException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String message = "Role created successfully";
+        showPopupNotification(message, NotificationManager.NotificationType.INFO);
+        showConsoleNotification(message, NotificationManager.NotificationType.INFO);
+        LoadRoles();
+        TablePanel.repaint();
+        TablePanel.revalidate();
+        LoadPermissions();
+    }//GEN-LAST:event_jLabel6MouseClicked
+
+    private void NewRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewRoleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_NewRoleActionPerformed
+
+    private void PermissionsTreeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PermissionsTreeMouseClicked
+// For PermissionsTree (JTree)
+        TreePath selectedPath = PermissionsTree.getSelectionPath();
+        if (selectedPath != null) {
+            DefaultMutableTreeNode selected = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+            selectedNode = selected.toString(); // Convert selected node to String
+            // Do something with the selected node
+            //  renameRoleOrDeleteRow(PermissionsTree);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_PermissionsTreeMouseClicked
+
+    private void rolesJlistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rolesJlistMouseClicked
+// For rolesJlist (JList)
+        Object Value = rolesJlist.getSelectedValue();
+        if (Value != null) {
+            selectedValue = (String) Value;
+            SelectedComponent = new JList();
+            //   renameRoleOrDeleteRow(rolesJlist);
+            // Do something with the selected value
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_rolesJlistMouseClicked
+
+    private void jLabel8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel8MouseClicked
+        // TODO add your handling code here:
+        if (PermissionsTree.getSelectionCount() == 0 || rolesJlist.getSelectedIndex() == -1) {
+            String message = "";
+            if (PermissionsTree.getSelectionCount() == 0) {
+                message += "Please select a permission from the Permissions Tree.\n";
+
+            }
+            if (rolesJlist.getSelectedIndex() == -1) {
+                message += "Please select a role from the Roles List.";
+            }
+            showPopupNotification(message, NotificationManager.NotificationType.ERROR);
+            showConsoleNotification(message, NotificationManager.NotificationType.ERROR);
+            return;
+        } else {
+            PermissionFileManager pm = new PermissionFileManager();
+            pm.addPermissionsRole(selectedValue, selectedNode);
+            LoadPermissionsRoles();
+        }
+
+    }//GEN-LAST:event_jLabel8MouseClicked
+
+    private void editpermroleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editpermroleMouseClicked
+        //Incase the user selects the delete we will want to see
+        //what did she clicked last between JLIST OR JTREE.:
+        // Rename the role in the database using selectedValue
+        // Call RoleInputDialog class and pass the role name value
+
+        renameRoleOrDeleteRow(SelectedComponent, 1);
+        LoadRoles();
+    }//GEN-LAST:event_editpermroleMouseClicked
+
+    // Method to rename role or delete row based on selected component
+    public void renameRoleOrDeleteRow(Component selectedComponent, int type) {
+        if (selectedComponent instanceof JList) {
+            // If JList is clicked
+            if (type == 0) {
+                deleteRow(selectedValue);
+            } else {
+                RoleInputDialog.showInputDialog(selectedValue);
+            }
+
+        } else if (selectedComponent instanceof JTree) {
+            // If JTree is clicked
+            // Delete the row completely from the database using selectedNode
+            deletePermissionRow(selectedNode);
+        }
+    }
+
+
+    private void mappedTreeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mappedTreeMouseClicked
+        // TODO add your handling code here:
+        SelectedComponent = new JTree();
+        // For PermissionsTree (JTree)
+        TreePath selectedPath = mappedTree.getSelectionPath();
+        if (selectedPath != null) {
+            DefaultMutableTreeNode selected = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+            selectedNode = selected.toString(); // Convert selected node to String
+            System.out.println("this is the selected tree value" + selectedNode + " and " + selected);
+        }
+    }//GEN-LAST:event_mappedTreeMouseClicked
+
+    private void deleteRowPermissisonLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteRowPermissisonLabelMouseClicked
+        // TODO add your handling code here:
+        //0 for delete
+        //1 for edit
+        renameRoleOrDeleteRow(SelectedComponent, 0);
+        LoadRoles();
+        LoadPermissions();
+        LoadPermissionsRoles();
+    }//GEN-LAST:event_deleteRowPermissisonLabelMouseClicked
+
+    private void PrintReceiptMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PrintReceiptMouseClicked
+
+    }//GEN-LAST:event_PrintReceiptMouseClicked
+
+    // Method to get the instance of UIv2
+    public static UIv2 getInstance() throws SQLException {
+        if (Instance == null) {
+            try {
+                Instance = new UIv2();
+            } catch (ClassNotFoundException | ParseException ex) {
+                Logger.getLogger(EditUser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return Instance;
+    }
+
+    public static void callAdminIconClicked() throws SQLException {
         // Get the existing instance of UIv2
         UIv2 uiv = UIv2.getInstance();
 
         // Call the adminIconClicked() method
         uiv.adminIconClicked();
-        }
-      
-      public void adminIconClicked() {
+    }
+
+    public void adminIconClicked() throws SQLException {
         try {
             LoadSatffs();
-        } catch (ParseException ex) {
-            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (ParseException | ClassNotFoundException ex) {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -2302,7 +2857,6 @@ public final class UIv2 extends javax.swing.JFrame {
         Submenu1.revalidate();
     }
 
-
     /**
      * @throws java.sql.SQLException
      * @throws java.lang.ClassNotFoundException
@@ -2328,24 +2882,22 @@ public final class UIv2 extends javax.swing.JFrame {
         SalesTable.repaint();
         SalesTable.revalidate();
     }
-    
-    
 
-   
     public static void main(String args[])
             throws UnsupportedLookAndFeelException {
-        SplashJava.main(null);
-        //https://github.com/JFormDesigner/FlatLaf/tree/main/flatlaf-intellij-themes#how-to-use
-    
+
+            System.setProperty("sun.java2d.dpiaware", "false");
+        // Retrieve the current user role
+
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 new UIv2().setVisible(true);
-            } catch (ClassNotFoundException | ParseException ex) {
+            } catch (ClassNotFoundException | ParseException | SQLException ex) {
                 Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu BrandsMenu;
     private javax.swing.JPanel BrandsTablePanel;
@@ -2361,6 +2913,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JLabel InventoryLabel;
     private javax.swing.JPanel LeftPanel;
     private javax.swing.JPanel MonthlyReportTablePanel;
+    private javax.swing.JTextField NewRole;
     private javax.swing.JPanel NotificationsTablePanel;
     private javax.swing.JLabel OrderLabel;
     private javax.swing.JTree PermissionsTree;
@@ -2391,12 +2944,20 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JLabel customerslabelmenu;
     private javax.swing.JTable dailySalesTable;
     private javax.swing.JTable datedreporttable;
+    private javax.swing.JLabel deleteRowPermissisonLabel;
+    private javax.swing.JTextField description;
     private javax.swing.JLabel editlabeluserssumenu;
+    private javax.swing.JLabel editpermrole;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
@@ -2406,6 +2967,8 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane13;
+    private javax.swing.JScrollPane jScrollPane14;
+    private javax.swing.JScrollPane jScrollPane15;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -2414,6 +2977,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JTree mappedTree;
     private javax.swing.JPanel menu;
     private javax.swing.JTable monthlyreporttable;
     private javax.swing.JLabel newUserLabel;
@@ -2426,6 +2990,8 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JLabel profit1;
     private javax.swing.JLabel profit2;
     private javax.swing.JLabel profit3;
+    private javax.swing.JList<String> rolesJlist;
+    private javax.swing.JPanel rolesnpermissionsubmenu1;
     private javax.swing.JLabel saleslabel;
     private javax.swing.JLabel saleslabelmenu;
     private javax.swing.JPanel salessubmenu1;
@@ -2453,22 +3019,23 @@ public final class UIv2 extends javax.swing.JFrame {
 
 }
 // Customize the code to set the color for each column in JTable
-class MyRenderer extends DefaultTableCellRenderer 
-{
-   Color bg, fg;
-   public MyRenderer(Color bg, Color fg) {
-      super();
-      this.bg = bg;
-      this.fg = fg;
-   }
-   @Override
-   public Component getTableCellRendererComponent(JTable table, Object 
-   value, boolean isSelected, boolean hasFocus, int row, int column) 
-   {
-      Component cell = super.getTableCellRendererComponent(table, value, 
-      isSelected, hasFocus, row, column);
-      cell.setBackground(bg);
-      cell.setForeground(fg);
-      return cell;
-   }
+
+class MyRenderer extends DefaultTableCellRenderer {
+
+    Color bg, fg;
+
+    public MyRenderer(Color bg, Color fg) {
+        super();
+        this.bg = bg;
+        this.fg = fg;
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        Component cell = super.getTableCellRendererComponent(table, value,
+                isSelected, hasFocus, row, column);
+        cell.setBackground(bg);
+        cell.setForeground(fg);
+        return cell;
+    }
 }

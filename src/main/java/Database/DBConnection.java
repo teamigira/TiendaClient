@@ -62,23 +62,46 @@ public class DBConnection {
      * @throws java.sql.SQLException
      * @throws java.lang.ClassNotFoundException
      */
-    public Connection getConnection() throws SQLException,
-            ClassNotFoundException {
-        if (connection == null) {
-            try {
-                Class.forName("org.h2.Driver");
-            } catch (ClassNotFoundException ex) {
-                System.out.println(ex.getMessage());
-            }
-
-            connection = DriverManager.getConnection(
-                    "jdbc:h2:" + url.get() + "/Tienda;" + "DATABASE_TO_UPPER=false;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE",
-                    username.get(),
-                    password.get()
-            );
+//    public Connection getConnection() throws SQLException,
+//            ClassNotFoundException {
+//        if (connection == null) {
+//            try {
+//                Class.forName("org.h2.Driver");
+//            } catch (ClassNotFoundException ex) {
+//                System.out.println(ex.getMessage());
+//            }
+//
+//            connection = DriverManager.getConnection(
+//                    "jdbc:h2:" + url.get() + "/Tienda;" + "DATABASE_TO_UPPER=false;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE",
+//                    username.get(),
+//                    password.get()
+//            );
+//        }
+//        return connection;
+//    }
+    
+    public Connection getConnection() throws SQLException {
+    if (connection == null || connection.isClosed()) {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException ex) {
+            // Handle the exception appropriately (e.g., log it)
+            throw new SQLException("H2 Driver not found", ex);
         }
-        return connection;
+
+        String jdbcUrl = String.format("jdbc:h2:%s/Tienda;"+"DATABASE_TO_UPPER=false",
+                url.get());
+
+        try {
+            connection = DriverManager.getConnection(jdbcUrl, username.get(), password.get());
+        } catch (SQLException ex) {
+            // Handle the exception appropriately (e.g., log it)
+            throw new SQLException("Failed to obtain H2 connection", ex);
+        }
     }
+    return connection;
+}
+
 
     /**
      * Setting Database username
@@ -142,8 +165,7 @@ public class DBConnection {
                         .load()
                         .clean();
     }
-//
-
+    
     public void migrate() {
         String uri = "jdbc:h2:" + url.get() + "/Tienda;IFEXISTS=FALSE;DATABASE_TO_UPPER=false";
         String user = username.get();

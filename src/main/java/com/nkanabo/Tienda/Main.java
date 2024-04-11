@@ -20,8 +20,10 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import java.io.File;
 import java.net.URL;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -77,8 +79,10 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException,
-            SQLException, ClassNotFoundException, URISyntaxException {         
-        System.setProperty("sun.java2d.uiScale", "1");
+            SQLException, ClassNotFoundException, URISyntaxException, UnsupportedLookAndFeelException {     
+                        
+        System.setProperty("sun.java2d.dpiaware", "false");         
+        //System.setProperty("sun.java2d.uiScale", "1");
         //Load user preferences
         UserSettings pref = new UserSettings();
         pref.UserSettings();
