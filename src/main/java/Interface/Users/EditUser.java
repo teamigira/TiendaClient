@@ -1,22 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Interface.Users;
 
 import Classes.AbstractClasses.EditedUser;
 import Classes.AbstractClasses.EditedUserData;
 import Classes.AbstractClasses.Roles;
 import Classes.AbstractClasses.SelectedStaff;
-import Classes.AbstractClasses.Staff;
-import Classes.AbstractClasses.UserData;
 import Classes.Functions.Permissions.PermissionFileManager;
 import static Classes.Functions.Permissions.PermissionFileManager.loadRoles;
 import Classes.Functions.Sales_Staffs;
-import Classes.Utilities.NotificationManager.NotificationType;
-import static Classes.Utilities.NotificationManager.showPopupNotification;
 import Database.DBConnection;
-import java.awt.event.ItemEvent;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -650,16 +642,7 @@ public class EditUser extends javax.swing.JFrame {
     public static void main(SelectedStaff selectedStaff) throws ClassNotFoundException,
             ParseException {
        
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+         FlatGitHubIJTheme.setup();
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 new EditUser(selectedStaff).setVisible(true);

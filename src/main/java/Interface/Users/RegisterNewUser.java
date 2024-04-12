@@ -9,6 +9,7 @@ import Classes.AbstractClasses.Staff;
 
 import static Classes.Functions.Permissions.PermissionFileManager.loadRoles;
 import Classes.Functions.Sales_Staffs;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import java.awt.Color;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -610,16 +611,8 @@ public class RegisterNewUser extends javax.swing.JFrame {
     
     public static void main() throws ClassNotFoundException,
             ParseException {
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RegisterNewUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+      
+         FlatGitHubIJTheme.setup();
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 new RegisterNewUser().setVisible(true);

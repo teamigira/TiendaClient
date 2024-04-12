@@ -10,6 +10,7 @@ import static Authentication.Auth.authenticateProduct;
 import static Classes.Utilities.OS.systempath;
 import Database.DBConnection;
 import Database.MasterData;
+import Interface.ConsoleFrame;
 import Interface.launcher;
 import UserSettings.UserSettings;
 import java.io.IOException;
@@ -22,8 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.File;
 import java.net.URL;
-import javax.swing.UnsupportedLookAndFeelException;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -89,6 +90,10 @@ public class Main {
         //Load user preferences
         UserSettings pref = new UserSettings();
         pref.UserSettings();
+
+         // Create and show the console frame
+         ConsoleFrame consoleFrame = new ConsoleFrame();
+
         Main app = new Main();
         //https://mkyong.com/java/java-read-a-file-from-resources-folder/
         //#:~:text=In%20Java%2C%20we%20can%20use,

@@ -1,16 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Classes.Functions;
 
 import Authentication.Encrpytion;
-import Classes.AbstractClasses.EditedUser;
 import Classes.AbstractClasses.EditedUserData;
-import Classes.AbstractClasses.SelectedStaff;
 import Classes.AbstractClasses.Staff;
-import Classes.AbstractClasses.UserData;
 import Classes.Utilities.NotificationManager.NotificationType;
 import static Classes.Utilities.NotificationManager.showConsoleNotification;
 import static Classes.Utilities.NotificationManager.showPopupNotification;
@@ -44,12 +36,15 @@ public class Sales_Staffs {
     
             // Create prepared statement
             pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            Encrpytion enc = new Encrpytion();
+            String password = enc.encrypt(newStaff.password);
     
             // Set parameter values
             pstmt.setString(1, newStaff.staff_name);
             pstmt.setString(2, newStaff.sur_name);
             pstmt.setString(3, newStaff.staff_email);
-            pstmt.setString(4, newStaff.password);
+            pstmt.setString(4, password);
             pstmt.setString(5, newStaff.phone_no);
             pstmt.setString(6, newStaff.Status);
             pstmt.setString(7, newStaff.store);
@@ -108,7 +103,7 @@ public class Sales_Staffs {
             // Set up loop to add more than 50 random users
             int totalUsers = 100; // Change this to the desired number of users
             int rowsAffected = 0;
-
+            System.out.println("nimeitika");
             for (int i = 0; i < totalUsers; i++) {
                 // Generate random values for each user
                 int staffId = generateNumber(); // Assuming generateNumber() generates unique staff IDs
@@ -119,7 +114,7 @@ public class Sales_Staffs {
                 String store = "" + (i % 10); // Assuming there are 10 stores
                 int status = i % 2; // Alternates between 0 and 1
                 int managerId = i % 10; // Assuming there are 10 managers
-                int role = i % 10; // Assuming there are 10 roles
+                int role = i % 6; // Assuming there are 10 roles
 
                 // Set parameter values in the prepared statement
                 pstmt.setInt(1, staffId);
@@ -211,13 +206,17 @@ public class Sales_Staffs {
             // Create prepared statement
             pstmt = conn.prepareStatement(sql);
 
+            Encrpytion enc = new Encrpytion();
+            String password = enc.encrypt(editedUser.editedUser.password);
+
+            
             // Set parameters
             int parameterIndex = 1;
             pstmt.setString(parameterIndex++, editedUser.editedUser.staff_name);
             pstmt.setString(parameterIndex++, editedUser.editedUser.sur_name);
             pstmt.setString(parameterIndex++, editedUser.editedUser.staff_email);
             if (changePassword) {
-                pstmt.setString(parameterIndex++, editedUser.editedUser.password);
+                pstmt.setString(parameterIndex++, password);
             }
             pstmt.setString(parameterIndex++, editedUser.editedUser.phone_no);
             pstmt.setString(parameterIndex++, editedUser.editedUser.Status);
