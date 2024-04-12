@@ -6,6 +6,8 @@ package Classes.Utilities;
 
 import javax.swing.JOptionPane;
 
+import static Authentication.Sessions.LoggedUser;
+
 /**
  *
  * @author Nkanabo
@@ -14,8 +16,9 @@ public class NotificationManager {
     public static void showPopupNotification(String message, NotificationType type) {
         String title = type.toString();
         int dialogType = getDialogType(type);
-
-        JOptionPane.showMessageDialog(null, message, title, dialogType);
+        if (LoggedUser != null && !LoggedUser.isEmpty()) {
+            JOptionPane.showMessageDialog(null, message, title, dialogType);
+        }
     }
 
     public static void showConsoleNotification(String message, NotificationType type) {

@@ -13,7 +13,6 @@ import Classes.Utilities.NotificationManager.NotificationType;
 
 import static Classes.Functions.Permissions.PermissionFileManager.addPermissionsRole;
 import static Classes.Utilities.NotificationManager.showConsoleNotification;
-import static Classes.Utilities.NotificationManager.showPopupNotification;
 import static Database.DBConnect.getConnection;
 import static com.nkanabo.Tienda.Main.app_version;
 import static com.nkanabo.Tienda.Main.product_key;
@@ -151,12 +150,11 @@ public class MasterData {
     
             // Notify user of successful insertion
             String successMessage = "Permissions inserted successfully.";
-            showPopupNotification(successMessage, NotificationType.SUCCESS);
+           
             showConsoleNotification(successMessage, NotificationType.SUCCESS);
         } else {
             // Notify user that no permissions were inserted
             String infoMessage = "No new permissions to insert.";
-            showPopupNotification(infoMessage, NotificationType.INFO);
             showConsoleNotification(infoMessage, NotificationType.INFO);
         }
     }
@@ -186,12 +184,10 @@ public class MasterData {
             
             // Notify user of successful insertion
             String successMessage = "Role '" + roleName + "' inserted successfully.";
-            showPopupNotification(successMessage, NotificationType.SUCCESS);
             showConsoleNotification(successMessage, NotificationType.SUCCESS);
         } else {
             // Notify user that the role already exists
             String infoMessage = "Role '" + roleName + "' already exists.";
-            showPopupNotification(infoMessage, NotificationType.ERROR);
             showConsoleNotification(infoMessage, NotificationType.ERROR);
         }
     }

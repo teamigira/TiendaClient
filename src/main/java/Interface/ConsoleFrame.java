@@ -1,17 +1,40 @@
 package Interface;
 
+
 import javax.swing.*;
+
+import Classes.Utilities.Resources;
+
+import java.awt.*;
+import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 
 public class ConsoleFrame extends JFrame {
 
     private JTextArea textArea;
 
     public ConsoleFrame() {
-        setTitle("Console Output");
+        setTitle("System Setup");
         setSize(600, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        // Center the window on the screen
+        setLocationRelativeTo(null);
+
+        // Set the app icon
+        try {
+            String url = "resources/images/icons8.jpg";
+            Resources rs = new Resources();
+            File is = rs.getFileFromResource(url);
+            String filepath = Paths.get(is.toURI()).toFile().getAbsolutePath();
+            ImageIcon icon = new ImageIcon(filepath);
+            setIconImage(icon.getImage());
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace();
+        }
 
         textArea = new JTextArea();
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -24,7 +47,15 @@ public class ConsoleFrame extends JFrame {
     }
 
     private void updateTextArea(final String text) {
-        SwingUtilities.invokeLater(() -> textArea.append(text));
+        for (int i = 0; i < text.length(); i++) {
+            final int index = i;
+            try {
+                Thread.sleep(5); // Adjust the delay time as needed
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            SwingUtilities.invokeLater(() -> textArea.append(String.valueOf(text.charAt(index))));
+        }
     }
 
     private void redirectSystemStreams() {
@@ -54,7 +85,11 @@ public class ConsoleFrame extends JFrame {
     public static void main(String[] args) {
         new ConsoleFrame();
         // Example console messages
-        System.out.println("This is a test message.");
-        System.err.println("This is an error message.");
+        // Simulate some console output
+    System.out.println("System setup started...");
+    System.out.println("Loading configuration...");
+    System.out.println("Connecting to database...");
+    System.out.println("Database connection successful.");
+    System.out.println("Initializing components...");
     }
 }
