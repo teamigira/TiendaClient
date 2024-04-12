@@ -10,7 +10,6 @@ import Authentication.Sessions;
 import Classes.Utilities.Resources;
 import static Database.DBConnect.getConnection;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -26,8 +25,9 @@ import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
+import static com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme.setup;
 
 /**
  *
@@ -48,17 +48,17 @@ public class Login extends javax.swing.JFrame {
         ImageIcon originalIcon = new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8.jpg")); // NOI18N
         // Get the original image from the icon
         Image originalImage = originalIcon.getImage();
-        
+
         // Set the desired width and height for the resized image
         int desiredWidth = 90; // Change this to your desired width
         int desiredHeight = 90; // Change this to your desired height
-        
+
         // Resize the image while maintaining its aspect ratio
         Image resizedImage = originalImage.getScaledInstance(desiredWidth, desiredHeight, Image.SCALE_SMOOTH);
 
         // Create a new ImageIcon from the resized image
         ImageIcon resizedIcon = new ImageIcon(resizedImage);
-        
+
         // Set the resized icon
         LOGO.setIcon(resizedIcon);
 
@@ -297,11 +297,11 @@ public class Login extends javax.swing.JFrame {
             Connection conn = getConnection();
             Statement stmt = conn.createStatement();
 
-            String sql = "SELECT ss.*, r.role_name " +
-                    "FROM Tienda.sales_staffs ss " +
-                    "INNER JOIN Tienda.roles r ON ss.role_id = r.role_id " +
-                    "WHERE ss.first_name = '" + username + "' AND ss.password = '" + passcode + "' AND ss.active = '1'";
-       
+            String sql = "SELECT ss.*, r.role_name "
+                    + "FROM Tienda.sales_staffs ss "
+                    + "INNER JOIN Tienda.roles r ON ss.role_id = r.role_id "
+                    + "WHERE ss.first_name = '" + username + "' AND ss.password = '" + passcode + "' AND ss.active = '1'";
+
             ResultSet rs = stmt.executeQuery(sql);
             //STEP 4: Extract data from result set
             if (rs.next()) {
@@ -310,7 +310,7 @@ public class Login extends javax.swing.JFrame {
                 String lname = rs.getString("last_name");
                 String userid = rs.getString("staff_id");
                 String myrole = rs.getString("role_name");
-                System.out.println(myrole+" role id");
+                System.out.println(myrole + " role id");
                 //response
                 this.dispose();
                 String user = fname + " " + lname;
@@ -335,37 +335,23 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     * @throws UnsupportedLookAndFeelException 
-     */
-    public static void login() throws UnsupportedLookAndFeelException {
+    
+    public static void login() {
+
+                                
+        System.setProperty("sun.java2d.dpiaware", "false");         
+        System.setProperty("sun.java2d.uiScale", "1");        
+ 
+        // create UI here...
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+        FlatGitHubIJTheme.setup();
         //</editor-fold>
 
         /* Create and display the form */
-
-        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {

@@ -53,9 +53,26 @@
             <version>3.4.1</version>
         </dependency>
       
+        
+
+<!--        <dependency>
+            <groupId>raven.toast</groupId>
+            <artifactId>swing-toast-notifications</artifactId>
+            <version>1.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/library/swing-toast-notifications-1.0.1.jar</systemPath>
+        </dependency>-->
+        
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-intellij-themes</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+        
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
             <version>3.4.1</version>
         </dependency>
       
@@ -277,6 +294,7 @@
                         </descriptorRefs>
                     </configuration>
                 </plugin>
+                
                         
             </plugins>
         </pluginManagement>

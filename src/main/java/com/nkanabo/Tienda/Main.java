@@ -20,10 +20,10 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import java.io.File;
 import java.net.URL;
 import javax.swing.UnsupportedLookAndFeelException;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 
 /**
  *
@@ -79,10 +79,13 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException,
-            SQLException, ClassNotFoundException, URISyntaxException, UnsupportedLookAndFeelException {     
-                        
-        System.setProperty("sun.java2d.dpiaware", "false");         
-        //System.setProperty("sun.java2d.uiScale", "1");
+            SQLException, ClassNotFoundException, URISyntaxException, UnsupportedLookAndFeelException {
+
+        System.setProperty("sun.java2d.dpiaware", "false");
+        System.setProperty("sun.java2d.uiScale", "1");
+        FlatGitHubIJTheme.setup();
+
+// create UI here...
         //Load user preferences
         UserSettings pref = new UserSettings();
         pref.UserSettings();

@@ -436,7 +436,6 @@ public void notificationLabel(String type) {
             java.util.logging.Logger.getLogger(launcher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        UIManager.setLookAndFeel(new FlatIntelliJLaf());
         //</editor-fold>
         //</editor-fold>
         /* Create and display the form */

@@ -81,6 +81,7 @@ import javax.swing.table.TableColumn;
 import Interface.Products.*;
 import Interface.Users.EditUser;
 import Interface.Users.RegisterNewUser;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.table.JTableHeader;
@@ -2880,16 +2881,17 @@ public final class UIv2 extends javax.swing.JFrame {
         SalesTable.revalidate();
     }
 
-    public static void main(String args[])
-            throws UnsupportedLookAndFeelException {
+    public static void main(String args[]) {
 
             System.setProperty("sun.java2d.dpiaware", "false");
-        // Retrieve the current user role
+            // Retrieve the current user role
+            FlatGitHubIJTheme.setup();
 
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new UIv2().setVisible(true);
-            } catch (ClassNotFoundException | ParseException | SQLException ex) {
+                new UIv2().setVisible(true);    
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (ClassNotFoundException | ParseException | SQLException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
