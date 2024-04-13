@@ -453,6 +453,18 @@ public final class UIv2 extends javax.swing.JFrame {
             break;
             case "saleslabel":
             saleslabel.setEnabled(true);
+            case "editlabeluserssumenu":
+            editlabeluserssumenu.setEnabled(true);
+            case "deactivateUserLabel":
+            deactivateUserLabel.setEnabled(true);
+            case "editpermrole":
+            editpermrole.setEnabled(true);
+            case "deleteRowPermissisonLabel":
+            deleteRowPermissisonLabel.setEnabled(true);
+            case "newsaleLabel":
+            newsaleLabel.setEnabled(true);
+            case "activateuserlabel":
+            activateuserlabel.setEnabled(true);
             break;
             // Add more cases for other UI components if needed
         }

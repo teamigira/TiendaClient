@@ -132,6 +132,7 @@ public class Main {
         } else {
             LaunchLicenseEntry();
         }
+        consoleFrame.dispose();
         makeFolder();
     }
 

@@ -172,7 +172,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
         controllablestock = new javax.swing.JCheckBox();
         changeableprice = new javax.swing.JCheckBox();
         CSV_Label = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        tzflaglabel = new javax.swing.JLabel();
         SelectRow = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         OrdersTable = new javax.swing.JTable();
@@ -525,11 +525,11 @@ public final class RegisterProduct extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-tanzania-16.png"))); // NOI18N
-        jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+        tzflaglabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-tanzania-16.png"))); // NOI18N
+        tzflaglabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        tzflaglabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel5MouseClicked(evt);
+                tzflaglabelMouseClicked(evt);
             }
         });
 
@@ -582,7 +582,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(CSV_Label, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(tzflaglabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(descriptioninput, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(locationinput, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -631,7 +631,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
                             .addComponent(categoryname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(tzflaglabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(SelectionMeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(brandname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(brand))
@@ -1175,7 +1175,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jPanel2MouseClicked
 
-    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+    private void tzflaglabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tzflaglabelMouseClicked
         try {
             // When the user requests for Tienda pre defined world brands
             addFromCSVFile();
@@ -1186,7 +1186,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jLabel5MouseClicked
+    }//GEN-LAST:event_tzflaglabelMouseClicked
 
     private void saveProductFormMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveProductFormMouseEntered
         // TODO add your handling code here:
@@ -1391,7 +1391,6 @@ public final class RegisterProduct extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -1422,6 +1421,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
     private javax.swing.JLabel saveProductForm;
     private javax.swing.JButton savebutton;
     private javax.swing.JTextField stocklevelinput;
+    private javax.swing.JLabel tzflaglabel;
     private javax.swing.JComboBox<String> unitofmeasure;
     // End of variables declaration//GEN-END:variables
 }
