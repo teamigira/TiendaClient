@@ -91,8 +91,8 @@ public class Main {
         UserSettings pref = new UserSettings();
         pref.UserSettings();
 
-         // Create and show the console frame
-         ConsoleFrame consoleFrame = new ConsoleFrame();
+        // Create and show the console frame
+        // ConsoleFrame consoleFrame = new ConsoleFrame();
 
         Main app = new Main();
         //https://mkyong.com/java/java-read-a-file-from-resources-folder/
@@ -132,7 +132,6 @@ public class Main {
         } else {
             LaunchLicenseEntry();
         }
-        consoleFrame.dispose();
         makeFolder();
     }
 

@@ -1,5 +1,6 @@
 package Classes.Functions.Permissions;
 
+import Authentication.Sessions;
 import Classes.AbstractClasses.Permissions;
 import Classes.AbstractClasses.RolePermissionMapping;
 import Classes.AbstractClasses.Roles;
@@ -16,10 +17,103 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PermissionFileManager {
 
     private static final String JSON_FILE_PATH = "/resources/props/permissions.json";
+
+    // Permissions map: component name -> associated permission
+    public static Map<String, String> loadedpermissions;
+
+    private static Map<String, List<String>> rolePermissionsMap;
+
+    //Loading all permissions.
+    public static void initializeLoadedPermissions() {
+        // Load permissions from the database or other source
+        // For demonstration purposes, let's assume some hardcoded values
+        loadedpermissions = new HashMap<>();
+        loadedpermissions.put("adminLabelMenu", "view_users");
+        loadedpermissions.put("customers", "view_customers");
+        loadedpermissions.put("stats", "view_reports");
+        loadedpermissions.put("ProductsLabelMenu", "view_products");
+        loadedpermissions.put("saleslabel", "view_sales");
+        loadedpermissions.put("editlabeluserssumenu", "edit_users");
+        loadedpermissions.put("deactivateUserLabel", "disable_users");
+        loadedpermissions.put("editpermrole", "edit_role");
+        loadedpermissions.put("deleteRowPermissisonLabel", "delete_role");
+        loadedpermissions.put("newsaleLabel", "sale");
+        loadedpermissions.put("activateuserlabel", "enable_users");
+        loadedpermissions.put("saveProductForm", "save_product");
+        loadedpermissions.put("newproducy1", "save_product");
+        // Add other permissions...
+    }
+
+    // Initialize the rolePermissionsMap during initialization
+    public static void initializeRolePermissionsMap() {
+        rolePermissionsMap = new HashMap<>();
+        ArrayList<RolePermissionMapping> rolePermissions = loadRolePermissions();
+
+        for (RolePermissionMapping mapping : rolePermissions) {
+            // Access properties of each RolePermissionMapping object
+            int roleId = mapping.getRoleId();
+            int permissionId = mapping.getPermissionId();
+            String roleName = mapping.getRoleName();
+            String permissionName = mapping.getPermissionName();
+            String category = mapping.getCategory();
+
+            // Print or process the properties as needed
+            System.out.println("Role ID: " + roleId);
+            System.out.println("Permission ID: " + permissionId);
+            System.out.println("Role Name: " + roleName);
+            System.out.println("Permission Name: " + permissionName);
+            System.out.println("Category: " + category);
+        }
+
+        // Populate the rolePermissionsMap
+        for (RolePermissionMapping mapping : rolePermissions) {
+            String roleName = mapping.getRoleName();
+            String permissionName = mapping.getPermissionName();
+            System.out.println("LINE 365 -->rOLE" + roleName + "Has ->" + permissionName);
+            // Add the permission to the list associated with the role
+            rolePermissionsMap.computeIfAbsent(roleName, k -> new ArrayList<>()).add(permissionName);
+        }
+    }
+
+    // private void validatePermissions() {
+    //     // Check if the current user has permission for each icon
+    //     // Get the current user's role
+    //     String currentUserRole = Sessions.getInstance().getCurrentUserRole();
+    //     // Check if the current user has permission for each UI component
+    //     for (Map.Entry<String, String> entry : loadedpermissions.entrySet()) {
+    //         String componentName = entry.getKey();
+    //         String associatedPermission = entry.getValue();
+    //         // Check if the associated permission exists in the user's role
+    //         if (userHasPermission(currentUserRole, associatedPermission)) {
+    //             // Enable the UI component
+    //             enableUIComponent(componentName);
+    //         }
+    //     }
+    // }
+
+    public static boolean userHasPermit(String role, String permission) {
+        // Check if the rolePermissionsMap is initialized
+        if (rolePermissionsMap == null) {
+            initializeRolePermissionsMap();
+        }
+        // Get the list of permissions associated with the role
+        List<String> permissions = rolePermissionsMap.get(role);
+        // Loop through the permissions list and print each permission
+        for (String permit : permissions) {
+            System.out.println("Permission: " + permit);
+        }
+
+        System.out.println(permissions.contains(permission));
+        // Check if the permission exists in the list
+        return permissions != null && permissions.contains(permission);
+    }
 
     // getFileFromResource method to get file from resources
     public static File getFileFromResource(String resourcePath) throws URISyntaxException {
@@ -75,7 +169,7 @@ public class PermissionFileManager {
                 int roleid = rs.getInt("role_id");
                 String role = rs.getString("role_name");
                 String desc = rs.getString("description");
-                list.add(new Roles(roleid,role, desc));
+                list.add(new Roles(roleid, role, desc));
             }
         } catch (SQLException se) {
             showPopupNotification(se.getMessage(), NotificationManager.NotificationType.ERROR);
@@ -145,7 +239,7 @@ public class PermissionFileManager {
         return -1; // Permission not found
 
     }
-    
+
     public static boolean addPermissionsRole(String roleName, String permissionName) {
         Connection connection = null;
         PreparedStatement pstmt = null;
@@ -167,7 +261,7 @@ public class PermissionFileManager {
                 return false;
             }
             String Addquery = "INSERT INTO Tienda.role_permissions (role_id, permission_id) SELECT ?, ? WHERE NOT EXISTS (SELECT 1 FROM Tienda.role_permissions WHERE role_id = ? AND permission_id = ?)";
-        
+
             String insertQuery = "INSERT INTO Tienda.role_permissions (role_id, permission_id) VALUES (?, ?)";
             pstmt = connection.prepareStatement(Addquery);
             pstmt.setInt(1, roleId);
@@ -223,7 +317,7 @@ public class PermissionFileManager {
         try {
             Connection connection = DBConnection.getConnectionInstance().getConnection();
             int id = getPermissionId(selectedNode);
-            System.out.println(id+" that is the ID" + selectedNode);
+            System.out.println(id + " that is the ID" + selectedNode);
             PreparedStatement statement = connection.prepareStatement("DELETE FROM Tienda.role_permissions WHERE permission_id = ?");
             statement.setInt(1, id); // Permission ID
             int rowsAffected = statement.executeUpdate();
@@ -283,8 +377,6 @@ public class PermissionFileManager {
         return -1; // Role not found
     }
 
-
-    
     public static String getRoleName(int id) throws SQLException {
         PreparedStatement pstmt = null;
         ResultSet rs = null;

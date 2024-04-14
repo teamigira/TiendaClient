@@ -33,10 +33,14 @@ import Classes.Functions.Permissions.PermissionFileManager;
 import static Classes.Functions.Permissions.PermissionFileManager.addRole;
 import static Classes.Functions.Permissions.PermissionFileManager.deletePermissionRow;
 import static Classes.Functions.Permissions.PermissionFileManager.deleteRow;
+import static Classes.Functions.Permissions.PermissionFileManager.initializeLoadedPermissions;
+import static Classes.Functions.Permissions.PermissionFileManager.initializeRolePermissionsMap;
 import static Classes.Functions.Permissions.PermissionFileManager.loadPermissions;
 import static Classes.Functions.Permissions.PermissionFileManager.loadRolePermissions;
 import static Classes.Functions.Permissions.PermissionFileManager.loadRoles;
+import static Classes.Functions.Permissions.PermissionFileManager.loadedpermissions;
 import static Classes.Functions.Permissions.PermissionFileManager.renameRole;
+import static Classes.Functions.Permissions.PermissionFileManager.userHasPermit;
 import Classes.Functions.Permissions.PermissionGroup;
 import Classes.Functions.Permissions.RoleInputDialog;
 import static Classes.Functions.Products.listProductOnly;
@@ -52,9 +56,11 @@ import static Classes.Functions.Sales_Staffs.addtestUsers;
 import static Classes.Functions.Stocks.listStocks;
 import Classes.Utilities.NotificationManager;
 import Classes.Utilities.NotificationManager.NotificationType;
+import Classes.Utilities.PaginationController.*;
 
 import static Classes.Utilities.NotificationManager.showConsoleNotification;
 import static Classes.Utilities.NotificationManager.showPopupNotification;
+import Classes.Utilities.PaginationController;
 import Classes.Utilities.Resources;
 import Classes.Utilities.StockThread;
 import static Interface.Login.login;
@@ -163,6 +169,7 @@ public final class UIv2 extends javax.swing.JFrame {
     String staffsheader[] = {"First Name", "Last Name", "Email", "phone_no", "store", "Status", "manager_id", "Role"};
     ArrayList<Staff> staffslist;
     private ArrayList<SelectedStaff> selectedStaff = new ArrayList<>();
+    private PaginationController<Staff> paginationController;
     // Declare a separate data structure to store user IDs
     ArrayList<String> userIds = new ArrayList<String>();
 
@@ -198,11 +205,11 @@ public final class UIv2 extends javax.swing.JFrame {
 
     Component SelectedComponent = new JList();
 
+    private int pageSize;
+
     
     private Map<String, List<String>> rolePermissionsMap;
 
-     // Permissions map: component name -> associated permission
-     private Map<String, String> loadedpermissions;
 
     /**
      * Creates new form UIv2
@@ -295,10 +302,18 @@ public final class UIv2 extends javax.swing.JFrame {
         datedreporttable.setModel(datedModel);
 
         //Staffs
+        
         staffslist = new ArrayList<>();
         StaffsModel = new DefaultTableModel(staffsheader, 0);
         staffTable.setModel(StaffsModel);
         staffTable.setDefaultEditor(Object.class, null);
+        staffslist = new ArrayList<>();
+        pageSize = 15; // Set your desired page size
+        paginationController = new PaginationController<>(staffslist, pageSize);
+      
+       // Assuming active status column index is 5
+       
+
 
         //Transfers
         transferedlist = new ArrayList<>();
@@ -320,103 +335,29 @@ public final class UIv2 extends javax.swing.JFrame {
         //The preferred blue 102,102,102
         col.setCellRenderer(new MyRenderer(new Color(255, 255, 255), new Color(0, 102, 51)));
         //col.setFont(col.getFont().deriveFont(Font.BOLD, 14f));
-//        col.setCellRenderer(setFont(new Font("Arial", Font.BOLD, 10)));
-
+        //col.setCellRenderer(setFont(new Font("Arial", Font.BOLD, 10)));
         this.setLocationRelativeTo(null);
 
-        
-
         loadJtableValues();
-//            loadBrandsJtableValues();
-//            LoadCategories();
-//            LoadProducts();
-//            LoadStockProducts();
-//            LoadProductsOnly();
-//            LoadStocks();
-//            LoadNotificationsEmails();
-//            Simulated permissions map (can be fetched from database)
-//            Map to store permissions associated with each role
-//            private Map<String, List<String>> rolePermissionsMap;
+        //loadBrandsJtableValues();
+        //LoadCategories();
+        //LoadProducts();
+        //LoadStockProducts();
+        //LoadProductsOnly();
+        //LoadStocks();
+        //LoadNotificationsEmails();
+        //Simulated permissions map (can be fetched from database)
+        //Map to store permissions associated with each role
+        //private Map<String, List<String>> rolePermissionsMap;
         initializeLoadedPermissions();
         initializeRolePermissionsMap();
-        validatePermissions();
+        userHasPermission();
+        updatePaginationInfo();
 
     }
 
-    
-    /*FUNCTIONS TO MANAE ROAL PERMISSIONS*/
 
-    private void initializeLoadedPermissions() {
-        // Load permissions from the database or other source
-        // For demonstration purposes, let's assume some hardcoded values
-        loadedpermissions = new HashMap<>();
-        loadedpermissions.put("adminLabelMenu", "view_users");
-        loadedpermissions.put("customers", "view_customers");
-        loadedpermissions.put("stats", "view_reports");
-        loadedpermissions.put("ProductsLabelMenu","view_products");
-        loadedpermissions.put("saleslabel","view_sales");
-        loadedpermissions.put("editlabeluserssumenu","edit_users");
-        loadedpermissions.put("deactivateUserLabel","disable_users");
-        loadedpermissions.put("editpermrole","edit_role");
-        loadedpermissions.put("deleteRowPermissisonLabel","delete_role");
-        loadedpermissions.put("newsaleLabel","sale");
-        loadedpermissions.put("activateuserlabel","enable_users");
-
-
-        // Add other permissions...
-    }
-
-    
-     // Initialize the rolePermissionsMap during initialization
-    private void initializeRolePermissionsMap() {
-        rolePermissionsMap = new HashMap<>();
-        ArrayList<RolePermissionMapping> rolePermissions = loadRolePermissions();
-        
-        
-        for (RolePermissionMapping mapping : rolePermissions) {
-            // Access properties of each RolePermissionMapping object
-            int roleId = mapping.getRoleId();
-            int permissionId = mapping.getPermissionId();
-            String roleName = mapping.getRoleName();
-            String permissionName = mapping.getPermissionName();
-            String category = mapping.getCategory();
-
-            // Print or process the properties as needed
-            System.out.println("Role ID: " + roleId);
-            System.out.println("Permission ID: " + permissionId);
-            System.out.println("Role Name: " + roleName);
-            System.out.println("Permission Name: " + permissionName);
-            System.out.println("Category: " + category);
-        }
-
-        // Populate the rolePermissionsMap
-        for (RolePermissionMapping mapping : rolePermissions) {
-            String roleName = mapping.getRoleName();
-            String permissionName = mapping.getPermissionName();
-                System.out.println("LINE 365 -->rOLE"+roleName+"Has ->"+permissionName);
-            // Add the permission to the list associated with the role
-            rolePermissionsMap.computeIfAbsent(roleName, k -> new ArrayList<>()).add(permissionName);
-        }
-    }
-    
-    private boolean userHasPermission(String role, String permission) {
-        // Check if the rolePermissionsMap is initialized
-        if (rolePermissionsMap == null) {
-            initializeRolePermissionsMap();
-        }
-        // Get the list of permissions associated with the role
-        List<String> permissions = rolePermissionsMap.get(role);
-          // Loop through the permissions list and print each permission
-        for (String permit : permissions) {
-            System.out.println("Permission: " + permit);
-        }
-                
-        System.out.println(permissions.contains(permission));
-        // Check if the permission exists in the list
-        return permissions != null && permissions.contains(permission);
-    }
-
-    private void validatePermissions() {
+    private void userHasPermission() {
         // Check if the current user has permission for each icon
    // Get the current user's role
     String currentUserRole = Sessions.getInstance().getCurrentUserRole();
@@ -425,11 +366,9 @@ public final class UIv2 extends javax.swing.JFrame {
     for (Map.Entry<String, String> entry : loadedpermissions.entrySet()) {
         String componentName = entry.getKey();
         String associatedPermission = entry.getValue();
-
         // Check if the associated permission exists in the user's role
-        if (userHasPermission(currentUserRole, associatedPermission)) {
+        if (userHasPermit(currentUserRole, associatedPermission)) {
             // Enable the UI component
-            System.out.println("enabled");
             enableUIComponent(componentName);
         }
     }
@@ -466,9 +405,23 @@ public final class UIv2 extends javax.swing.JFrame {
             case "activateuserlabel":
             activateuserlabel.setEnabled(true);
             break;
+            case "newproducy1":
+            newproducy1.setEnabled(true);
+            break;
+          
+            
             // Add more cases for other UI components if needed
         }
     }
+
+    public void updatePaginationInfo() {
+        int currentPage = paginationController.getCurrentPage() + 1;
+        int totalPages = paginationController.getTotalPages();
+        
+        currentPageTextField.setText(String.valueOf(currentPage));
+        totalPagesLabel.setText(String.valueOf(totalPages));
+    }
+    
     /*END OF PERMISSIONS MAP*/
     
     public final void loadBrandsJtableValues() throws SQLException, ClassNotFoundException {
@@ -752,8 +705,41 @@ public final class UIv2 extends javax.swing.JFrame {
         TablePanel.repaint();
         TablePanel.revalidate();
     }
+    
 
     public void LoadSatffs() throws ParseException, ClassNotFoundException, SQLException {
+        staffslist = LoadStaffs(); // Implement LoadStaffs to fetch staffs from the database
+        paginationController = new PaginationController<>(staffslist, pageSize);
+        loadStaffsForPage(paginationController.getCurrentPage());
+    }
+
+    public void loadStaffsForPage(int page) throws SQLException, SQLException {
+        List<Staff> currentPageData = paginationController.getDataForPage(page);
+        StaffsModel.setRowCount(0);
+        userIds.clear();
+        for (Staff staff : currentPageData) {
+            userIds.add(staff.userid);
+            int rolem = staff.role;
+            String roleName = PermissionFileManager.getRoleName(rolem);
+            Object[] obj = {
+                staff.staff_name,
+                staff.sur_name,
+                staff.staff_email,
+                staff.phone_no,
+                staff.store,
+                Constants.getStatusLabel(Integer.parseInt(staff.Status)),
+                staff.manager_id,
+                roleName
+            };
+            StaffsModel.addRow(obj);
+        }
+        TablePanel.repaint();
+        TablePanel.revalidate();
+    }
+
+
+    public void LoadSatffsbb() throws ParseException, ClassNotFoundException, SQLException {
+        // staffTable.getColumnModel().getColumn(5).setCellRenderer(new StatusCellRenderer());
         StaffsModel.setRowCount(0);
         staffslist = LoadStaffs();
         if (staffslist.isEmpty()) {
@@ -948,6 +934,11 @@ public final class UIv2 extends javax.swing.JFrame {
         editlabeluserssumenu = new javax.swing.JLabel();
         deactivateUserLabel = new javax.swing.JLabel();
         activateuserlabel = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        currentPageTextField = new javax.swing.JTextField();
+        totalPagesLabel = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         salessubmenu1 = new javax.swing.JPanel();
         rolesnpermissionsubmenu1 = new javax.swing.JPanel();
         editpermrole = new javax.swing.JLabel();
@@ -1018,6 +1009,7 @@ public final class UIv2 extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         TopMenu = new javax.swing.JMenu();
         QuitMenu = new javax.swing.JMenuItem();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         showMenu = new javax.swing.JMenu();
         CashMenu = new javax.swing.JMenu();
         BrandsMenu = new javax.swing.JMenu();
@@ -1166,6 +1158,7 @@ public final class UIv2 extends javax.swing.JFrame {
         newproducy1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-new-product-32.png"))); // NOI18N
         newproducy1.setText("New Product");
         newproducy1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        newproducy1.setEnabled(false);
         newproducy1.setMaximumSize(new java.awt.Dimension(167, 32));
         newproducy1.setMinimumSize(new java.awt.Dimension(167, 32));
         newproducy1.setPreferredSize(new java.awt.Dimension(167, 32));
@@ -1459,6 +1452,33 @@ public final class UIv2 extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Next >>");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("<< Prev");
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        currentPageTextField.setEditable(false);
+        currentPageTextField.setBackground(new java.awt.Color(255, 255, 204));
+        currentPageTextField.setFont(new java.awt.Font("Segoe UI Black", 1, 14)); // NOI18N
+
+        totalPagesLabel.setEditable(false);
+        totalPagesLabel.setBackground(new java.awt.Color(255, 255, 204));
+        totalPagesLabel.setFont(new java.awt.Font("Segoe UI Black", 1, 14)); // NOI18N
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel2.setText("Page");
+
         javax.swing.GroupLayout userssubmenu1Layout = new javax.swing.GroupLayout(userssubmenu1);
         userssubmenu1.setLayout(userssubmenu1Layout);
         userssubmenu1Layout.setHorizontalGroup(
@@ -1469,7 +1489,17 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(deactivateUserLabel)
                 .addGap(18, 18, 18)
                 .addComponent(activateuserlabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(currentPageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(totalPagesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(todays)
                 .addGap(64, 64, 64))
         );
@@ -1483,7 +1513,12 @@ public final class UIv2 extends javax.swing.JFrame {
                         .addComponent(activateuserlabel))
                     .addGroup(userssubmenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(todays)
-                        .addComponent(editlabeluserssumenu)))
+                        .addComponent(editlabeluserssumenu)
+                        .addComponent(jButton1)
+                        .addComponent(jButton2)
+                        .addComponent(currentPageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(totalPagesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)))
                 .addContainerGap())
         );
 
@@ -2048,7 +2083,12 @@ public final class UIv2 extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-     
+        transferedCash.setFocusable(false);
+        transferedCash.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                transferedCashMouseClicked(evt);
+            }
+        });
         jScrollPane12.setViewportView(transferedCash);
 
         javax.swing.GroupLayout CashTablePanelLayout = new javax.swing.GroupLayout(CashTablePanel);
@@ -2245,6 +2285,15 @@ public final class UIv2 extends javax.swing.JFrame {
             }
         });
         TopMenu.add(QuitMenu);
+
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("Test Data");
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem1ActionPerformed(evt);
+            }
+        });
+        TopMenu.add(jCheckBoxMenuItem1);
 
         jMenuBar1.add(TopMenu);
 
@@ -2475,6 +2524,10 @@ public final class UIv2 extends javax.swing.JFrame {
             adminIconClicked();
         } catch (SQLException ex) {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_adminilabelmenuMouseClicked
 
@@ -2542,6 +2595,9 @@ public final class UIv2 extends javax.swing.JFrame {
 
     private void newproducy1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newproducy1MouseClicked
         // TODO add your handling code here:
+        if (!newproducy1.isEnabled()) {
+            return; // Do nothing if the button is disabled
+        }
         RegisterProduct.main(allCats);
     }//GEN-LAST:event_newproducy1MouseClicked
 
@@ -2618,7 +2674,11 @@ public final class UIv2 extends javax.swing.JFrame {
 
                 try {
                     LoadSatffs();
-                } catch (ParseException | ClassNotFoundException | SQLException ex) {
+                } catch (SQLException ex) {
+                    Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException ex) {
+                    Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
                     Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
@@ -2671,8 +2731,8 @@ public final class UIv2 extends javax.swing.JFrame {
                     
                 } catch (NumberFormatException e) {
                     // Handle the case where the value cannot be parsed to an integer
-                    e.printStackTrace();
                     // Provide a default value or handle the error as appropriate
+                    
                 }
             } else {
                 // Handle the case where the value is neither an integer nor a string
@@ -2715,7 +2775,7 @@ public final class UIv2 extends javax.swing.JFrame {
                         "User status updated successfully.");
                 try {
                     LoadSatffs();
-                } catch (ParseException | ClassNotFoundException | SQLException ex) {
+                } catch (SQLException | ParseException | ClassNotFoundException ex) {
                     Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
@@ -2867,11 +2927,48 @@ public final class UIv2 extends javax.swing.JFrame {
           try {
             // TODO add your handling code here:
             addtestUsers();
-              System.out.println("nimeita");
+            System.out.println("nimeita");
+            showPopupNotification("Added test users", NotificationType.ERROR);
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jMenu3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        paginationController.previousPage();
+        try {
+            loadStaffsForPage(paginationController.getCurrentPage());
+            updatePaginationInfo();
+        } catch (SQLException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        paginationController.nextPage();
+        try {
+            loadStaffsForPage(paginationController.getCurrentPage());
+            updatePaginationInfo();
+        } catch (SQLException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        // TODO add your handling code here:
+                // TODO add your handling code here:
+              // TODO add your handling code here:
+          try {
+            // TODO add your handling code here:
+            addtestUsers();
+            System.out.println("nimeita");
+            showPopupNotification("Added test users", NotificationType.ERROR);
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
     // Method to get the instance of UIv2
     public static UIv2 getInstance() throws SQLException {
@@ -2885,7 +2982,7 @@ public final class UIv2 extends javax.swing.JFrame {
         return Instance;
     }
 
-    public static void callAdminIconClicked() throws SQLException {
+    public static void callAdminIconClicked() throws SQLException, ParseException, ClassNotFoundException {
         // Get the existing instance of UIv2
         UIv2 uiv = UIv2.getInstance();
 
@@ -2893,12 +2990,8 @@ public final class UIv2 extends javax.swing.JFrame {
         uiv.adminIconClicked();
     }
 
-    public void adminIconClicked() throws SQLException {
-        try {
-            LoadSatffs();
-        } catch (ParseException | ClassNotFoundException ex) {
-            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void adminIconClicked() throws SQLException, ParseException, ClassNotFoundException {
+        LoadSatffs();
 
         JTableHeader Sheader = staffTable.getTableHeader();
         Sheader.setBackground(new Color(194, 218, 245));
@@ -3012,6 +3105,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JTable brandsTable;
     private javax.swing.JTable categoryTable;
     private javax.swing.JPanel categoryTablePanel;
+    private javax.swing.JTextField currentPageTextField;
     private javax.swing.JLabel customers;
     private javax.swing.JLabel customerslabelmenu;
     private javax.swing.JTable dailySalesTable;
@@ -3021,7 +3115,11 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JTextField description;
     private javax.swing.JLabel editlabeluserssumenu;
     private javax.swing.JLabel editpermrole;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -3077,6 +3175,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JLabel tinvest2;
     private javax.swing.JLabel tinvest3;
     private javax.swing.JLabel todays;
+    private javax.swing.JTextField totalPagesLabel;
     private javax.swing.JLabel totalreturns;
     private javax.swing.JLabel totalreturns1;
     private javax.swing.JLabel totalreturns2;

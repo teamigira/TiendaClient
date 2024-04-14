@@ -4,11 +4,16 @@
  */
 package Interface.Products;
 
+import Authentication.Sessions;
 import Classes.AbstractClasses.Order;
 import Classes.AbstractClasses.ProductDetails;
 import static Classes.Functions.Crudes.addFromCSVFile;
 
 import static Classes.Functions.Orders.listOrders;
+import static Classes.Functions.Permissions.PermissionFileManager.initializeLoadedPermissions;
+import static Classes.Functions.Permissions.PermissionFileManager.initializeRolePermissionsMap;
+import static Classes.Functions.Permissions.PermissionFileManager.loadedpermissions;
+import static Classes.Functions.Permissions.PermissionFileManager.userHasPermit;
 
 import Classes.Functions.Products;
 import static Classes.Functions.Products.checkCodeValidity;
@@ -29,6 +34,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -38,6 +44,8 @@ import static javax.swing.JFileChooser.APPROVE_OPTION;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 
 /**
  *
@@ -52,7 +60,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
     int row, column, clickcount;
     private int changeable_price;
     private int controllable_stock;
-    
+
     Object[] columnNames = {"Select", "Order Id", "Product",
         "Quantity", "List price", "Discount"
     };
@@ -105,12 +113,16 @@ public final class RegisterProduct extends javax.swing.JFrame {
         // add header in table model     
         ReturnModel.setColumnIdentifiers(columnNames);
         OrdersTable.setModel(ReturnModel);
-        loadJtableValues();
+        // loadJtableValues();
 
         //Initiating the variables
         jPopupMenu1.add(Autocomplete);
         brandsmodel = new DefaultListModel();
         autocompleteProducts.setModel(brandsmodel);
+
+        initializeLoadedPermissions();
+        initializeRolePermissionsMap();
+        userHasPermission();
     }
 
     /**
@@ -303,6 +315,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
         saveProductForm.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-checkmark-32.png"))); // NOI18N
         saveProductForm.setText("Save");
         saveProductForm.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        saveProductForm.setEnabled(false);
         saveProductForm.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 saveProductFormMouseClicked(evt);
@@ -968,6 +981,35 @@ public final class RegisterProduct extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BundleMouseClicked
 
+    private void userHasPermission() {
+        // Check if the current user has permission for each icon
+        // Get the current user's role
+        String currentUserRole = Sessions.getInstance().getCurrentUserRole();
+
+        // Check if the current user has permission for each UI component
+        for (Map.Entry<String, String> entry : loadedpermissions.entrySet()) {
+            String componentName = entry.getKey();
+            String associatedPermission = entry.getValue();
+            // Check if the associated permission exists in the user's role
+            if (userHasPermit(currentUserRole, associatedPermission)) {
+                // Enable the UI component
+                enableUIComponent(componentName);
+            }
+        }
+    }
+
+    private void enableUIComponent(String componentName) {
+        // Enable the UI component based on its name
+        switch (componentName) {
+
+            case "saveProductForm":
+                saveProductForm.setEnabled(true);
+                break;
+
+            // Add more cases for other UI components if needed
+        }
+    }
+
     private void DataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DataMouseClicked
         switch (clickcount) {
             case 1:
@@ -1009,6 +1051,9 @@ public final class RegisterProduct extends javax.swing.JFrame {
 
     private void saveProductFormMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveProductFormMouseClicked
         //Arraylist for storing products
+        if (!saveProductForm.isEnabled()) {
+            return; // Do nothing if the button is disabled
+        }
         ArrayList<ProductDetails> product = new ArrayList<>();
         String filefolder;
         //Image file of the product.
@@ -1030,7 +1075,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
         }
         String units = (String) unitofmeasure.getSelectedItem();
         int unit_of_measure;
-        switch (units){
+        switch (units) {
             case "Quantity":
                 unit_of_measure = 1;
             case "Kilograms":
@@ -1044,7 +1089,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
             default:
                 unit_of_measure = 1;
         }
-        
+
         Object[] obj = {
             codeinput.getText(),
             barcodeinput.getText(),
@@ -1065,10 +1110,9 @@ public final class RegisterProduct extends javax.swing.JFrame {
 
         try {
             Products.RegisterProduct(obj);
-            Stocks.addStock(codeinput.getText(),parseInt(stocklevelinput.getText()));
+            Stocks.addStock(codeinput.getText(), parseInt(stocklevelinput.getText()));
             JOptionPane.showMessageDialog(this, "Succesfully");
-          
-           
+
         } catch (URISyntaxException | ClassNotFoundException | ParseException | SQLException ex) {
             Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1194,24 +1238,24 @@ public final class RegisterProduct extends javax.swing.JFrame {
 
     private void changeablepriceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_changeablepriceItemStateChanged
         // TODO add your handling code here:
-          if (evt.getStateChange() == ItemEvent.SELECTED) {
-                    changeable_price = 1;
-                    // Perform actions when checkbox is selected
-                } else {
-                    changeable_price = 0;
-                    // Perform actions when checkbox is deselected
-                }
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            changeable_price = 1;
+            // Perform actions when checkbox is selected
+        } else {
+            changeable_price = 0;
+            // Perform actions when checkbox is deselected
+        }
     }//GEN-LAST:event_changeablepriceItemStateChanged
 
     private void controllablestockItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_controllablestockItemStateChanged
         // TODO add your handling code here:
-             if (evt.getStateChange() == ItemEvent.SELECTED) {
-                    controllable_stock = 1;
-                    // Perform actions when checkbox is selected
-                } else {
-                    controllable_stock = 0;
-                    // Perform actions when checkbox is deselected
-                }
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            controllable_stock = 1;
+            // Perform actions when checkbox is selected
+        } else {
+            controllable_stock = 0;
+            // Perform actions when checkbox is deselected
+        }
     }//GEN-LAST:event_controllablestockItemStateChanged
 
     public String[] getImages() {
@@ -1234,7 +1278,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
     }
 
     private static void makeImageFolder(String filefolder) {
-        File theDir = new File(systempath + hash + filefolder  + hash);
+        File theDir = new File(systempath + hash + filefolder + hash);
         if (!theDir.exists()) {
             theDir.mkdirs();
             System.out.println("Created images folder in ");
@@ -1319,25 +1363,9 @@ public final class RegisterProduct extends javax.swing.JFrame {
 
     /*end of it*/
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RegisterProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        //</editor-fold>
-
+    System.setProperty("sun.java2d.dpiaware", "false");
+            // Retrieve the current user role
+            FlatGitHubIJTheme.setup();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             try {
@@ -1347,6 +1375,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
             }
         });
     }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Autocomplete;

@@ -32,4 +32,8 @@ public class AppColors {
     //JTree colors
     public static final Color BACKGROUND_COLOR = new Color(255, 255, 0);
     public static final Color FOREGROUND_COLOR = new Color(255,244,0);
+    
+    public static final Color DISABLED_COLOR = new Color(243, 67, 67);
+
+    public static final Color DISABLED_FORE_COLOR = new Color(0, 0, 153);
 }

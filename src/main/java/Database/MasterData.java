@@ -56,10 +56,12 @@ public class MasterData {
             // Insert permissions into permissions table
             String[] usersPermissions = {"view_users", "edit_users", "disable_users", "enable_users", "activate_users"};
             String[] salesPermissions = {"view_sales","sale"};
-            String[] productsPermissions = {"view_products"};
+            String[] productsPermissions = {"view_products","save_product"};
             String[] marketingPermissions = {"view_customers"};
             String[] superPermissions = {"view_users", "view_roles_permissions","edit_role","delete_role"};
             String[] reportsPermissions = {"view_reports"};
+            //For new category add in in inserPermissions to save it also
+            //insert into addPermissionForRole to assign them for administrator.
 
             insertPermissions(stmt, usersPermissions, "users");
             insertPermissions(stmt, salesPermissions, "sales");
