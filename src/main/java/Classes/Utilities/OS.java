@@ -1,62 +1,44 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Classes.Utilities;
 
+import java.io.File;
 
-/**
- *
- * @author Nkanabo
- */
 public class OS {
-    public static String systempath = path();
+
+    // Define class variables
+    public static String systemPath;
     public static String systemDB;
-    public static String base_Url;
+    public static String baseUrl;
     public static String duplicatesPath;
     public static String hash;
-    
-               
-    OS(){      
+    public static String homeDir;
+
+    // Constructor to initialize class variables
+    public OS() {
         getsysEnv();
     }
-    
-    /**
-     *
-     * @return 
-     */
-    
-      public static String getsysEnv(){
-      String operatings= System.getProperty("os.name");                       
-      String systemDB = "";            
-      return operatings;
+
+    // Method to retrieve the operating system name
+    public static String getsysEnv() {
+        String operatingSystem = System.getProperty("os.name").toLowerCase();
+        return operatingSystem;
     }
-      
-      public static String path(){
-        if(getsysEnv().contains("Windows")){ 
-        systempath = "C:\\Tienda\\resources\\usergenerated\\";  
-        systemDB = "jdbc:h2:file:\\C:\\Program Files\\Tienda\\DB\\Tienda"
-                 + ";USER=root;PASSWORD=tazamaroad";
-        System.out.println("Windows");
-        base_Url = "C:\\Program Files\\Tienda\\Resources\\";
-        duplicatesPath = "\\Duplicates";
-        hash = "\\";
+
+    // Method to set the system path based on the operating system
+    public static String getSystemPath() {
+        homeDir = System.getProperty("user.home");
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("windows")) {
+            systemPath = homeDir + "\\Tienda\\";
+            systemDB = "jdbc:h2:file:\\C:\\Program Files\\Tienda\\DB\\Tienda;USER=root;PASSWORD=tazamaroad";
+            baseUrl = "C:\\Program Files\\Tienda\\Resources\\";
+            hash = "\\";
+        } else if (os.contains("mac")) {
+            systemPath = homeDir + "/Tienda/";
+            systemDB = "jdbc:h2:file:///Applications/Tienda.app/Contents/DB/Tienda;USER=root;PASSWORD=tazamaroad";
+            baseUrl = "/Applications/Tienda.app/Contents/Resources/";
+            hash = "/";
         }
-        else 
-        if(getsysEnv().contains("Mac")){
-        systempath= "/Applications/Tienda.app/Contents/Files/images/";            
-        systemDB = 
-        "jdbc:h2:file://Applications/Tienda.app/Contents/DB/Tienda"
-                 + ";USER=root;PASSWORD=tazamaroad"; 
-        base_Url ="/Applications/Tienda.app/Contents/Resources/";        
-        duplicatesPath = "/Duplicates/";
-        hash = "/";
-        }
-        return systempath;
-    }
-        
-    public static void main(String[] args){
-        getsysEnv();
+        return systemPath;
     }
 }
