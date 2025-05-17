@@ -19,7 +19,7 @@ import Classes.Functions.Products;
 import static Classes.Functions.Products.checkCodeValidity;
 import Classes.Functions.Stocks;
 import static Classes.Utilities.OS.hash;
-import static Classes.Utilities.OS.systempath;
+import static Classes.Utilities.OS.getSystemPath;
 import static Classes.Utilities.RandomNumbers.generateNumber;
 import Classes.Utilities.RandomString;
 import Classes.Utilities.SearchEngine;
@@ -105,7 +105,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
     public RegisterProduct() throws SQLException,
             ClassNotFoundException, ParseException {
         initComponents();
-        CSV_Label.setToolTipText("Insert brands from " + systempath);
+        CSV_Label.setToolTipText("Insert brands from " + getSystemPath());
         showImage(pos);
         this.setLocationRelativeTo(null);
         this.setResizable(true);
@@ -1259,8 +1259,8 @@ public final class RegisterProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_controllablestockItemStateChanged
 
     public String[] getImages() {
-        String imageUrl = systempath;
-        File file = new File(systempath);
+        String imageUrl = getSystemPath();
+        File file = new File(getSystemPath());
         String[] imagesList = file.list();
         return imagesList;
     }
@@ -1268,7 +1268,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
     public void showImage(int index) {
         String[] imagesList = getImages();
         String imageName = imagesList[index];
-        ImageIcon icon = new ImageIcon(systempath + imageName);
+        ImageIcon icon = new ImageIcon(getSystemPath() + imageName);
         Image image;
         image = icon.getImage()
                 .getScaledInstance(cameraLabel.getWidth(),
@@ -1278,7 +1278,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
     }
 
     private static void makeImageFolder(String filefolder) {
-        File theDir = new File(systempath + hash + filefolder + hash);
+        File theDir = new File(getSystemPath() + hash + filefolder + hash);
         if (!theDir.exists()) {
             theDir.mkdirs();
             System.out.println("Created images folder in ");
@@ -1286,7 +1286,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
     }
 
     public void saveImage(File fname, String Selectedfilename, String filefolder) throws IOException {
-        File destinationFile = new File(systempath + filefolder + hash + Selectedfilename);
+        File destinationFile = new File(getSystemPath() + filefolder + hash + Selectedfilename);
         try {
             Files.move(fname.toPath(), destinationFile.toPath(),
                     StandardCopyOption.REPLACE_EXISTING);

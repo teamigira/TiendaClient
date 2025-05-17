@@ -65,7 +65,7 @@ import Classes.Utilities.Resources;
 import Classes.Utilities.StockThread;
 import static Interface.Login.login;
 import Interface.Sales.SaveSale;
-import Interface.Sales.ReturnProduct;
+import Interface.Sales.PrinterSettings;
 
 import static com.nkanabo.Tienda.Utilities.DoubleConverter;
 import static com.nkanabo.Tienda.Utilities.IntegerConverter;
@@ -87,6 +87,7 @@ import java.util.List;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import Interface.Products.*;
+import Interface.Sales.PrinterSettings;
 import Interface.Users.EditUser;
 import Interface.Users.RegisterNewUser;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
@@ -324,35 +325,22 @@ public final class UIv2 extends javax.swing.JFrame {
         emailList = new ArrayList<>();
         emailNotifications = new DefaultTableModel(emailHeader, 0);
         EmailTable.setModel(emailNotifications);
-
         // add header in table model     
         SellingModel.setColumnIdentifiers(columnNames);
         SalesTable.setModel(SellingModel);
-
         //get the 2nd column
         col = SalesTable.getColumnModel().getColumn(3);
-        //define the renderer
-        //The preferred blue 102,102,102
-        col.setCellRenderer(new MyRenderer(new Color(255, 255, 255), new Color(0, 102, 51)));
-        //col.setFont(col.getFont().deriveFont(Font.BOLD, 14f));
-        //col.setCellRenderer(setFont(new Font("Arial", Font.BOLD, 10)));
+        // define the renderer
+        // The preferred blue 102,102,102
+        col.setCellRenderer(new MyRenderer(new Color(255, 255, 255),
+                new Color(0, 102, 51)));
+        // col.setFont(col.getFont().deriveFont(Font.BOLD, 14f));
+        // col.setCellRenderer(setFont(new Font("Arial", Font.BOLD, 10)));
         this.setLocationRelativeTo(null);
-
         loadJtableValues();
-        //loadBrandsJtableValues();
-        //LoadCategories();
-        //LoadProducts();
-        //LoadStockProducts();
-        //LoadProductsOnly();
-        //LoadStocks();
-        //LoadNotificationsEmails();
-        //Simulated permissions map (can be fetched from database)
-        //Map to store permissions associated with each role
-        //private Map<String, List<String>> rolePermissionsMap;
         initializeLoadedPermissions();
         initializeRolePermissionsMap();
         userHasPermission();
-        updatePaginationInfo();
 
     }
 
@@ -551,6 +539,7 @@ public final class UIv2 extends javax.swing.JFrame {
         }
         nonStock = new String[productlist.size()];
         for (int i = 0; i < productlist.size(); i++) {
+            System.out.println("Product name" + productlist.get(i).product_name);
             nonStock[i] = productlist.get(i).product_name + " - Tsh " + productlist.get(i).list_price + " : " + productlist.get(i).productid;
             Object[] obj = {
                 productlist.get(i).productid,
@@ -711,6 +700,7 @@ public final class UIv2 extends javax.swing.JFrame {
         staffslist = LoadStaffs(); // Implement LoadStaffs to fetch staffs from the database
         paginationController = new PaginationController<>(staffslist, pageSize);
         loadStaffsForPage(paginationController.getCurrentPage());
+        updatePaginationInfo();
     }
 
     public void loadStaffsForPage(int page) throws SQLException, SQLException {
@@ -739,7 +729,7 @@ public final class UIv2 extends javax.swing.JFrame {
 
 
     public void LoadSatffsbb() throws ParseException, ClassNotFoundException, SQLException {
-        // staffTable.getColumnModel().getColumn(5).setCellRenderer(new StatusCellRenderer());
+        //staffTable.getColumnModel().getColumn(5).setCellRenderer(new StatusCellRenderer());
         StaffsModel.setRowCount(0);
         staffslist = LoadStaffs();
         if (staffslist.isEmpty()) {
@@ -917,6 +907,7 @@ public final class UIv2 extends javax.swing.JFrame {
         usernameLabel = new javax.swing.JLabel();
         version = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         Sidabar = new javax.swing.JPanel();
         stats = new javax.swing.JLabel();
         saleslabel = new javax.swing.JLabel();
@@ -954,7 +945,6 @@ public final class UIv2 extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         categoryTable = new javax.swing.JTable();
         ProductsTablePanel = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
         productsTable = new javax.swing.JTable();
         StocksTablePanel = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -1006,6 +996,9 @@ public final class UIv2 extends javax.swing.JFrame {
         mappedTree = new javax.swing.JTree();
         description = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
+        EmptyTablePanel = new javax.swing.JPanel();
+        jScrollPane16 = new javax.swing.JScrollPane();
+        transferedCash1 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         TopMenu = new javax.swing.JMenu();
         QuitMenu = new javax.swing.JMenuItem();
@@ -1017,8 +1010,9 @@ public final class UIv2 extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -1177,7 +1171,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(newproducy1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(InventoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(151, Short.MAX_VALUE))
+                .addContainerGap(434, Short.MAX_VALUE))
         );
         ProductsHeaderLayout.setVerticalGroup(
             ProductsHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1227,7 +1221,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(newUserLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(permissionnRolesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addContainerGap(395, Short.MAX_VALUE))
         );
         UsersHeaderLayout.setVerticalGroup(
             UsersHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1257,6 +1251,16 @@ public final class UIv2 extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("Premium until 21-Mar-2025");
 
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/icons8-sign-out-16.png"))); // NOI18N
+        jLabel4.setText("Log Out");
+        jLabel4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel4MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout InfoPanelLayout = new javax.swing.GroupLayout(InfoPanel);
         InfoPanel.setLayout(InfoPanelLayout);
         InfoPanelLayout.setHorizontalGroup(
@@ -1265,6 +1269,8 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(version)
@@ -1281,7 +1287,8 @@ public final class UIv2 extends javax.swing.JFrame {
                         .addGroup(InfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(usernameLabel)
                             .addComponent(version)
-                            .addComponent(jLabel1)))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel4)))
                     .addGroup(InfoPanelLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(SetEmailNotification)
@@ -1619,7 +1626,7 @@ public final class UIv2 extends javax.swing.JFrame {
         SalesTablePanelLayout.setVerticalGroup(
             SalesTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SalesTablePanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1654,7 +1661,7 @@ public final class UIv2 extends javax.swing.JFrame {
             BrandsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BrandsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1689,7 +1696,7 @@ public final class UIv2 extends javax.swing.JFrame {
             categoryTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, categoryTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1698,6 +1705,9 @@ public final class UIv2 extends javax.swing.JFrame {
         ProductsTablePanel.setBackground(new java.awt.Color(255, 255, 255));
         ProductsTablePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
+        productsTable.setAutoCreateRowSorter(true);
+        productsTable.setBackground(new java.awt.Color(242, 242, 242));
+        productsTable.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         productsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -1709,24 +1719,22 @@ public final class UIv2 extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane4.setViewportView(productsTable);
+        productsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        productsTable.setShowGrid(true);
 
         javax.swing.GroupLayout ProductsTablePanelLayout = new javax.swing.GroupLayout(ProductsTablePanel);
         ProductsTablePanel.setLayout(ProductsTablePanelLayout);
         ProductsTablePanelLayout.setHorizontalGroup(
             ProductsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ProductsTablePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(productsTable, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE)
         );
         ProductsTablePanelLayout.setVerticalGroup(
             ProductsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProductsTablePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(productsTable, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
         );
+
+        productsTable.getAccessibleContext().setAccessibleName("");
+        productsTable.getAccessibleContext().setAccessibleDescription("");
 
         TablePanel.add(ProductsTablePanel, "card2");
 
@@ -1759,7 +1767,7 @@ public final class UIv2 extends javax.swing.JFrame {
             StocksTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, StocksTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1805,7 +1813,7 @@ public final class UIv2 extends javax.swing.JFrame {
             DailyReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DailyReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(DailyReportTablePanelLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
@@ -1859,7 +1867,7 @@ public final class UIv2 extends javax.swing.JFrame {
             WeeklyReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, WeeklyReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(WeeklyReportTablePanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
@@ -1913,7 +1921,7 @@ public final class UIv2 extends javax.swing.JFrame {
             MonthlyReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MonthlyReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(MonthlyReportTablePanelLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
@@ -1967,7 +1975,7 @@ public final class UIv2 extends javax.swing.JFrame {
             DateReportTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DateReportTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(DateReportTablePanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
@@ -2005,9 +2013,12 @@ public final class UIv2 extends javax.swing.JFrame {
             }
         ));
         staffTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        staffTable.setOpaque(false);
         staffTable.setRowHeight(40);
-        staffTable.setShowGrid(true);
+        staffTable.setRowSelectionAllowed(false);
+        staffTable.setShowGrid(false);
+        staffTable.setShowVerticalLines(true);
+        staffTable.setUpdateSelectionOnSort(false);
+        staffTable.setVerifyInputWhenFocusTarget(false);
         staffTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 staffTableMouseClicked(evt);
@@ -2028,7 +2039,7 @@ public final class UIv2 extends javax.swing.JFrame {
             UsersTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, UsersTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -2063,7 +2074,7 @@ public final class UIv2 extends javax.swing.JFrame {
             NotificationsTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NotificationsTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -2084,11 +2095,6 @@ public final class UIv2 extends javax.swing.JFrame {
             }
         ));
         transferedCash.setFocusable(false);
-        transferedCash.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                transferedCashMouseClicked(evt);
-            }
-        });
         jScrollPane12.setViewportView(transferedCash);
 
         javax.swing.GroupLayout CashTablePanelLayout = new javax.swing.GroupLayout(CashTablePanel);
@@ -2104,7 +2110,7 @@ public final class UIv2 extends javax.swing.JFrame {
             CashTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CashTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -2236,10 +2242,46 @@ public final class UIv2 extends javax.swing.JFrame {
                         .addComponent(jLabel8))
                     .addComponent(jScrollPane15)
                     .addComponent(jScrollPane13))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         TablePanel.add(RolesPermissions, "card14");
+
+        EmptyTablePanel.setBackground(new java.awt.Color(255, 255, 255));
+        EmptyTablePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+
+        transferedCash1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        transferedCash1.setFocusable(false);
+        jScrollPane16.setViewportView(transferedCash1);
+
+        javax.swing.GroupLayout EmptyTablePanelLayout = new javax.swing.GroupLayout(EmptyTablePanel);
+        EmptyTablePanel.setLayout(EmptyTablePanelLayout);
+        EmptyTablePanelLayout.setHorizontalGroup(
+            EmptyTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(EmptyTablePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane16, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        EmptyTablePanelLayout.setVerticalGroup(
+            EmptyTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EmptyTablePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane16, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        TablePanel.add(EmptyTablePanel, "card2");
 
         javax.swing.GroupLayout menuLayout = new javax.swing.GroupLayout(menu);
         menu.setLayout(menuLayout);
@@ -2250,8 +2292,8 @@ public final class UIv2 extends javax.swing.JFrame {
                 .addComponent(Sidabar, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Submenu, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(Submenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(TablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addComponent(Submenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(TablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)))
         );
         menuLayout.setVerticalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2263,7 +2305,7 @@ public final class UIv2 extends javax.swing.JFrame {
                         .addGap(0, 0, 0)
                         .addComponent(Submenu1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(TablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(TablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE))
                     .addComponent(Sidabar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
@@ -2276,7 +2318,9 @@ public final class UIv2 extends javax.swing.JFrame {
 
         TopMenu.setText("File");
         TopMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TopMenu.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
+        QuitMenu.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         QuitMenu.setText("Quit");
         QuitMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         QuitMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -2286,6 +2330,7 @@ public final class UIv2 extends javax.swing.JFrame {
         });
         TopMenu.add(QuitMenu);
 
+        jCheckBoxMenuItem1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("Test Data");
         jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -2299,18 +2344,22 @@ public final class UIv2 extends javax.swing.JFrame {
 
         showMenu.setText("Show");
         showMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        showMenu.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuBar1.add(showMenu);
 
         CashMenu.setText("Cash");
+        CashMenu.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuBar1.add(CashMenu);
 
         BrandsMenu.setText("Brands");
+        BrandsMenu.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         BrandsMenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 BrandsMenuMouseClicked(evt);
             }
         });
 
+        jMenuItem1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem1.setText("View");
         jMenuItem1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -2324,13 +2373,16 @@ public final class UIv2 extends javax.swing.JFrame {
         });
         BrandsMenu.add(jMenuItem1);
 
+        jMenuItem2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem2.setText("Register");
         BrandsMenu.add(jMenuItem2);
 
         jMenuBar1.add(BrandsMenu);
 
         jMenu1.setText("Inventory");
+        jMenu1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
+        jMenuItem3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem3.setText("Manage");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2341,20 +2393,32 @@ public final class UIv2 extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu3.setText("Add Test Data");
-        jMenu3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenu3ActionPerformed(evt);
-            }
-        });
-        jMenuBar1.add(jMenu3);
-
-        jMenu2.setText("Log Out");
+        jMenu2.setText("Settings");
+        jMenu2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenu2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenu2ActionPerformed(evt);
             }
         });
+
+        jMenu3.setForeground(new java.awt.Color(0, 51, 255));
+        jMenu3.setText("Sales Setting");
+        jMenu3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jMenu3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        jMenuItem4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jMenuItem4.setForeground(new java.awt.Color(0, 51, 255));
+        jMenuItem4.setText("Printer Settings");
+        jMenuItem4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem4);
+
+        jMenu2.add(jMenu3);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -2509,7 +2573,7 @@ public final class UIv2 extends javax.swing.JFrame {
 
     private void ExchangeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ExchangeLabelMouseClicked
         // Calling the exchange JFrame
-        ReturnProduct.main(null);
+        PrinterSettings.launch();
     }//GEN-LAST:event_ExchangeLabelMouseClicked
 
     private void saleslabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saleslabelMouseEntered
@@ -2539,13 +2603,16 @@ public final class UIv2 extends javax.swing.JFrame {
         TablePanel.add(ProductsTablePanel);
         TablePanel.repaint();
         TablePanel.revalidate();
-
         Submenu.removeAll();
+        try {
+            LoadProducts();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Submenu.add(ProductsHeader);
         Submenu.repaint();
         Submenu.revalidate();
         getActiveClass("box");
-
     }//GEN-LAST:event_ProductsLabelMenuMouseClicked
 
     private void jMenuItem1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MouseClicked
@@ -2922,18 +2989,6 @@ public final class UIv2 extends javax.swing.JFrame {
 
     }//GEN-LAST:event_PrintReceiptMouseClicked
 
-    private void jMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu3ActionPerformed
-        // TODO add your handling code here:
-          try {
-            // TODO add your handling code here:
-            addtestUsers();
-            System.out.println("nimeita");
-            showPopupNotification("Added test users", NotificationType.ERROR);
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jMenu3ActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         paginationController.previousPage();
@@ -2969,6 +3024,20 @@ public final class UIv2 extends javax.swing.JFrame {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
+
+    private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
+        // TODO add your handling code here:
+          // Close the current UI
+    // You need to replace "frame" with the actual reference to your UI frame
+    this.dispose();
+    // Open the login screen
+    login();
+    }//GEN-LAST:event_jLabel4MouseClicked
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // Takes you to Printer Settings:
+        PrinterSettings.launch();
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     // Method to get the instance of UIv2
     public static UIv2 getInstance() throws SQLException {
@@ -3072,6 +3141,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JPanel DateReportTablePanel;
     private javax.swing.JLabel EditLabel;
     private javax.swing.JTable EmailTable;
+    private javax.swing.JPanel EmptyTablePanel;
     private javax.swing.JLabel ExchangeLabel;
     private javax.swing.JPanel InfoPanel;
     private javax.swing.JLabel InventoryLabel;
@@ -3121,6 +3191,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
@@ -3132,6 +3203,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
@@ -3139,9 +3211,9 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane13;
     private javax.swing.JScrollPane jScrollPane14;
     private javax.swing.JScrollPane jScrollPane15;
+    private javax.swing.JScrollPane jScrollPane16;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
@@ -3181,6 +3253,7 @@ public final class UIv2 extends javax.swing.JFrame {
     private javax.swing.JLabel totalreturns2;
     private javax.swing.JLabel totalreturns3;
     private javax.swing.JTable transferedCash;
+    private javax.swing.JTable transferedCash1;
     private javax.swing.JLabel userlabelmenu;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JPanel userssubmenu1;

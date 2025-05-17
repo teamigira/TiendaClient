@@ -6,7 +6,8 @@
 package Classes.Functions;
 
 import Classes.AbstractClasses.Brand;
-import static Classes.Utilities.OS.systempath;
+import static Classes.Utilities.OS.getSystemPath;
+import static Classes.Utilities.OS.systemPath;
 import static Database.DBConnect.getConnection;
 import Database.DBConnection;
 import java.io.BufferedReader;
@@ -35,7 +36,7 @@ public class Crudes {
             stmt = conna.createStatement();
 
             String sql
-                    = "INSERT INTO production_brands (brand_name)" + "VALUES ('" + brandname + "')";
+                    = "INSERT INTO Tienda.production_brands (brand_name)" + "VALUES ('" + brandname + "')";
             int i = stmt.executeUpdate(sql);
             if (i > 0) {
                 System.out.println(sql);
@@ -51,7 +52,7 @@ public class Crudes {
     }
 
     public static Boolean addFromCSVFile() throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
-        String csvFilePath = systempath + "Brands.csv";
+        String csvFilePath = getSystemPath() + "Brands.csv";
         //xlsx
         try {
 

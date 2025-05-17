@@ -1,6 +1,6 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template file, choose Tools | Templates.
  * and open the template in the editor.
  */
 package Classes.Functions;
@@ -27,7 +27,7 @@ public class Categories {
             // STEP 3: Execute a query 
             stmt = conn.createStatement();
             String sql
-                    = "INSERT INTO production_categories (category_name)" + "VALUES ('" + categoryname + "')";
+                    = "INSERT INTO Tienda.production_categories (category_name)" + "VALUES ('" + categoryname + "')";
             int i = stmt.executeUpdate(sql);
             if (i > 0) {
                 System.out.println(sql);
@@ -119,7 +119,7 @@ public class Categories {
     }
 
     public static ArrayList listCategories() throws SQLException, ClassNotFoundException {
-        ArrayList<Category> list = new ArrayList<Category>();
+        ArrayList<Category> list = new ArrayList<>();
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();

@@ -250,8 +250,8 @@ public class Products {
     public static ArrayList listProducts()
             throws SQLException,
             ClassNotFoundException {
-        ArrayList<Product> list
-                = new ArrayList<Product>();
+        ArrayList<Product> list;
+        list = new ArrayList<>();
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna
@@ -268,10 +268,12 @@ public class Products {
                     + "production_categories.category_id";
             ResultSet rs = stmt.executeQuery(sqlquery);
             while (rs.next()) {
+                
                 int productid = Integer.parseInt(
                         rs.getString("product_id"));
                 String product_name
                         = rs.getString("product_name");
+                System.out.println("product-name" + product_name);
                 String brand_name
                         = rs.getString("brand_name");
                 String category_name

@@ -7,7 +7,7 @@ package com.nkanabo.Tienda;
 
 import static Authentication.Auth.Login;
 import static Authentication.Auth.authenticateProduct;
-import static Classes.Utilities.OS.systempath;
+import static Classes.Utilities.OS.getSystemPath;
 import Database.DBConnection;
 import Database.MasterData;
 import Interface.ConsoleFrame;
@@ -71,13 +71,45 @@ public class Main {
         }
     }
 
-    private static void makeFolder() {
-        File theDir = new File(systempath);
-        if (!theDir.exists()) {
-            theDir.mkdirs();
-            System.out.println("Created images folder in ");
-        }
+// Method to create necessary folders
+// Method to create necessary folders
+private static void makeFolder() {
+    // Get the system path
+    String systemPath = getSystemPath();
+
+    // Create the Tienda folder if it doesn't exist
+    File tiendaDir = new File(systemPath);
+    if (!tiendaDir.exists()) {
+        tiendaDir.mkdirs();
+        System.out.println("Created Tienda folder at: " + tiendaDir.getAbsolutePath());
     }
+
+    // Create the resources folder if it doesn't exist
+    File resourcesDir = new File(systemPath, "resources");
+    if (!resourcesDir.exists()) {
+        resourcesDir.mkdirs();
+        System.out.println("Created resources folder at: " + resourcesDir.getAbsolutePath());
+    }
+
+    // Create the usergenerated folder if it doesn't exist
+    File userGeneratedDir = new File(resourcesDir, "usergenerated");
+    if (!userGeneratedDir.exists()) {
+        userGeneratedDir.mkdirs();
+        System.out.println("Created usergenerated folder at: " + userGeneratedDir.getAbsolutePath());
+    }
+
+     // Create the barcodes folder if it doesn't exist
+     File barcodesDir = new File(userGeneratedDir, "barcodes");
+     if (!barcodesDir.exists()) {
+        barcodesDir.mkdirs();
+         System.out.println("Created barcodesDir folder at: " + barcodesDir.getAbsolutePath());
+     }
+}
+
+
+    
+    
+    
 
     public static void main(String[] args) throws IOException,
             SQLException, ClassNotFoundException, URISyntaxException, UnsupportedLookAndFeelException {

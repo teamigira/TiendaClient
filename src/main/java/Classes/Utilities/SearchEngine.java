@@ -69,8 +69,10 @@ public class SearchEngine {
         for (int i = 0; i < line.size(); i++) {
             Product po = line.get(i);
             ch[i] = po.product_name;
+            System.out.println("found product");
             System.out.println(ch[i]);
         }
+        System.out.println("nO PRODUCT");
         return ch;
           
     }

@@ -9,6 +9,8 @@ package Database;
  *
  * @author Nkanabo
  */
+import static Classes.Functions.Categories.addCategory;
+import static Classes.Functions.Crudes.addBrand;
 import Classes.Utilities.NotificationManager.NotificationType;
 
 import static Classes.Functions.Permissions.PermissionFileManager.addPermissionsRole;
@@ -81,7 +83,7 @@ public class MasterData {
             addPermissionsForRole(roleName, productsPermissions);
             addPermissionsForRole(roleName, reportsPermissions);
             
-
+            addBrandsCategories();
 
 
             // STEP 4: Clean-up environment 
@@ -111,6 +113,7 @@ public class MasterData {
                 se.printStackTrace();
             } // end finally try 
         } // end try 
+        
     }
     private static void insertPermissions(Statement stmt, String[] permissions, String category) throws SQLException {
         // Prepare the permission names as a comma-separated list for the SQL query
@@ -193,6 +196,8 @@ public class MasterData {
             showConsoleNotification(infoMessage, NotificationType.ERROR);
         }
     }
+    
+    
 
     private static boolean checkRoleExists(Statement stmt, String roleName) throws SQLException {
         String roleCheckQuery = "SELECT COUNT(*) AS count FROM Tienda.roles WHERE role_name = '" + roleName + "'";
@@ -200,6 +205,11 @@ public class MasterData {
         resultSet.next();
         int count = resultSet.getInt("count");
         return count > 0;
+    }
+
+    private static void addBrandsCategories() throws SQLException, ClassNotFoundException {
+        addBrand("General");
+        addCategory("General");
     }
 
 }

@@ -381,7 +381,6 @@ public class PermissionFileManager {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         Connection connection = DBConnection.getConnectionInstance().getConnection();
-
         String query = "SELECT role_name FROM Tienda.roles WHERE role_id = ?";
         pstmt = connection.prepareStatement(query);
         pstmt.setInt(1, id);

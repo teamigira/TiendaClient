@@ -10,7 +10,6 @@ package Classes.Utilities;
  * @author Nkanabo
  */
 
-import static Classes.Utilities.OS.base_Url;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;

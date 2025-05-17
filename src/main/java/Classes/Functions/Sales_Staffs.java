@@ -102,9 +102,7 @@ public class Sales_Staffs {
             String password = enc.encrypt(pass);
             // Set up loop to add more than 50 random users
             int totalUsers = 100; // Change this to the desired number of users
-            int rowsAffected = 0;
-            System.out.println("nimeitika");
-            for (int i = 0; i < totalUsers; i++) {
+            int rowsAffected = 0;            for (int i = 0; i < totalUsers; i++) {
                 // Generate random values for each user
                 int staffId = generateNumber(); // Assuming generateNumber() generates unique staff IDs
                 String staffName = "User" + i;
@@ -114,7 +112,7 @@ public class Sales_Staffs {
                 String store = "" + (i % 10); // Assuming there are 10 stores
                 int status = i % 2; // Alternates between 0 and 1
                 int managerId = i % 10; // Assuming there are 10 managers
-                int role = i % 6; // Assuming there are 10 roles
+                int role = i % 5; // Assuming there are 5 roles
 
                 // Set parameter values in the prepared statement
                 pstmt.setInt(1, staffId);
@@ -149,7 +147,7 @@ public class Sales_Staffs {
     }
 
     public static ArrayList LoadStaffs() throws ClassNotFoundException {
-        ArrayList<Staff> list = new ArrayList<Staff>();
+        ArrayList<Staff> list = new ArrayList<>();
         ArrayList rowValues = new ArrayList();
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
@@ -165,7 +163,6 @@ public class Sales_Staffs {
                 String role = rs.getString("role_id");
                 String phone_no = rs.getString("phone");
                 String store = rs.getString("store_id");
-
                 String Status = rs.getString("active");
                 String manager_id = rs.getString("manager_id");
                 int roles = Integer.parseInt(role);
@@ -175,7 +172,7 @@ public class Sales_Staffs {
                                 email, phone_no, store, Status,
                                 manager_id, roles, staff_id));
             }
-            // STEP 4: Clean-up environment 
+            // STEP 4: Clean-up environment
         } catch (SQLException se) {
             // Handle errors for JDBC 
             se.printStackTrace();
