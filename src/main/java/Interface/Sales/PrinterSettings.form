@@ -282,9 +282,9 @@
                           <Component id="jLabel105" alignment="0" pref="420" max="32767" attributes="0"/>
                           <Component id="jLabel104" alignment="0" max="32767" attributes="0"/>
                           <Component id="jLabel103" alignment="0" max="32767" attributes="0"/>
-                          <Component id="tmp5" alignment="0" min="-2" pref="148" max="-2" attributes="0"/>
-                          <Component id="tmp4" alignment="0" min="-2" pref="151" max="-2" attributes="0"/>
-                          <Component id="tmp3" alignment="0" min="-2" pref="149" max="-2" attributes="0"/>
+                          <Component id="tmp5" alignment="0" min="-2" pref="165" max="-2" attributes="0"/>
+                          <Component id="tmp4" alignment="0" min="-2" pref="165" max="-2" attributes="0"/>
+                          <Component id="tmp3" alignment="0" min="-2" pref="165" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="717" max="32767" attributes="0"/>
                       <Component id="Template" min="-2" pref="613" max="-2" attributes="0"/>

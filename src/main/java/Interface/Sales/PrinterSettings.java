@@ -18,6 +18,7 @@ import static Classes.Functions.Printers.Receipts.getLastReceiptDetails;
 import static Classes.Functions.Printers.Receipts.getLastReceiptSettings;
 import static Classes.Functions.Printers.Receipts.saveReceiptDetails;
 import Classes.Utilities.OS;
+import Classes.Functions.Printers.ReceiptPrinter;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -1571,9 +1572,9 @@ public class PrinterSettings extends javax.swing.JFrame implements ItemListener 
                     .addComponent(jLabel105, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
                     .addComponent(jLabel104, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel103, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tmp5, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tmp4, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tmp3, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tmp5, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tmp4, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tmp3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 717, Short.MAX_VALUE)
                 .addComponent(Template, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(47, 47, 47))
@@ -2716,101 +2717,92 @@ public class PrinterSettings extends javax.swing.JFrame implements ItemListener 
         }
     }
 
-//    Templates
+//    Templates: each one is a live preview drawn by ReceiptPrinter, the same
+//    code that prints the receipt, so the preview always matches the paper.
     private void showTemplate101() {
-        // Clear the Template JPanel
-        Template.removeAll();
-        Template.add(Template101);
-        Template.repaint();
-        Template.revalidate();
+        showTemplatePreview("Template 101:");
     }
 
     private void showTemplate102() {
-        // Clear the Template JPanel
-        // Clear the Template JPanel
-        Template.removeAll();
-        Template.add(Template102);
-        Template.repaint();
-        Template.revalidate();
+        showTemplatePreview("Template 102:");
     }
 
     private void showTemplate103() {
-        // Clear the Template JPanel
-        Template.removeAll();
-        Template.add(Template103);
-        Template.repaint();
-        Template.revalidate();
+        showTemplatePreview("Template 103:");
     }
 
     private void showTemplate104() {
-        // Clear the Template JPanel
-        Template.removeAll();
-        Template.add(Template104);
-        Template.repaint();
-        Template.revalidate();
+        showTemplatePreview("Template 104:");
     }
 
     private void showTemplate105() {
-        // Clear the Template JPanel
+        showTemplatePreview("Template 105:");
+    }
+
+    /**
+     * Show an example receipt in the chosen design, using the company,
+     * address and footer typed on the first step. Template 105 needs a
+     * Premium licence; without one the lock panel is shown instead.
+     */
+    private void showTemplatePreview(String name) {
+        boolean premium = ReceiptPrinter.licencePremium();
         Template.removeAll();
-        Template.add(Template105);
+        if (ReceiptPrinter.isPremiumTemplate(name) && !premium) {
+            jLabel92.setText("Premium Template: needs a Premium licence");
+            Template.add(Template105);
+        } else {
+            Template.add(receiptView(ReceiptPrinter.sample(name, premium,
+                    company.getText(), AddressTexts.getText(), footermsg.getText())));
+        }
         Template.repaint();
         Template.revalidate();
     }
 
-    private void showTemplate0() {
-        // Clear the Template JPanel
-        Template.removeAll();
-        Template.add(EmptyTemplate);
-        Template.repaint();
-        Template.revalidate();
+    /** A receipt image centred in a scroll pane. */
+    private static JComponent receiptView(ReceiptPrinter receipt) {
+        JPanel holder = new JPanel(new java.awt.GridBagLayout());
+        holder.setBackground(new java.awt.Color(0xF4F4F4));
+        holder.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        holder.add(receipt.previewLabel(1.6));
+        javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(holder);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        return scroll;
     }
 
-//    Templates
-    private void showPrinout101() {
-        // Clear the Template JPanel
+    /** The saved receipt settings, drawn in the saved design. */
+    private void showPrintout(String name) {
+        boolean premium = ReceiptPrinter.licencePremium();
+        String co = lasttReceipts != null ? lasttReceipts.getCompanyName() : null;
+        String addr = lasttReceipts != null ? lasttReceipts.getAddress() : null;
+        String foot = lasttReceipts != null ? lasttReceipts.getFooterMessage() : null;
         viewReceipt.removeAll();
-        viewReceipt.add(Template109);
+        viewReceipt.add(receiptView(ReceiptPrinter.sample(name, premium, co, addr, foot)));
         viewReceipt.repaint();
         viewReceipt.revalidate();
+    }
+
+    private void showPrinout101() {
+        showPrintout("Template 101:");
     }
 
     private void showPrintout102() {
-        // Clear the viewReceipt JPanel
-        // Clear the viewReceipt JPanel
-        viewReceipt.removeAll();
-        viewReceipt.add(Template110);
-        viewReceipt.repaint();
-        viewReceipt.revalidate();
+        showPrintout("Template 102:");
     }
 
     private void showPrintout103() {
-        // Clear the viewReceipt JPanel
-        System.out.println("I have been summoned++");
-        viewReceipt.removeAll();
-        viewReceipt.add(Template106);
-        viewReceipt.repaint();
-        viewReceipt.revalidate();
+        showPrintout("Template 103:");
     }
 
     private void showPrintout104() {
-        // Clear the viewReceipt JPanel
-        viewReceipt.removeAll();
-        viewReceipt.add(Template107);
-        viewReceipt.repaint();
-        viewReceipt.revalidate();
+        showPrintout("Template 104:");
     }
 
     private void showPrintout105() {
-        // Clear the viewReceipt JPanel
-        viewReceipt.removeAll();
-        viewReceipt.add(Template110);
-        viewReceipt.repaint();
-        viewReceipt.revalidate();
+        showPrintout("Template 105:");
     }
 
     private void showPrintout0() {
-        // Clear the viewReceipt JPanel
         viewReceipt.removeAll();
         viewReceipt.add(EmptyTemplate1);
         viewReceipt.repaint();
