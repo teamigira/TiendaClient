@@ -8,19 +8,18 @@ package Classes.Functions.Permissions;
  *
  * @author Nkanabo
  */
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 // PermissionGroup class to represent a single permission group
 public class PermissionGroup {
 
-    @JsonProperty("heading")
+
     private String heading;
 
-    @JsonProperty("name")
+
     private String name;
 
-    @JsonProperty("permissions")
+
     private List<String> permissions;
 
     // Getter methods for heading, name, and permissions

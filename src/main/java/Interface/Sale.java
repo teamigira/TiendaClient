@@ -34,8 +34,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import org.json.JSONArray;
-import org.json.simple.parser.JSONParser;
 
 /**
  *

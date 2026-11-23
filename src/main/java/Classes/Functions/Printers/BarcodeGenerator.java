@@ -1,7 +1,6 @@
 package Classes.Functions.Printers;
 
 
-import ca.odell.glazedlists.impl.adt.Barcode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
