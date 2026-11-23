@@ -74,9 +74,8 @@ public class Stocks {
             Statement stmt;
             // STEP 3: Execute a query
             stmt = conna.createStatement();
-            String sqlquery = "SELECT * FROM Tienda.production_stocks"
-                    + " where product_id = '"+id+"'";
-            ResultSet rs = stmt.executeQuery(sqlquery);
+            String sqlquery = "SELECT * FROM Tienda.production_stocks where product_id = ?";
+            ResultSet rs = Database.Sql.prepare(stmt.getConnection(), sqlquery, id).executeQuery();
             if (rs.next()) {
                 remainder = rs.getString("quantity");
             }
@@ -106,9 +105,8 @@ public class Stocks {
             if(count < 0){
                 return false;
             }
-            String sql
-                    = "UPDATE Tienda.production_stocks SET quantity ='"+count+"' WHERE product_id='" + id + "'";
-            int i = stmt.executeUpdate(sql);
+            String sql = "UPDATE Tienda.production_stocks SET quantity =? WHERE product_id=?";
+            int i = Database.Sql.prepare(stmt.getConnection(), sql, count, id).executeUpdate();
             if (i > 0) {
                 System.out.println(sql);
             } else {
@@ -133,17 +131,14 @@ public class Stocks {
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
-            String sql
-                    = "UPDATE Tienda.production_stocks SET quantity = " + quantity + " WHERE product_id='" + id + "'";
+            String sql = "UPDATE Tienda.production_stocks SET quantity = CAST(? AS DOUBLE PRECISION) WHERE product_id=?";
             
-            String sql2
-                    = "UPDATE Tienda.production_stocks_report SET quantity = " + quantity + " WHERE product_id='" + id + "'"
-                    + " AND date01 = (SELECT MAX(date01) FROM production_stocks_report)";
+            String sql2 = "UPDATE Tienda.production_stocks_report SET quantity = CAST(? AS DOUBLE PRECISION) WHERE product_id=? AND date01 = (SELECT MAX(date01) FROM production_stocks_report)";
             
             int i=0;
             try{
-            i = stmt.executeUpdate(sql);
-            stmt.executeUpdate(sql2);
+            i = Database.Sql.prepare(stmt.getConnection(), sql, quantity, id).executeUpdate();
+            Database.Sql.prepare(stmt.getConnection(), sql2, quantity, id).executeUpdate();
             }catch (SQLException se) {
             // Handle errors for JDBC 
             se.printStackTrace();
@@ -192,17 +187,15 @@ public class Stocks {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             String productCode = getProductId(product_name);
-            String sqlquery = "SELECT * FROM Tienda.sales_order_items where product_id = "
-                    + productCode + " AND order_id=" + order_id + "";
-            ResultSet rst = stmt.executeQuery(sqlquery);
+            String sqlquery = "SELECT * FROM Tienda.sales_order_items where product_id = CAST(? AS DOUBLE PRECISION) AND order_id=CAST(? AS DOUBLE PRECISION)";
+            ResultSet rst = Database.Sql.prepare(stmt.getConnection(), sqlquery, productCode, order_id).executeQuery();
             while (rst.next()) {
                 String Sales_Quantity = rst.getString("quantity");
                 Sales = DoubleConverter(Sales_Quantity);
             }
             try {
-                String sql
-                        = "UPDATE production_stocks SET quantity = quantity+" + Sales + "-" + quantity + " WHERE product_id='" + productCode + "'";
-                int i = stmt.executeUpdate(sql);
+                String sql = "UPDATE production_stocks SET quantity = quantity+CAST(? AS DOUBLE PRECISION)-CAST(? AS DOUBLE PRECISION) WHERE product_id=?";
+                int i = Database.Sql.prepare(stmt.getConnection(), sql, Sales, quantity, productCode).executeUpdate();
                 if (i > 0) {
                     System.out.println("Success " + sql);
                 } else {
@@ -226,9 +219,8 @@ public class Stocks {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
-            String sql
-                    = "DELETE from Tienda.production_stocks where product_id = '" + productId + "'";
-            int i = stmt.executeUpdate(sql);
+            String sql = "DELETE from Tienda.production_stocks where product_id = ?";
+            int i = Database.Sql.prepare(stmt.getConnection(), sql, productId).executeUpdate();
             if (i != 1) {
                 JOptionPane.showMessageDialog(null, "There was a problem item " + productId + " not found",
                         "ERROR", JOptionPane.ERROR_MESSAGE);

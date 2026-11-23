@@ -35,12 +35,10 @@ public class Reports {
             Statement stmt;
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
-            LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+            LocalDate d1 = LocalDate.now(ZoneId.systemDefault());
             String mydate = d1 + "";
-            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id"
-                    + " JOIN Tienda.production_brands ON Tienda.production_brands.brand_id = production_products.brand_id JOIN sales_order_items ON sales_order_items.product_id = "
-                    + "production_products.product_id WHERE date = '" + milliConverter(mydate) + "' ";
-            ResultSet rs = stmt.executeQuery(query2);
+            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id JOIN Tienda.production_brands ON Tienda.production_brands.brand_id = production_products.brand_id JOIN sales_order_items ON sales_order_items.product_id = production_products.product_id WHERE date = ? ";
+            ResultSet rs = Database.Sql.prepare(stmt.getConnection(), query2, milliConverter(mydate)).executeQuery();
 
             int b = 0;
             double profit;
@@ -93,14 +91,12 @@ public class Reports {
             //STEP 3: Execute a query 
             stmt = conna.createStatement();
 
-            LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris")).minusDays(7);
+            LocalDate d1 = LocalDate.now(ZoneId.systemDefault()).minusDays(7);
             long weekend = milliConverter(String.valueOf(d1));
 
-            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id"
-                    + " JOIN Tienda.production_brands ON Tienda.production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON Tienda.sales_order_items.product_id = "
-                    + "production_products.product_id where sales_order_items.date > '" + weekend + "'";
+            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id JOIN Tienda.production_brands ON Tienda.production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON Tienda.sales_order_items.product_id = production_products.product_id where sales_order_items.date > ?";
 
-            ResultSet rs = stmt.executeQuery(query2);
+            ResultSet rs = Database.Sql.prepare(stmt.getConnection(), query2, weekend).executeQuery();
 
             int b = 0;
             double totalreturns = 0.0;
@@ -152,13 +148,11 @@ public class Reports {
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
-            LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris")).minusDays(31);
+            LocalDate d1 = LocalDate.now(ZoneId.systemDefault()).minusDays(31);
             long weekend = milliConverter(String.valueOf(d1));
 
-            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id"
-                    + " JOIN Tienda.production_brands ON production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON sales_order_items.product_id = "
-                    + "production_products.product_id where sales_order_items.date > '" + weekend + "'";
-            ResultSet rs = stmt.executeQuery(query2);
+            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id JOIN Tienda.production_brands ON production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON sales_order_items.product_id = production_products.product_id where sales_order_items.date > ?";
+            ResultSet rs = Database.Sql.prepare(stmt.getConnection(), query2, weekend).executeQuery();
 
             int b = 0;
             double totalreturns = 0.0;
@@ -211,10 +205,8 @@ public class Reports {
             stmt = conna.createStatement();
             long fb = milliConverter(db);
 
-            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id"
-                    + " JOIN Tienda.production_brands ON production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON sales_order_items.product_id = "
-                    + "production_products.product_id WHERE date='" + fb + "'";
-            ResultSet rs = stmt.executeQuery(query2);
+            String query2 = "SELECT * from Tienda.production_products JOIN Tienda.production_categories ON production_products.category_id = production_categories.category_id JOIN Tienda.production_brands ON production_brands.brand_id = production_products.brand_id JOIN Tienda.sales_order_items ON sales_order_items.product_id = production_products.product_id WHERE date=?";
+            ResultSet rs = Database.Sql.prepare(stmt.getConnection(), query2, fb).executeQuery();
 
             int b = 0;
             double totalreturns = 0.0;

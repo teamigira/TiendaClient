@@ -39,20 +39,23 @@ public class MasterData {
             String adminCheckQuery = "SELECT staff_id FROM Tienda.sales_staffs WHERE staff_id='1'";
             ResultSet adminResultSet = stmt.executeQuery(adminCheckQuery);
             if (!adminResultSet.next()) {
-                String adminInsertQuery = "INSERT INTO Tienda.sales_staffs "
+                // Factory password 12345; the login screen makes the owner
+                // choose a new one the first time it is used.
+                try (java.sql.PreparedStatement ins = conn.prepareStatement(
+                        "INSERT INTO Tienda.sales_staffs "
                         + " (first_name, last_name, email, password, phone, active, store_id, manager_id, role_id) VALUES "
-                        + "('admin', 'admin', 'admin@mail.com', 'X85ITzVZ7xLqf6S3DdrMGQ==', "
-                        + "'+255000000', '1', '1', '1', '1')";
-                stmt.executeUpdate(adminInsertQuery);
+                        + "('admin', 'admin', 'admin@mail.com', ?, '+255000000', '1', '1', '1', '1')")) {
+                    ins.setString(1, Authentication.Passwords.hash("12345"));
+                    ins.executeUpdate();
+                }
             }
 
             // Check if the app key exists
             String appKeyCheckQuery = "SELECT activation_status FROM Tienda.system_app_key WHERE activation_status='1' OR activation_status='0'";
             ResultSet appKeyResultSet = stmt.executeQuery(appKeyCheckQuery);
             if (!appKeyResultSet.next()) {
-                String appKeyInsertQuery = "INSERT INTO Tienda.system_app_key VALUES "
-                        + "(1, '" + app_version + "', '" + product_key + "', 0, '" + date + "', '" + expiredate + "')";
-                stmt.executeUpdate(appKeyInsertQuery);
+                String appKeyInsertQuery = "INSERT INTO Tienda.system_app_key VALUES (1, ?, ?, 0, ?, ?)";
+                Database.Sql.prepare(stmt.getConnection(), appKeyInsertQuery, app_version, product_key, date, expiredate).executeUpdate();
             }
 
             // Insert permissions into permissions table
@@ -184,8 +187,8 @@ public class MasterData {
         
         if (!roleExists) {
             // Insert the role
-            String roleInsertQuery = "INSERT INTO Tienda.roles (role_name, description) VALUES ('" + roleName + "', '" + description + "')";
-            stmt.executeUpdate(roleInsertQuery);
+            String roleInsertQuery = "INSERT INTO Tienda.roles (role_name, description) VALUES (?, ?)";
+            Database.Sql.prepare(stmt.getConnection(), roleInsertQuery, roleName, description).executeUpdate();
             
             // Notify user of successful insertion
             String successMessage = "Role '" + roleName + "' inserted successfully.";
@@ -200,8 +203,8 @@ public class MasterData {
     
 
     private static boolean checkRoleExists(Statement stmt, String roleName) throws SQLException {
-        String roleCheckQuery = "SELECT COUNT(*) AS count FROM Tienda.roles WHERE role_name = '" + roleName + "'";
-        ResultSet resultSet = stmt.executeQuery(roleCheckQuery);
+        String roleCheckQuery = "SELECT COUNT(*) AS count FROM Tienda.roles WHERE role_name = ?";
+        ResultSet resultSet = Database.Sql.prepare(stmt.getConnection(), roleCheckQuery, roleName).executeQuery();
         resultSet.next();
         int count = resultSet.getInt("count");
         return count > 0;

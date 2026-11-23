@@ -1,6 +1,6 @@
 package Classes.Functions;
 
-import Authentication.Encrpytion;
+import Authentication.Passwords;
 import Classes.AbstractClasses.EditedUserData;
 import Classes.AbstractClasses.Staff;
 import Classes.Utilities.NotificationManager.NotificationType;
@@ -37,8 +37,7 @@ public class Sales_Staffs {
             // Create prepared statement
             pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            Encrpytion enc = new Encrpytion();
-            String password = enc.encrypt(newStaff.password);
+            String password = Passwords.hash(newStaff.password);
     
             // Set parameter values
             pstmt.setString(1, newStaff.staff_name);
@@ -98,8 +97,7 @@ public class Sales_Staffs {
             // Create a prepared statement
             PreparedStatement pstmt = connection.prepareStatement(sql);
             String pass = "12345";
-            Encrpytion enc = new Encrpytion();
-            String password = enc.encrypt(pass);
+            String password = Passwords.hash(pass);
             // Set up loop to add more than 50 random users
             int totalUsers = 100; // Change this to the desired number of users
             int rowsAffected = 0;            for (int i = 0; i < totalUsers; i++) {
@@ -203,8 +201,7 @@ public class Sales_Staffs {
             // Create prepared statement
             pstmt = conn.prepareStatement(sql);
 
-            Encrpytion enc = new Encrpytion();
-            String password = enc.encrypt(editedUser.editedUser.password);
+            String password = changePassword ? Passwords.hash(editedUser.editedUser.password) : null;
 
             
             // Set parameters

@@ -34,12 +34,11 @@ public class Accounts {
                  Statement stmt = conna.createStatement();
             ) {
                 
-                LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+                LocalDate d1 = LocalDate.now(ZoneId.systemDefault());
                 
                 String today = String.valueOf(d1);
-                String mysql
-                        = "INSERT INTO accounts (amount,date)" + "VALUES ('" + amount + "','" + milliConverter(today) + "')";
-                int i = stmt.executeUpdate(mysql);
+                String mysql = "INSERT INTO accounts (amount,date)VALUES (?,?)";
+                int i = Database.Sql.prepare(stmt.getConnection(), mysql, amount, milliConverter(today)).executeUpdate();
                 if (i > 0) {
                     System.out.println(mysql);
                 } else {

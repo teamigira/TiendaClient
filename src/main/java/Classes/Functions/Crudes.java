@@ -47,9 +47,8 @@ public class Crudes {
                 }
             }
 
-            String sql
-                    = "INSERT INTO Tienda.production_brands (brand_name)" + "VALUES ('" + brandname + "')";
-            int i = stmt.executeUpdate(sql);
+            String sql = "INSERT INTO Tienda.production_brands (brand_name)VALUES (?)";
+            int i = Database.Sql.prepare(stmt.getConnection(), sql, brandname).executeUpdate();
             if (i > 0) {
                 System.out.println(sql);
             } else {
@@ -90,9 +89,8 @@ public class Crudes {
                 //String comment = data.length == 5 ? data[4] : "";
                 
             duplicatedRowAvoidance(brand);
-            String sql
-                    = "INSERT INTO Tienda.production_brands (brand_name)" + "VALUES ('" + brand + "')";
-            int i = stmt.executeUpdate(sql);
+            String sql = "INSERT INTO Tienda.production_brands (brand_name)VALUES (?)";
+            int i = Database.Sql.prepare(stmt.getConnection(), sql, brand).executeUpdate();
             // execute the rema
             /*End of batch reading*/
             if (i > 0) {
@@ -121,10 +119,8 @@ public class Crudes {
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
-            String updatequery
-                    = "UPDATE production_brands set brand_name='" + brandname + "'"
-                    + "where brand_id='" + id + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            String updatequery = "UPDATE production_brands set brand_name=? WHERE brand_id=?";
+            int rsu = Database.Sql.prepare(stmt.getConnection(), updatequery, brandname, id).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -146,9 +142,8 @@ public class Crudes {
             Statement stmt;
             stmt = conna.createStatement();
 
-            String updatequery
-                    = "DELETE production_brands where brand_id='" + id + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            String updatequery = "DELETE production_brands where brand_id=?";
+            int rsu = Database.Sql.prepare(stmt.getConnection(), updatequery, id).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -216,9 +211,8 @@ public class Crudes {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query 
-            String updatequery
-                    = "DELETE production_brands where brand_id='" + brandId + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            String updatequery = "DELETE production_brands where brand_id=?";
+            int rsu = Database.Sql.prepare(stmt.getConnection(), updatequery, brandId).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -236,9 +230,8 @@ public class Crudes {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query 
-            String searchquery
-                    = "SELECT * FROM Tienda.production_brands where brand_name='" + brandname + "'";
-            ResultSet rs = stmt.executeQuery(searchquery);
+            String searchquery = "SELECT * FROM Tienda.production_brands where brand_name=?";
+            ResultSet rs = Database.Sql.prepare(stmt.getConnection(), searchquery, brandname).executeQuery();
             // STEP 4: Clean-up environment
             return rs.next();
 

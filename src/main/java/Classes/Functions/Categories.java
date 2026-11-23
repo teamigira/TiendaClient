@@ -39,9 +39,8 @@ public class Categories {
                 }
             }
 
-            String sql
-                    = "INSERT INTO Tienda.production_categories (category_name)" + "VALUES ('" + categoryname + "')";
-            int i = stmt.executeUpdate(sql);
+            String sql = "INSERT INTO Tienda.production_categories (category_name)VALUES (?)";
+            int i = Database.Sql.prepare(stmt.getConnection(), sql, categoryname).executeUpdate();
             if (i > 0) {
                 System.out.println(sql);
             } else {
@@ -66,10 +65,8 @@ public class Categories {
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
-            String updatequery
-                    = "UPDATE production_brands set brand_name='" + brandname + "'"
-                    + "where brand_id='" + id + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            String updatequery = "UPDATE production_brands set brand_name=? WHERE brand_id=?";
+            int rsu = Database.Sql.prepare(stmt.getConnection(), updatequery, brandname, id).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -90,9 +87,8 @@ public class Categories {
             // STEP 3: Execute a query 
             stmt = conna.createStatement();
 
-            String updatequery
-                    = "DELETE production_brands where brand_id='" + id + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            String updatequery = "DELETE production_brands where brand_id=?";
+            int rsu = Database.Sql.prepare(stmt.getConnection(), updatequery, id).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -160,9 +156,8 @@ public class Categories {
             DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query 
-            String updatequery
-                    = "DELETE production_categories where category_id='" + id + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            String updatequery = "DELETE production_categories where category_id=?";
+            int rsu = Database.Sql.prepare(stmt.getConnection(), updatequery, id).executeUpdate();
             if (rsu != 1) {
                 return false;
             }

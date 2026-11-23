@@ -33,7 +33,7 @@ public class Auth {
             //request for product activation
             //else
             //request for log in
-            LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+            LocalDate d1 = LocalDate.now(ZoneId.systemDefault());
             long today;
 
             today = milliConverter(String.valueOf(d1));
@@ -42,10 +42,8 @@ public class Auth {
             Connection con = dbc.getConnection();
             Statement stmt;
             stmt = con.createStatement();
-            String sql = "SELECT * FROM Tienda.system_app_key"
-                    + " where activation_status = 0 OR "
-                    + "expire_date <= '" + today + "'";
-            ResultSet rs = stmt.executeQuery(sql);
+            String sql = "SELECT * FROM Tienda.system_app_key where activation_status = 0 OR expire_date <= ?";
+            ResultSet rs = Database.Sql.prepare(stmt.getConnection(), sql, today).executeQuery();
             //STEP 4: Extract data from result set
             if (rs.next()) {
                 //Retrieve by column name

@@ -119,7 +119,7 @@ public final class Utilities {
             Date d1 = sdformat.parse(date1);
             Date d2 = sdformat.parse(date2);
 
-            LocalDate d3 = LocalDate.now(ZoneId.of("Europe/Paris"));
+            LocalDate d3 = LocalDate.now(ZoneId.systemDefault());
             System.out.println("The date 1 is: " + sdformat.format(d1));
             System.out.println("The date 2 is: " + sdformat.format(d2));
             if (d1.compareTo(d2) > 0) {
@@ -210,7 +210,7 @@ public final class Utilities {
      * ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME) );
      *
      * // 2015-09-28 System.out.println(
-     * LocalDate.now(ZoneId.of("Europe/Paris")) ); // rest zones id in ZoneId
+     * LocalDate.now(ZoneId.systemDefault()) ); // rest zones id in ZoneId
      * class
      *
      * // 16 System.out.println( LocalTime.now().getHour() );

@@ -5,7 +5,7 @@
  */
 package Interface;
 
-import Authentication.Encrpytion;
+import Authentication.Passwords;
 import Authentication.Sessions;
 import Classes.Utilities.Resources;
 import static Database.DBConnect.getConnection;
@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -243,97 +244,113 @@ public class Login extends javax.swing.JFrame {
     private void jButton1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton1KeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            // TODO add your handling code here:
-            String username = user.getText();
-            String pass = password.getText();
-
-            Encrpytion enc = new Encrpytion();
-            String passcode = enc.encrypt(pass);
-
-            try {
-                Connection conn = getConnection();
-                Statement stmt = conn.createStatement();
-                String sql = "SELECT * FROM Tienda.sales_staffs"
-                        + " where (first_name = '" + username + "' AND password = '" + passcode + "') AND active = '1'";
-                ResultSet rs = stmt.executeQuery(sql);
-                //STEP 4: Extract data from result set
-                if (rs.next()) {
-                    //Retrieve by column name
-                    String fname = rs.getString("first_name");
-                    String lname = rs.getString("last_name");
-                    //response
-                    this.dispose();
-                    String user = fname + " " + lname;
-                    Sessions ssl = new Sessions();
-                    ssl.setLoggedUser(user);
-                    UIv2 UI = new UIv2();
-                } else {
-                    errormsg.setText("Credentials not correct / Suspended! Try again");
-                    /* AudioPlayer Aud = new AudioPlayer();
-                    Aud.Playme("failure"); */
-                }
-                // STEP 5: Clean-up environment
-                rs.close();
-                // finally block used to close resources
-                stmt.close();
-                conn.close();
-            } catch (SQLException | ClassNotFoundException | ParseException se) {
-                // Handle errors for JDBC
-                se.printStackTrace();
-            }
-
+            doLogin();
         }
     }//GEN-LAST:event_jButton1KeyPressed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        String username = user.getText();
-        String pass = password.getText();
-
-        Encrpytion enc = new Encrpytion();
-        String passcode = enc.encrypt(pass);
-
-        try {
-            Connection conn = getConnection();
-            Statement stmt = conn.createStatement();
-
-            String sql = "SELECT ss.*, r.role_name "
-                    + "FROM Tienda.sales_staffs ss "
-                    + "INNER JOIN Tienda.roles r ON ss.role_id = r.role_id "
-                    + "WHERE ss.first_name = '" + username + "' AND ss.password = '" + passcode + "' AND ss.active = '1'";
-
-            ResultSet rs = stmt.executeQuery(sql);
-            //STEP 4: Extract data from result set
-            if (rs.next()) {
-                //Retrieve by column name
-                String fname = rs.getString("first_name");
-                String lname = rs.getString("last_name");
-                String userid = rs.getString("staff_id");
-                String myrole = rs.getString("role_name");
-                System.out.println(myrole + " role id");
-                //response
-                this.dispose();
-                String user = fname + " " + lname;
-                Sessions ssl = new Sessions();
-                ssl.setLoggedUser(user);
-                ssl.setLoggedUserId(userid);
-                ssl.setCurrentUserRole(myrole);
-                UIv2 UI = new UIv2();
-            } else {
-                errormsg.setText("Credentials not correct / Suspended! Try again");
-                /* AudioPlayer Aud = new AudioPlayer();
-                Aud.Playme("failure"); */
-            }
-            // STEP 5: Clean-up environment
-            rs.close();
-            // finally block used to close resources
-            stmt.close();
-            conn.close();
-        } catch (SQLException | ClassNotFoundException | ParseException se) {
-            // Handle errors for JDBC
-            se.printStackTrace();
-        }
+        doLogin();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    /** The password every new install's admin account starts with. */
+    private static final String DEFAULT_ADMIN_PASSWORD = "12345";
+    private static final int MAX_FAILURES = 5;
+    private static final long LOCKOUT_MS = 30_000;
+    private int failures = 0;
+    private long lockedUntil = 0;
+
+    /**
+     * Check the typed name and password. The query is parameterised (typed
+     * text can never change the SQL) and the password is checked against its
+     * one-way hash. Several wrong attempts lock the form for 30 seconds.
+     */
+    private void doLogin() {
+        long now = System.currentTimeMillis();
+        if (now < lockedUntil) {
+            errormsg.setText("Too many attempts. Wait " + ((lockedUntil - now) / 1000 + 1) + " seconds.");
+            return;
+        }
+        String username = user.getText().trim();
+        String pass = new String(password.getPassword());
+        String sql = "SELECT ss.staff_id, ss.first_name, ss.last_name, ss.password, r.role_name "
+                + "FROM Tienda.sales_staffs ss "
+                + "INNER JOIN Tienda.roles r ON ss.role_id = r.role_id "
+                + "WHERE ss.first_name = ? AND ss.active = '1'";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    if (!Passwords.verify(pass, rs.getString("password"))) {
+                        continue;
+                    }
+                    String userid = rs.getString("staff_id");
+                    if (DEFAULT_ADMIN_PASSWORD.equals(pass) && !forcePasswordChange(conn, userid)) {
+                        errormsg.setText("Choose a new password to continue.");
+                        return;
+                    }
+                    failures = 0;
+                    Sessions ssl = new Sessions();
+                    ssl.setLoggedUser(rs.getString("first_name") + " " + rs.getString("last_name"));
+                    ssl.setLoggedUserId(userid);
+                    ssl.setCurrentUserRole(rs.getString("role_name"));
+                    this.dispose();
+                    new UIv2();
+                    return;
+                }
+            }
+            if (++failures >= MAX_FAILURES) {
+                failures = 0;
+                lockedUntil = System.currentTimeMillis() + LOCKOUT_MS;
+            }
+            errormsg.setText("Credentials not correct / Suspended! Try again");
+        } catch (SQLException | ClassNotFoundException | ParseException se) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, "Login failed", se);
+            errormsg.setText("Could not check your login. Please try again.");
+        } finally {
+            password.setText("");
+        }
+    }
+
+    /**
+     * The account still has the factory password: ask for a new one.
+     * @return true once a new password has been saved
+     */
+    private boolean forcePasswordChange(Connection conn, String staffId) throws SQLException {
+        javax.swing.JPasswordField first = new javax.swing.JPasswordField(16);
+        javax.swing.JPasswordField second = new javax.swing.JPasswordField(16);
+        javax.swing.JPanel form = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 4, 4));
+        form.add(new javax.swing.JLabel("<html>This account still uses the default password.<br>"
+                + "Choose a new one (at least 8 characters).</html>"));
+        form.add(new javax.swing.JLabel("New password"));
+        form.add(first);
+        form.add(new javax.swing.JLabel("Repeat new password"));
+        form.add(second);
+        while (true) {
+            int choice = javax.swing.JOptionPane.showConfirmDialog(this, form, "Set a new password",
+                    javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE);
+            if (choice != javax.swing.JOptionPane.OK_OPTION) {
+                return false;
+            }
+            String a = new String(first.getPassword());
+            String b = new String(second.getPassword());
+            String problem = a.length() < 8 ? "The password must be at least 8 characters."
+                    : DEFAULT_ADMIN_PASSWORD.equals(a) ? "Choose a password other than the default."
+                    : !a.equals(b) ? "The two passwords do not match." : null;
+            if (problem != null) {
+                javax.swing.JOptionPane.showMessageDialog(this, problem, "Set a new password",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+                continue;
+            }
+            try (PreparedStatement up = conn.prepareStatement(
+                    "UPDATE Tienda.sales_staffs SET password = ? WHERE staff_id = ?")) {
+                up.setString(1, Passwords.hash(a));
+                up.setString(2, staffId);
+                up.executeUpdate();
+            }
+            return true;
+        }
+    }
 
     
     public static void login() {

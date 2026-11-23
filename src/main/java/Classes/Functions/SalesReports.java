@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public final class SalesReports {
 
-    private static final ZoneId ZONE = ZoneId.of("Europe/Paris");
+    private static final ZoneId ZONE = ZoneId.systemDefault();
     private static final DateTimeFormatter MONTH = DateTimeFormatter.ofPattern("yyyy-MM");
 
     /** One sold line item, already resolved to a date and revenue. */

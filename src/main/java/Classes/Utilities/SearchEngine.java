@@ -28,36 +28,6 @@ import org.json.simple.parser.JSONParser;
  */
 public class SearchEngine {
 
-    public String[] ProductsearchSuggestions(String search) throws MalformedURLException, IOException, org.json.simple.parser.ParseException {
-        JSONParser parser = new JSONParser();
-        search = search.replace(" ", "+");
-        URL oracle
-                = new URL("http://suggestqueries.google.com/complete/search?q=" + search + "&client=firefox&hl=fr");
-        URLConnection yc = oracle.openConnection();
-        String val;
-        try ( BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()))) {
-            val = "";
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                Object obj = parser.parse(inputLine);
-                JSONArray array = new JSONArray();
-                array.put(obj);
-                for (Object o : array) {
-                    val = o.toString();
-                }
-            }
-        }
-        System.out.println("this is the data type" + val.getClass().getName());
-        System.out.println("this is the content" + val);
-        String v[] = val.replace("[", "").replace("\"", "").split(",");
-        if (v.length == 1 && v[0].equals("")) {
-            return new String[0];
-        } else {
-            System.out.println("V emitted" + v.toString());
-            return v;
-        }
-    }
-
     public String[] productsSearch(String Search) throws ClassNotFoundException, ParseException, SQLException {
         ArrayList<Product> products = Products.listProductOnly();
         final String needle = Search == null ? "" : Search.trim().toLowerCase();

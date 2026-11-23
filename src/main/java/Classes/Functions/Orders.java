@@ -48,20 +48,17 @@ public class Orders {
             //System.out.println(product_id.substring(0, product_id.indexOf('-')));
             //product_id = (product_id.split(" - ", 2)[0]);
             product_id = product_id.split(":")[1];
-            LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+            LocalDate d1 = LocalDate.now(ZoneId.systemDefault());
             if (backdated != null) {
                 d1 = LocalDate.parse(backdated);
             }
             String today = "" + d1;
             String price = getProductPrice(product_id);
-            String sql
-                    = "INSERT INTO sales_order_items"
-                    + "(product_id,quantity,list_price,discount,date) VALUES ('" + product_id + "',"
-                    + "'" + quantity + "','"+ price +"','" + discount + "','" + milliConverter(today) + "')";
-            int i = stmt.executeUpdate(sql);
-            if (i > 0) {
-                System.out.println(sql);
-            } else {
+            int i = Database.Sql.prepare(conna,
+                    "INSERT INTO sales_order_items"
+                    + "(product_id,quantity,list_price,discount,date) VALUES (?,?,?,?,?)",
+                    product_id, quantity, price, discount, milliConverter(today)).executeUpdate();
+            if (i <= 0) {
                 return false;
             }
 
@@ -82,10 +79,9 @@ public class Orders {
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query 
 
-            String updatequery
-                    = "UPDATE production_brands set brand_name='" + brandname + "'"
-                    + "where brand_id='" + id + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            int rsu = Database.Sql.prepare(conna,
+                    "UPDATE production_brands SET brand_name = ? WHERE brand_id = ?",
+                    brandname, id).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -104,9 +100,8 @@ public class Orders {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query 
-            String updatequery
-                    = "DELETE production_brands where brand_id='" + id + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            int rsu = Database.Sql.prepare(conna,
+                    "DELETE FROM production_brands WHERE brand_id = ?", id).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -128,7 +123,7 @@ public class Orders {
         try {
 //            Connection conna = DBConnection.getConnectionInstance().getConnection();
             DBConnection dbc = DBConnection.getConnectionInstance();
-            LocalDate today = LocalDate.now(ZoneId.of("Europe/Paris"));
+            LocalDate today = LocalDate.now(ZoneId.systemDefault());
             String dateToday = String.valueOf(today);
             Long dateofOrder;
             
@@ -187,13 +182,10 @@ public class Orders {
             String sqlquery = "SELECT * FROM Tienda.sales_order_items"
                     + " JOIN production_products ON"
                     + " sales_order_items.product_id = production_products.product_id"
-                    + " WHERE date = '"+ dateofOrder + "'"
+                    + " WHERE date = ?"
                     + " ORDER BY order_id DESC";
-//             Statement stmt = conna.createStatement();
-                    Connection con = dbc.getConnection();
-                    Statement stmt;
-                    stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlquery);
+            Connection con = dbc.getConnection();
+            ResultSet rs = Database.Sql.prepare(con, sqlquery, dateofOrder).executeQuery();
             while (rs.next()) {
 
                 String quantity = rs.getString("quantity");
@@ -242,22 +234,17 @@ public class Orders {
         try {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
-            String filterProduct
-                    = "Select product_id from Tienda.sales_order_items where order_id = '" + row + "'";
-             ResultSet rst = stmt.executeQuery(filterProduct);
+            ResultSet rst = Database.Sql.prepare(conna,
+                    "SELECT product_id FROM Tienda.sales_order_items WHERE order_id = ?", row).executeQuery();
             while (rst.next()) {
                 productCode = IntegerConverter(rst.getString("product_id"));
             }
             
-            String updatequery
-                    = "DELETE from Tienda.sales_order_items where order_id = '" + row + "'";
-            
-            String sql
-                    = "UPDATE production_stocks SET quantity = quantity+"+quantity+" WHERE product_id='" + productCode + "'";
-            int i = stmt.executeUpdate(sql);
-          
-             
-            int rsu = stmt.executeUpdate(updatequery);
+            Database.Sql.prepare(conna,
+                    "UPDATE production_stocks SET quantity = quantity + CAST(? AS DOUBLE PRECISION) WHERE product_id = ?",
+                    quantity, productCode).executeUpdate();
+            int rsu = Database.Sql.prepare(conna,
+                    "DELETE FROM Tienda.sales_order_items WHERE order_id = ?", row).executeUpdate();
             if (rsu != 1) {
                 JOptionPane.showMessageDialog(null, "There was a problem item "+row+" not found",
                         "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -281,20 +268,18 @@ public class Orders {
             Products products = new Products();
             String productCode;
             productCode = Products.getProductId(product_name);
-            LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+            LocalDate d1 = LocalDate.now(ZoneId.systemDefault());
 
 //            if (backdated != null) {
 //                d1 = LocalDate.parse(backdated);
 //            }
             
             String today = "" + d1;
-            String sql
-             ="UPDATE sales_order_items SET quantity = '" + quantity + "', list_price = '"+ price +"', discount = '" + discount + "' WHERE order_id = '" + order_id + "'";
-            int i = stmt.executeUpdate(sql);
-            if (i > 0) {
-                System.out.println(sql);
-            } else {
-                JOptionPane.showMessageDialog(null, "There was a problem item "+sql+" not found",
+            int i = Database.Sql.prepare(conna,
+                    "UPDATE sales_order_items SET quantity = ?, list_price = ?, discount = ? WHERE order_id = ?",
+                    quantity, price, discount, order_id).executeUpdate();
+            if (i <= 0) {
+                JOptionPane.showMessageDialog(null, "There was a problem: order item " + order_id + " not found",
                         "ERROR", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
@@ -320,20 +305,16 @@ public class Orders {
                 d1 = LocalDate.parse(backdated);
             }
             else {
-                d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+                d1 = LocalDate.now(ZoneId.systemDefault());
             }
             String today = "" + d1;
             String price = getProductPricefromName(product_name);
             String product_id = getProductId(product_name);
-            String sql
-                    = "INSERT INTO Tienda.sales_order_items"
-                    + "(product_id, quantity, item_id, discount, date) VALUES ('" + product_id + "',"
-                    + "'" + quantity + "','"+ product_id +"','" + discount + "','" + milliConverter(today) + "')";
-            int i = stmt.executeUpdate(sql);
-            if (i > 0) {
-                System.out.println(sql);
-                System.out.println("Succesfully inserted");
-            } else {
+            int i = Database.Sql.prepare(conna,
+                    "INSERT INTO Tienda.sales_order_items"
+                    + "(product_id, quantity, item_id, discount, date) VALUES (?,?,?,?,?)",
+                    product_id, quantity, product_id, discount, milliConverter(today)).executeUpdate();
+            if (i <= 0) {
                 return false;
             }
 
@@ -354,10 +335,8 @@ public class Orders {
                         .getConnection();
         Statement stmt = conna.createStatement();
         String id = "0";
-        String check
-                = "SELECT customer_id FROM Tienda.sales_orders"
-                + " WHERE customer_id = '" + code + "'";
-        ResultSet rs = stmt.executeQuery(check);
+        ResultSet rs = Database.Sql.prepare(conna,
+                "SELECT customer_id FROM Tienda.sales_orders WHERE customer_id = ?", code).executeQuery();
         return rs.next();
     }
    
@@ -388,11 +367,9 @@ public class Orders {
         // Construct the SQL query for insertion
         String sql = "INSERT INTO Tienda.sales_orders "
                    + "(order_id, customer_id, order_status, product, order_date, shipped_date, store_id, staff_id) "
-                   + "VALUES ('" + order_id + "', '" + randomNumber + "', '" + status + "', '" + product_id + "', '"
-                   + formattedDate + "', '"+formattedDate+"', '"+formattedDate+"', '" + status + "')";
-
-        // Execute the SQL query
-        int rowsAffected = statement.executeUpdate(sql);
+                   + "VALUES (?,?,?,?,?,?,?,?)";
+        int rowsAffected = Database.Sql.prepare(connection, sql, order_id, randomNumber, status,
+                product_id, formattedDate, formattedDate, formattedDate, status).executeUpdate();
 
         // Check if the insertion was successful
         if (rowsAffected > 0) {

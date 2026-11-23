@@ -32,7 +32,7 @@ public class Notifications {
     
     
 
-    public static LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
+    public static LocalDate d1 = LocalDate.now(ZoneId.systemDefault());
     public static String today = "" + d1;
 
     public static boolean deleteRow(int emailId) throws ClassNotFoundException, ClassNotFoundException {
@@ -40,9 +40,8 @@ public class Notifications {
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query 
-            String updatequery
-                    = "DELETE notifications where notice_id='" + emailId + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            String updatequery = "DELETE notifications where notice_id=?";
+            int rsu = Database.Sql.prepare(stmt.getConnection(), updatequery, emailId).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -71,11 +70,9 @@ public class Notifications {
 
             String message = "Product " + product_name + " is nearly depleted. Remaining " + quantity;
             String title = "Out of Stock";
-            String sql
-            = "INSERT INTO notifications (date,title,message,viewed,code)"
-            + "VALUES ('" + milliConverter(today) + "','" + title + "','" + message + "',0,'" + productId + "')";
+            String sql = "INSERT INTO notifications (date,title,message,viewed,code)VALUES (?,?,?,0,?)";
             if(!confirmCheck(productId)){
-                int i = stmt.executeUpdate(sql);
+                int i = Database.Sql.prepare(stmt.getConnection(), sql, milliConverter(today), title, message, productId).executeUpdate();
                 return i > 0;
             }
             // STEP 4: Clean-up environment 
@@ -91,9 +88,8 @@ public class Notifications {
             Statement stmt;
             // STEP 3: Execute a query
             stmt = conna.createStatement();
-            String sql
-            = "SELECT code from Tienda.system_notifications WHERE code = '" + code + "'";
-            ResultSet rs = stmt.executeQuery(sql);
+            String sql = "SELECT code from Tienda.system_notifications WHERE code = ?";
+            ResultSet rs = Database.Sql.prepare(stmt.getConnection(), sql, code).executeQuery();
              if (rs.next()) {
             return true;
              }

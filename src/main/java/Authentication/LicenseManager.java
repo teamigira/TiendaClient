@@ -1,34 +1,40 @@
 package Authentication;
 
+import java.net.NetworkInterface;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.MessageDigest;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Locale;
 import java.util.prefs.Preferences;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Monthly activation + premium licensing for Tienda.
+ * Signed, computer-bound licences.
  *
- * <p>Design goals (from product owner):
- * <ul>
- *   <li>A new activation code every month. One code is valid for the whole
- *       calendar month it was issued for; a fresh code is issued each month.</li>
- *   <li>Once a valid code is entered the activation lasts one month, so the app
- *       launches straight to login until it expires (state is remembered in
- *       {@link Preferences}, including the expiry date).</li>
- *   <li>The code determines the feature tier (STANDARD vs PREMIUM). Premium
- *       unlocks features such as receipt templates and advanced reports.</li>
- *   <li>Validation is done locally for now using a deterministic HMAC so codes
- *       can be generated offline. A seam ({@link #validateOnline}) is provided
- *       for the future "compare against our online database" check.</li>
- * </ul>
+ * <p>A licence key is {@code TIENDA1.<payload>.<signature>} (base64url). The
+ * payload is {@code customer|tier|machine|expiry|issued}; the signature is
+ * Ed25519 over the payload, made with the private key that only the seller
+ * holds (see {@code tools/licensing}). The app contains only the public key,
+ * so it can check a licence but cannot create one, and decompiling the app
+ * does not help anyone forge keys.
  *
- * <p>The code is 16 digits, shown to the user as four groups of four, matching
- * the four input boxes on the launcher screen, e.g. {@code 1234 5678 9012 3456}.
- * The first digit encodes the tier; the remaining fifteen are derived from
- * HMAC-SHA256(secret, date + tier).
+ * <p>The key is stored as-is and re-verified on every start: changing the
+ * stored tier or expiry, or copying the key to another computer, does not
+ * work, because the signature or the computer code no longer matches.
+ *
+ * <p>Without a licence the app runs as a {@value #TRIAL_DAYS}-day Standard
+ * trial.
  *
  * @author Nkanabo
  */
@@ -38,199 +44,342 @@ public final class LicenseManager {
     public static final int TIER_STANDARD = 1;
     public static final int TIER_PREMIUM = 2;
 
+    /** Length of the free trial, counted from the first start. */
+    public static final int TRIAL_DAYS = 14;
+
     /**
-     * Shared secret used to derive daily codes. Keep this private to the build.
-     * Changing it invalidates every previously issued code. The online service,
-     * when added, must use the same secret (or sign codes server-side).
+     * Public half of the seller's Ed25519 signing key (X.509, base64).
+     * Generated with {@code tools/licensing}; the private half is kept by the
+     * seller and must never be added to this repository.
      */
-    private static final String SECRET = "Tienda-POS-2.0-daily-activation-secret";
+    private static final String PUBLIC_KEY = "MCowBQYDK2VwAyEADh4ky4ATk64x1syyTZEuYNMTC2lo93f8e7mazzHCkV8=";
 
-    /** Time zone the "current day" is measured in (matches the rest of the app). */
-    private static final ZoneId ZONE = ZoneId.of("Europe/Paris");
-
+    private static final String PREFIX = "TIENDA1";
     private static final DateTimeFormatter DAY = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    /** Codes are keyed by calendar month (a code is valid for its whole month). */
-    private static final DateTimeFormatter MONTH = DateTimeFormatter.ofPattern("yyyy-MM");
-    /** Human-friendly expiry date shown in the UI. */
-    private static final DateTimeFormatter PRETTY = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+    private static final DateTimeFormatter PRETTY = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
     private static final Preferences PREFS = Preferences.userRoot().node("TiendaLicense");
 
-    /** Set to true once an online endpoint is available. */
-    private static final boolean ONLINE_CHECK_ENABLED = false;
+    /** The contents of a licence key that passed the checks. */
+    public static final class Licence {
+        public final String customer;
+        public final int tier;
+        public final String machine;
+        public final LocalDate expiry;
+        public final LocalDate issued;
 
-    /** Current tier for this running session (set after a successful validation/restore). */
+        Licence(String customer, int tier, String machine, LocalDate expiry, LocalDate issued) {
+            this.customer = customer;
+            this.tier = tier;
+            this.machine = machine;
+            this.expiry = expiry;
+            this.issued = issued;
+        }
+    }
+
     private static int currentTier = TIER_INVALID;
+    private static Licence current;
+    private static boolean trial;
+    /** Key accepted by {@link #validate} and saved by {@link #recordActivation}. */
+    private static String pendingKey;
+    /** Why the last check failed, for the activation screen. */
+    private static String lastError = "";
 
     private LicenseManager() {
     }
 
-    // ------------------------------------------------------------------
-    // Code generation
-    // ------------------------------------------------------------------
-
-    /** Today's date in the app's zone. */
+    /** Today's date in this computer's time zone. */
     public static LocalDate today() {
-        return LocalDate.now(ZONE);
+        return LocalDate.now(ZoneId.systemDefault());
     }
 
+    // ------------------------------------------------------------------
+    // Checking keys
+    // ------------------------------------------------------------------
+
     /**
-     * Generate the activation code for the month containing {@code day} and the
-     * given tier. A single code is valid for the whole calendar month, so the
-     * owner issues one code per month per tier.
+     * Check a licence key against this computer and today's date.
      *
-     * @param day  any day in the month the code is valid for
-     * @param tier {@link #TIER_STANDARD} or {@link #TIER_PREMIUM}
-     * @return a 16-digit code (no spaces)
+     * @return the licence, or {@code null} (see {@link #lastError()})
      */
-    public static String generate(LocalDate day, int tier) {
-        if (tier != TIER_STANDARD && tier != TIER_PREMIUM) {
-            throw new IllegalArgumentException("Unknown tier: " + tier);
+    public static Licence check(String key) {
+        lastError = "";
+        if (key == null || key.trim().isEmpty()) {
+            lastError = "Enter a licence key.";
+            return null;
         }
-        String payload = day.format(MONTH) + "|" + tier;
-        byte[] mac = hmac(payload);
-        // Build a non-negative 15-digit number from the first 8 bytes of the MAC.
-        long value = 0L;
-        for (int i = 0; i < 8; i++) {
-            value = (value << 8) | (mac[i] & 0xFFL);
+        String[] parts = key.replaceAll("\\s", "").split("\\.");
+        if (parts.length != 3 || !PREFIX.equals(parts[0])) {
+            lastError = "This is not a Tienda licence key.";
+            return null;
         }
-        value = Math.floorMod(value, 1_000_000_000_000_000L); // 15 digits
-        String digits = String.format("%015d", value);
-        return tier + digits; // 16 digits total, first digit = tier
-    }
-
-    /** This month's code for a tier, formatted as four groups of four for display. */
-    public static String todaysCodeFormatted(int tier) {
-        return format(generate(today(), tier));
-    }
-
-    /** Alias for clarity: this month's code for a tier, formatted for display. */
-    public static String thisMonthsCodeFormatted(int tier) {
-        return todaysCodeFormatted(tier);
-    }
-
-    /** Format a 16-digit code as {@code 1234 5678 9012 3456}. */
-    public static String format(String code16) {
-        String c = code16.replaceAll("\\s", "");
-        if (c.length() != 16) {
-            return code16;
+        byte[] payload;
+        try {
+            payload = Base64.getUrlDecoder().decode(parts[1]);
+            Signature v = Signature.getInstance("Ed25519");
+            v.initVerify(publicKey());
+            v.update(payload);
+            if (!v.verify(Base64.getUrlDecoder().decode(parts[2]))) {
+                lastError = "This licence key is not valid.";
+                return null;
+            }
+        } catch (Exception e) {
+            lastError = "This licence key is not valid.";
+            return null;
         }
-        return c.substring(0, 4) + " " + c.substring(4, 8) + " "
-                + c.substring(8, 12) + " " + c.substring(12, 16);
+        String[] f = new String(payload, StandardCharsets.UTF_8).split("\\|", -1);
+        Licence lic;
+        try {
+            lic = new Licence(f[0], Integer.parseInt(f[1]), f[2],
+                    LocalDate.parse(f[3], DAY), LocalDate.parse(f[4], DAY));
+        } catch (RuntimeException e) {
+            lastError = "This licence key is not valid.";
+            return null;
+        }
+        if (f.length != 5 || (lic.tier != TIER_STANDARD && lic.tier != TIER_PREMIUM)) {
+            lastError = "This licence key is not valid.";
+            return null;
+        }
+        if (!machineMatches(lic.machine)) {
+            lastError = "This licence is for another computer. This computer's code is " + machineCode() + ".";
+            return null;
+        }
+        if (today().isAfter(lic.expiry)) {
+            lastError = "This licence expired on " + lic.expiry.format(PRETTY) + ".";
+            return null;
+        }
+        if (clockWentBack()) {
+            lastError = "This computer's date is earlier than when Tienda last ran. Correct the date and try again.";
+            return null;
+        }
+        return lic;
     }
-
-    // ------------------------------------------------------------------
-    // Validation
-    // ------------------------------------------------------------------
 
     /**
-     * Validate a typed code for the current month.
+     * Check a typed key (activation screen).
      *
-     * @param typed the code as typed (spaces/dashes ignored)
-     * @return the tier if the code is this month's code, otherwise
-     *         {@link #TIER_INVALID}
+     * @return the tier, or {@link #TIER_INVALID}
      */
     public static int validate(String typed) {
-        if (typed == null) {
+        Licence lic = check(typed);
+        if (lic == null) {
             return TIER_INVALID;
         }
-        String code = typed.replaceAll("[^0-9]", "");
-        if (code.length() != 16) {
-            return TIER_INVALID;
-        }
-
-        // Future: authoritative check against the online database.
-        if (ONLINE_CHECK_ENABLED) {
-            int online = validateOnline(code);
-            if (online != TIER_INVALID) {
-                return online;
-            }
-        }
-
-        LocalDate day = today();
-        for (int tier : new int[]{TIER_STANDARD, TIER_PREMIUM}) {
-            if (constantTimeEquals(code, generate(day, tier))) {
-                return tier;
-            }
-        }
-        return TIER_INVALID;
+        pendingKey = typed.replaceAll("\\s", "");
+        return lic.tier;
     }
 
-    /**
-     * Placeholder for the future online validation against our server.
-     * Returns {@link #TIER_INVALID} until implemented.
-     */
-    private static int validateOnline(String code) {
-        // TODO: POST the code to the licensing endpoint and map the response
-        //       to TIER_STANDARD / TIER_PREMIUM. On network failure, fall back
-        //       to the local check (handled by the caller).
-        return TIER_INVALID;
+    /** Why the last check failed (empty if it succeeded). */
+    public static String lastError() {
+        return lastError;
     }
 
-    // ------------------------------------------------------------------
-    // Activation state ("valid for one month from activation")
-    // ------------------------------------------------------------------
-
-    /**
-     * Record a successful activation. The licence is then valid for one month
-     * from today, so the app launches straight to login until it expires.
-     */
+    /** Save the key accepted by the last successful {@link #validate}. */
     public static void recordActivation(int tier) {
-        currentTier = tier;
-        LocalDate now = today();
-        PREFS.put("activatedDate", now.format(DAY));
-        PREFS.put("expiryDate", now.plusMonths(1).format(DAY));
-        PREFS.putInt("tier", tier);
+        if (pendingKey == null) {
+            return;
+        }
+        PREFS.put("licenceKey", pendingKey);
+        current = check(pendingKey);
+        currentTier = current != null ? current.tier : TIER_INVALID;
+        trial = false;
+        pendingKey = null;
+        touchClock();
     }
 
     /**
-     * @return true if a non-expired activation is on record (within one month of
-     *         activation). Also restores the session tier when true. The method
-     *         name is kept for backwards compatibility with existing callers.
+     * Restore the licence at startup: a stored key that still checks out, or
+     * else a running trial. (Name kept for existing callers.)
+     *
+     * @return true if the app may start (licensed or in trial)
      */
     public static boolean isActivatedForToday() {
-        LocalDate expiry = getExpiry();
-        if (expiry != null && !today().isAfter(expiry)) {
-            currentTier = PREFS.getInt("tier", TIER_STANDARD);
+        String stored = PREFS.get("licenceKey", "");
+        if (!stored.isEmpty()) {
+            current = check(stored);
+            if (current != null) {
+                currentTier = current.tier;
+                trial = false;
+                touchClock();
+                return true;
+            }
+        }
+        current = null;
+        if (trialDaysLeft() > 0 && !clockWentBack()) {
+            currentTier = TIER_STANDARD;
+            trial = true;
+            touchClock();
             return true;
         }
+        currentTier = TIER_INVALID;
+        trial = false;
         return false;
     }
 
-    /**
-     * @return the date the current activation expires, or {@code null} if there
-     *         is no (valid) stored expiry.
-     */
-    public static LocalDate getExpiry() {
-        String stored = PREFS.get("expiryDate", "");
-        if (stored.isEmpty()) {
-            return null;
+    // ------------------------------------------------------------------
+    // Trial
+    // ------------------------------------------------------------------
+
+    /** Days left in the free trial (0 when it has ended). */
+    public static long trialDaysLeft() {
+        String start = PREFS.get("trialStart", "");
+        LocalDate first;
+        if (start.isEmpty()) {
+            first = today();
+            PREFS.put("trialStart", first.format(DAY));
+        } else {
+            try {
+                first = LocalDate.parse(start, DAY);
+            } catch (RuntimeException e) {
+                return 0;
+            }
         }
-        try {
-            return LocalDate.parse(stored, DAY);
-        } catch (Exception e) {
-            return null;
-        }
+        long used = Math.max(0, ChronoUnit.DAYS.between(first, today()));
+        return Math.max(0, TRIAL_DAYS - used);
     }
 
-    /**
-     * @return a friendly "valid until" date (e.g. {@code 21-Dec-2026}) for the
-     *         active licence, or an empty string when nothing is active.
-     */
-    public static String expiryFormatted() {
-        LocalDate expiry = getExpiry();
-        return expiry == null ? "" : expiry.format(PRETTY);
-    }
-
-    /** Clear the stored activation (forces re-activation on next launch). */
-    public static void clearActivation() {
-        currentTier = TIER_INVALID;
-        PREFS.remove("activatedDate");
-        PREFS.remove("expiryDate");
-        PREFS.remove("tier");
+    /** True while running on the free trial rather than a licence. */
+    public static boolean isTrial() {
+        return trial;
     }
 
     // ------------------------------------------------------------------
-    // Feature gating
+    // Clock rollback
+    // ------------------------------------------------------------------
+
+    private static boolean clockWentBack() {
+        String seen = PREFS.get("lastSeen", "");
+        if (seen.isEmpty()) {
+            return false;
+        }
+        try {
+            // One day of slack for time-zone changes.
+            return today().isBefore(LocalDate.parse(seen, DAY).minusDays(1));
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
+    private static void touchClock() {
+        String seen = PREFS.get("lastSeen", "");
+        LocalDate t = today();
+        try {
+            if (!seen.isEmpty() && !t.isAfter(LocalDate.parse(seen, DAY))) {
+                return;
+            }
+        } catch (RuntimeException ignore) {
+        }
+        PREFS.put("lastSeen", t.format(DAY));
+    }
+
+    // ------------------------------------------------------------------
+    // Computer code
+    // ------------------------------------------------------------------
+
+    /**
+     * This computer's code, e.g. {@code K3P9Q-7XW2M-D4R8T-B6N1C}. The customer
+     * sends it to the seller, who puts it in the licence.
+     */
+    public static String machineCode() {
+        return machineIds().get(0);
+    }
+
+    private static boolean machineMatches(String code) {
+        if ("ANY".equals(code)) {
+            return true; // site licence, not tied to one computer
+        }
+        return machineIds().contains(code);
+    }
+
+    /**
+     * Candidate codes: computer name + system + each physical network card.
+     * Any one matching is enough, so plugging in a USB network adapter does
+     * not break the licence. The first is the one shown to the customer.
+     */
+    private static List<String> machineIds() {
+        String host = firstNonBlank(System.getenv("COMPUTERNAME"), System.getenv("HOSTNAME"), hostName());
+        String base = host.toUpperCase(Locale.ROOT) + "|" + System.getProperty("os.name", "");
+        List<String> macs = new ArrayList<>();
+        try {
+            Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
+            while (nics != null && nics.hasMoreElements()) {
+                NetworkInterface ni = nics.nextElement();
+                byte[] mac = ni.getHardwareAddress();
+                String name = ni.getName().toLowerCase(Locale.ROOT);
+                if (mac == null || mac.length != 6 || ni.isLoopback() || ni.isVirtual()
+                        || name.matches("^(vir|docker|veth|br-|vmnet|vbox|tun|tap|zt|wg|vethernet).*")) {
+                    continue;
+                }
+                StringBuilder sb = new StringBuilder();
+                for (byte b : mac) {
+                    sb.append(String.format("%02X", b));
+                }
+                macs.add(sb.toString());
+            }
+        } catch (Exception ignore) {
+        }
+        Collections.sort(macs);
+        List<String> ids = new ArrayList<>();
+        for (String m : macs) {
+            ids.add(code(base + "|" + m));
+        }
+        if (ids.isEmpty()) {
+            ids.add(code(base));
+        }
+        return ids;
+    }
+
+    /** First 100 bits of SHA-256, Crockford base32, four groups of five. */
+    private static String code(String s) {
+        try {
+            byte[] h = MessageDigest.getInstance("SHA-256").digest(s.getBytes(StandardCharsets.UTF_8));
+            String alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+            StringBuilder out = new StringBuilder();
+            int bits = 0, value = 0, chars = 0;
+            for (byte b : h) {
+                value = ((value << 8) | (b & 0xFF)) & 0xFFFF;
+                bits += 8;
+                while (bits >= 5 && chars < 20) {
+                    out.append(alphabet.charAt((value >> (bits - 5)) & 31));
+                    bits -= 5;
+                    chars++;
+                    if (chars % 5 == 0 && chars < 20) {
+                        out.append('-');
+                    }
+                }
+                if (chars >= 20) {
+                    break;
+                }
+            }
+            return out.toString();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static String hostName() {
+        try {
+            return java.net.InetAddress.getLocalHost().getHostName();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private static String firstNonBlank(String... values) {
+        for (String v : values) {
+            if (v != null && !v.trim().isEmpty()) {
+                return v.trim();
+            }
+        }
+        return "";
+    }
+
+    private static PublicKey publicKey() throws Exception {
+        return KeyFactory.getInstance("Ed25519")
+                .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(PUBLIC_KEY)));
+    }
+
+    // ------------------------------------------------------------------
+    // Status
     // ------------------------------------------------------------------
 
     public static int currentTier() {
@@ -242,36 +391,45 @@ public final class LicenseManager {
         return currentTier == TIER_PREMIUM;
     }
 
+    /** Who the licence was issued to ("" on trial). */
+    public static String customer() {
+        return current == null ? "" : current.customer;
+    }
+
     public static String tierName(int tier) {
         switch (tier) {
-            case TIER_STANDARD: return "Standard";
+            case TIER_STANDARD: return trial ? "Trial" : "Standard";
             case TIER_PREMIUM:  return "Premium";
             default:            return "Invalid";
         }
     }
 
-    // ------------------------------------------------------------------
-    // helpers
-    // ------------------------------------------------------------------
-
-    private static byte[] hmac(String payload) {
-        try {
-            Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
-            return mac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            throw new IllegalStateException("Unable to compute licence code", e);
+    /** Expiry of the licence, or the last day of the trial. */
+    public static LocalDate getExpiry() {
+        if (current != null) {
+            return current.expiry;
         }
+        if (trial) {
+            return today().plusDays(trialDaysLeft());
+        }
+        return null;
     }
 
-    private static boolean constantTimeEquals(String a, String b) {
-        if (a.length() != b.length()) {
-            return false;
-        }
-        int diff = 0;
-        for (int i = 0; i < a.length(); i++) {
-            diff |= a.charAt(i) ^ b.charAt(i);
-        }
-        return diff == 0;
+    /** A friendly expiry date (e.g. {@code 21-Dec-2026}), or "" when nothing is active. */
+    public static String expiryFormatted() {
+        LocalDate expiry = getExpiry();
+        return expiry == null ? "" : expiry.format(PRETTY);
+    }
+
+    /** Remove the stored licence (the next start asks for a key again). */
+    public static void clearActivation() {
+        currentTier = TIER_INVALID;
+        current = null;
+        trial = false;
+        PREFS.remove("licenceKey");
+        // Old monthly-code activation, no longer used.
+        PREFS.remove("activatedDate");
+        PREFS.remove("expiryDate");
+        PREFS.remove("tier");
     }
 }

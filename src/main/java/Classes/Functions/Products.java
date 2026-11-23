@@ -59,12 +59,9 @@ public class Products {
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query
             String check;
-            check
-                    = "SELECT product_name FROM Tienda.production_products"
-                    + " WHERE product_name = '"
-                    + product_name + "'";
-            ResultSet rscheck
-                    = stmt.executeQuery(check);
+            ResultSet rscheck = Database.Sql.prepare(conna,
+                    "SELECT product_name FROM Tienda.production_products WHERE product_name = ?",
+                    product_name).executeQuery();
             if (rscheck.next()) {
                 JOptionPane.showMessageDialog(
                         new UIv2(), "Product exists",
@@ -72,18 +69,12 @@ public class Products {
                         JOptionPane.WARNING_MESSAGE);
                 return false;
             } else {
-                String sql
-                        = "INSERT INTO Tienda. production_products "
+                int i = Database.Sql.prepare(conna,
+                        "INSERT INTO Tienda.production_products "
                         + "(product_name,brand_id,category_id,model_year,"
-                        + "expiry_date,list_price,retail_price) VALUES"
-                        + " ('" + product_name + "','"
-                        + brand_id + "','" + category_id
-                        + "',"
-                        + "'" + model_year + "','"
-                        + expiry_date + "','" + list_price
-                        + "',"
-                        + "'" + retail_price + "')";
-                int i = stmt.executeUpdate(sql);
+                        + "expiry_date,list_price,retail_price) VALUES (?,?,?,?,?,?,?)",
+                        product_name, brand_id, category_id, model_year,
+                        expiry_date, list_price, retail_price).executeUpdate();
                 
               
                 if (i > 0) {
@@ -119,12 +110,10 @@ public class Products {
             // STEP 1: Ensure if the product does not
             // exist
             String check;
-            check
-                    = "SELECT product_name FROM Tienda.production_products"
-                    + " WHERE code = '" + obj[0]
-                    + "' OR product_id ='" + obj[0] + "'";
-            ResultSet rscheck
-                    = stmt.executeQuery(check);
+            ResultSet rscheck = Database.Sql.prepare(conna,
+                    "SELECT product_name FROM Tienda.production_products"
+                    + " WHERE code = ? OR CAST(product_id AS VARCHAR) = ?",
+                    obj[0], obj[0]).executeQuery();
             if (rscheck.next()) {
                 JOptionPane.showMessageDialog(
                         new UIv2(), "Product exists",
@@ -150,36 +139,21 @@ public class Products {
                 13   controllablestock.getText(),
                 14   filefolder
                  */
-                String sql
-                        = "INSERT INTO Tienda.production_products "
+                int i = Database.Sql.prepare(conna,
+                        "INSERT INTO Tienda.production_products "
                         + "(product_name,brand_id,category_id,"
                         + "expiry_date,list_price,retail_price,code,ean_gtin,location,"
-                        + "unit_of_measure,comments) VALUES"
-                        + " ('" + obj[4] + "','" + obj[3]
-                        + "','" + obj[2] + "',"
-                        + "'','" + obj[7] + "','" + obj[6]
-                        + "',"
-                        + "'" + obj[0] + "','" + obj[1]
-                        + "','" + obj[5] + "','" + obj[9]
-                        + "','" + obj[11] + "')";
-                int i = stmt.executeUpdate(sql);
-                
-                String insertProductDetails = "INSERT INTO Tienda.production_products_details "
-                        + " VALUES"
-                        + " ('" + obj[0]
-                        + "','" + obj[14] + "',"
-                        + "'','" + obj[14] + "','" + obj[12]
-                        + "',"
-                        + "'" + obj[12] + "','" + obj[12]
-                        + "','" + obj[12] + "','" + obj[12]
-                        + "','" + obj[12] + "','" + obj[12]
-                        + "', '" + obj[12]
-                        + "')";
-                int j = stmt.executeUpdate(insertProductDetails);
-                
-                if (i > 0  && j > 0) {
-                    System.out.println(sql);
-                } else {
+                        + "unit_of_measure,comments) VALUES (?,?,?,'',?,?,?,?,?,?,?)",
+                        obj[4], obj[3], obj[2], obj[7], obj[6],
+                        obj[0], obj[1], obj[5], obj[9], obj[11]).executeUpdate();
+
+                int j = Database.Sql.prepare(conna,
+                        "INSERT INTO Tienda.production_products_details "
+                        + " VALUES (?,?,'',?,?,?,?,?,?,?,?,?)",
+                        obj[0], obj[14], obj[14], obj[12], obj[12], obj[12],
+                        obj[12], obj[12], obj[12], obj[12], obj[12]).executeUpdate();
+
+                if (i <= 0 || j <= 0) {
                     return false;
                 }
             }
@@ -203,11 +177,9 @@ public class Products {
             Statement stmt = conna.createStatement();
             // STEP 3: Execute a query
 
-            String updatequery
-                    = "UPDATE production_brands set brand_name='"
-                    + brandname + "'"
-                    + "where brand_id='" + id + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            int rsu = Database.Sql.prepare(conna,
+                    "UPDATE production_brands SET brand_name = ? WHERE brand_id = ?",
+                    brandname, id).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -231,10 +203,8 @@ public class Products {
             // STEP 3: Execute a query
             stmt = conna.createStatement();
 
-            String updatequery
-                    = "DELETE production_brands where brand_id='"
-                    + id + "'";
-            int rsu = stmt.executeUpdate(updatequery);
+            int rsu = Database.Sql.prepare(conna,
+                    "DELETE FROM production_brands WHERE brand_id = ?", id).executeUpdate();
             if (rsu != 1) {
                 return false;
             }
@@ -420,10 +390,9 @@ public class Products {
                     = DBConnection.getConnectionInstance()
                             .getConnection();
             Statement stmt = conna.createStatement();
-            String sql
-                    = "DELETE from Tienda.production_products where product_id = '"
-                    + productId + "'";
-            int i = stmt.executeUpdate(sql);
+            int i = Database.Sql.prepare(conna,
+                    "DELETE FROM Tienda.production_products WHERE product_id = ?",
+                    productId).executeUpdate();
             if (i != 1) {
                 JOptionPane.showMessageDialog(null,
                         "There was a problem item "
@@ -469,23 +438,13 @@ public class Products {
                         .getConnection();
         Statement stmt = conna.createStatement();
         // STEP 3: Execute a query
-        String sql
-                = "UPDATE production_products SET product_name ='"
-                + product_name + "', "
-                + "brand_id = '" +          brand_id
-                + "',category_id='" +       category_id
-                + "',model_year='" +        model_year + "',"
-                + "list_price='" +          list_price
-                + "',retail_price='" +      retail_price
-                + "' WHERE product_id='" +  product_id
-                + "'";
-        int i = stmt.executeUpdate(sql);
-        if (i > 0) {
-            System.out.println(sql);
-        } else {
-            return false;
-        }
-        return true;
+        int i = Database.Sql.prepare(conna,
+                "UPDATE production_products SET product_name = ?, brand_id = ?, "
+                + "category_id = ?, model_year = ?, list_price = ?, retail_price = ? "
+                + "WHERE product_id = ?",
+                product_name, brand_id, category_id, model_year,
+                list_price, retail_price, product_id).executeUpdate();
+        return i > 0;
     }
 
     public static String getProductPrice(String id)
@@ -496,10 +455,9 @@ public class Products {
                         .getConnection();
         Statement stmt = conna.createStatement();
         String price = "0";
-        String check
-                = "SELECT list_price FROM Tienda.production_products"
-                + " WHERE product_id = '" + id + "'";
-        ResultSet rs = stmt.executeQuery(check);
+        ResultSet rs = Database.Sql.prepare(conna,
+                "SELECT list_price FROM Tienda.production_products WHERE product_id = ?",
+                id).executeQuery();
         if (rs.next()) {
             price = rs.getString("list_price");
         }
@@ -514,10 +472,9 @@ public class Products {
                         .getConnection();
         Statement stmt = conna.createStatement();
         String price = "0";
-        String check
-                = "SELECT list_price FROM Tienda.production_products"
-                + " WHERE product_name = '" + name + "'";
-        ResultSet rs = stmt.executeQuery(check);
+        ResultSet rs = Database.Sql.prepare(conna,
+                "SELECT list_price FROM Tienda.production_products WHERE product_name = ?",
+                name).executeQuery();
         if (rs.next()) {
             price = rs.getString("list_price");
         }
@@ -574,10 +531,9 @@ public class Products {
                         .getConnection();
         Statement stmt = conna.createStatement();
         String id = "0";
-        String check
-                = "SELECT code FROM Tienda.production_products"
-                + " WHERE code = '" + code + "'";
-        ResultSet rs = stmt.executeQuery(check);
+        ResultSet rs = Database.Sql.prepare(conna,
+                "SELECT code FROM Tienda.production_products WHERE code = ?",
+                code).executeQuery();
         return rs.next();
     }
 }

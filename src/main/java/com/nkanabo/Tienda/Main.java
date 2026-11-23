@@ -158,6 +158,14 @@ private static void makeFolder() {
 
         try {
             MasterData.InsertMasterData();
+            // Replace old reversible staff passwords with one-way hashes.
+            try (java.sql.Connection c = Database.DBConnect.getConnection()) {
+                int n = Authentication.Passwords.migrateLegacy(c);
+                if (n > 0) {
+                    Logger.getLogger(Main.class.getName()).log(Level.INFO,
+                            "Converted {0} staff passwords to hashes", n);
+                }
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
@@ -170,7 +178,10 @@ private static void makeFolder() {
         // straight to login; otherwise show the activation screen. The old
         // product-key/system_app_key check is retained in Auth for reference
         // but is no longer the gate (see Authentication.LicenseManager).
-        if (Authentication.LicenseManager.isActivatedForToday()) {
+        // A valid signed licence goes straight to login. On the free trial, or
+        // with no licence, show the activation window first.
+        if (Authentication.LicenseManager.isActivatedForToday()
+                && !Authentication.LicenseManager.isTrial()) {
             Login();
         } else {
             LaunchLicenseEntry();
@@ -182,8 +193,14 @@ private static void makeFolder() {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new launcher().setVisible(true);
-            } catch (URISyntaxException | IOException ex) {
+                new Interface.ActivationDialog(() -> {
+                    try {
+                        Login();
+                    } catch (Exception ex) {
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }, true).setVisible(true);
+            } catch (RuntimeException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
         });

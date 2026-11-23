@@ -270,6 +270,15 @@ public final class UIv2 extends javax.swing.JFrame {
             jLabel1.setText(expiry.isEmpty()
                     ? tierName : tierName + " until " + expiry);
             jLabel1.setForeground(prem ? new java.awt.Color(0x2E7D32) : new java.awt.Color(0x616161));
+            // Click the licence line to enter or renew a licence key.
+            jLabel1.setToolTipText("Click to enter or renew your licence key");
+            jLabel1.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+            jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    new ActivationDialog(null, false).setVisible(true);
+                }
+            });
         } catch (Exception ignore) {
         }
         String today = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
