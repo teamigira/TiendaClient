@@ -1024,7 +1024,7 @@ public final class UIv2 extends javax.swing.JFrame {
             expProducts.addActionListener(e -> premiumExportProducts());
             expSales.addActionListener(e -> premiumExportSales());
             backup.addActionListener(e -> premiumBackup());
-            restore.addActionListener(e -> premiumRestore());
+            restore.addActionListener(e -> restoreFromBackup());
             analytics.addActionListener(e -> premiumAnalytics());
             loyalty.addActionListener(e -> premiumLoyalty());
 
@@ -1032,12 +1032,29 @@ public final class UIv2 extends javax.swing.JFrame {
             premium.add(expSales);
             premium.addSeparator();
             premium.add(backup);
-            premium.add(restore);
             premium.addSeparator();
             premium.add(analytics);
             premium.add(loyalty);
 
+            // Data safety is for every licence: restore, second backup copy.
+            javax.swing.JMenu data = new javax.swing.JMenu("Data");
+            javax.swing.JMenuItem extra = new javax.swing.JMenuItem("Second backup folder (USB / cloud)…");
+            javax.swing.JMenuItem openBackups = new javax.swing.JMenuItem("Open backups folder");
+            extra.addActionListener(e -> chooseExtraBackupFolder());
+            openBackups.addActionListener(e -> {
+                try {
+                    java.awt.Desktop.getDesktop().open(com.nkanabo.Tienda.AppPaths.backupsDir());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, com.nkanabo.Tienda.AppPaths.backupsDir().getAbsolutePath(),
+                            "Backups folder", JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
+            data.add(restore);
+            data.add(extra);
+            data.add(openBackups);
+
             if (jMenuBar1 != null) {
+                jMenuBar1.add(data);
                 jMenuBar1.add(premium);
                 jMenuBar1.revalidate();
                 jMenuBar1.repaint();
@@ -1125,12 +1142,41 @@ public final class UIv2 extends javax.swing.JFrame {
         }
     }
 
-    private void premiumRestore() {
-        if (!requirePremium("Restore database")) {
+    /** Pick a USB drive or cloud-synced folder for a second copy of each daily backup. */
+    private void chooseExtraBackupFolder() {
+        String current = Classes.Utilities.AppOptions.getExtraBackupDir();
+        javax.swing.JFileChooser fc = new javax.swing.JFileChooser(current.isEmpty() ? null : current);
+        fc.setDialogTitle("Folder for a second copy of each daily backup");
+        fc.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
+        if (fc.showOpenDialog(this) != javax.swing.JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        java.io.File dir = fc.getSelectedFile();
+        Classes.Utilities.AppOptions.setExtraBackupDir(dir.getAbsolutePath());
+        // Copy the newest backup straight away so the owner sees it working.
+        java.io.File[] all = com.nkanabo.Tienda.AppPaths.backupsDir().listFiles((d, n) -> n.endsWith(".zip"));
+        java.io.File newest = null;
+        if (all != null) {
+            for (java.io.File f : all) {
+                if (newest == null || f.lastModified() > newest.lastModified()) {
+                    newest = f;
+                }
+            }
+        }
+        boolean copied = newest != null && Classes.Functions.PremiumFeatures.copyToExtraFolder(newest, 7);
+        JOptionPane.showMessageDialog(this, "Each daily backup will also be copied to:\n" + dir.getAbsolutePath()
+                + (copied ? "\n\nThe latest backup has been copied there." : ""),
+                "Second backup folder", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void restoreFromBackup() {
+        if (!"Administrator".equalsIgnoreCase(Authentication.Sessions.currentUserRole)) {
+            JOptionPane.showMessageDialog(this, "Only an administrator can restore a backup.",
+                    "Restore database", JOptionPane.WARNING_MESSAGE);
             return;
         }
         javax.swing.JFileChooser fc = new javax.swing.JFileChooser(
-                new java.io.File(System.getProperty("user.home"), "TiendaBackups"));
+                com.nkanabo.Tienda.AppPaths.backupsDir());
         fc.setDialogTitle("Choose a backup (.zip) to restore");
         fc.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Backup zip", "zip"));
         if (fc.showOpenDialog(this) != javax.swing.JFileChooser.APPROVE_OPTION) {
@@ -1139,7 +1185,8 @@ public final class UIv2 extends javax.swing.JFrame {
         java.io.File f = fc.getSelectedFile();
         int ok = JOptionPane.showConfirmDialog(this,
                 "This will REPLACE all current data with the backup:\n" + f.getName()
-                + "\n\nThe app will close afterwards and must be reopened.\nContinue?",
+                + "\n\nA copy of the current data is saved first (Tienda_before_restore_...zip)."
+                + "\nThe app will close afterwards and must be reopened.\nContinue?",
                 "Restore database", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (ok != JOptionPane.YES_OPTION) {
             return;

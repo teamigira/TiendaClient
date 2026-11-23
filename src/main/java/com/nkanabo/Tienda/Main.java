@@ -140,6 +140,8 @@ private static void makeFolder() {
             //props.load(resourceStream);
             Configurations configurations = Configurations.getInstance();
             Configurations.setConfPath(resourceStream);
+            // Move data from older versions' locations into the app data folder.
+            AppPaths.migrateLegacyData();
             //Stating Database Connection
             DBConnection dBConnection = DBConnection.getConnectionInstance();
             dBConnection.setUrl(Optional.of(

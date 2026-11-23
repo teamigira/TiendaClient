@@ -6,9 +6,6 @@ public class OS {
 
     // Define class variables
     public static String systemPath;
-    public static String systemDB;
-    public static String baseUrl;
-    public static String duplicatesPath;
     public static String hash;
     public static String homeDir;
 
@@ -24,27 +21,14 @@ public class OS {
     }
 
     // Method to set the system path based on the operating system
+    /**
+     * The app data folder with a trailing separator; generated files
+     * (barcodes etc.) are stored under it. See {@link com.nkanabo.Tienda.AppPaths}.
+     */
     public static String getSystemPath() {
         homeDir = System.getProperty("user.home");
-        String os = System.getProperty("os.name").toLowerCase();
-
-        if (os.contains("windows")) {
-            systemPath = homeDir + "\\Tienda\\";
-            systemDB = "jdbc:h2:file:\\C:\\Program Files\\Tienda\\DB\\Tienda;USER=root;PASSWORD=tazamaroad";
-            baseUrl = "C:\\Program Files\\Tienda\\Resources\\";
-            hash = "\\";
-        } else if (os.contains("mac")) {
-            systemPath = homeDir + "/Tienda/";
-            systemDB = "jdbc:h2:file:///Applications/Tienda.app/Contents/DB/Tienda;USER=root;PASSWORD=tazamaroad";
-            baseUrl = "/Applications/Tienda.app/Contents/Resources/";
-            hash = "/";
-        } else {
-            // Linux / other (added so the app can run under WSL for development)
-            systemPath = homeDir + "/Tienda/";
-            systemDB = "jdbc:h2:file:" + homeDir + "/Tienda/DB/Tienda;USER=root;PASSWORD=tazamaroad";
-            baseUrl = homeDir + "/Tienda/Resources/";
-            hash = "/";
-        }
+        hash = java.io.File.separator;
+        systemPath = com.nkanabo.Tienda.AppPaths.dataDir().getAbsolutePath() + hash;
         return systemPath;
     }
 }

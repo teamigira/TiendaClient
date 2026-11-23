@@ -38,7 +38,7 @@ public class DBConnection {
     /**
      * Database Location
      */
-    private Optional<String> url = Optional.of("~/Tienda");
+    private Optional<String> url = Optional.of(com.nkanabo.Tienda.AppPaths.dbDir().getAbsolutePath());
 
     private Connection connection = null;
 
@@ -135,20 +135,13 @@ public class DBConnection {
      *         resolved to the user's home), used by backup/restore.
      */
     public String getDbDirectory() {
-        String base = url.get(); // e.g. "~/Tienda"
-        int slash = base.lastIndexOf('/');
-        String dir = slash >= 0 ? base.substring(0, slash) : ".";
-        if (dir.equals("~") || dir.startsWith("~/")) {
-            dir = System.getProperty("user.home") + dir.substring(1);
-        }
-        return dir;
+        // url is the folder that holds Tienda.mv.db (see AppPaths).
+        return url.get();
     }
 
     /** @return the database name (the file base name, e.g. "Tienda"). */
     public String getDbName() {
-        String base = url.get();
-        int slash = base.lastIndexOf('/');
-        return slash >= 0 ? base.substring(slash + 1) : base;
+        return com.nkanabo.Tienda.AppPaths.DB_NAME;
     }
 
     /**

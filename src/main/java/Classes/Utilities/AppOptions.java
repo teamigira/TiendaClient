@@ -59,6 +59,19 @@ public final class AppOptions {
         PREFS.putDouble(KEY_LOW_STOCK, v);
     }
 
+    /**
+     * A second folder that each daily backup is also copied to: a USB drive,
+     * or a folder synced to the cloud (OneDrive, Google Drive, Dropbox).
+     * Blank = none.
+     */
+    public static String getExtraBackupDir() {
+        return PREFS.get("extraBackupDir", "");
+    }
+
+    public static void setExtraBackupDir(String v) {
+        PREFS.put("extraBackupDir", v == null ? "" : v.trim());
+    }
+
     public static String getCurrencySymbol() {
         return PREFS.get(KEY_CURRENCY, DEFAULT_CURRENCY);
     }

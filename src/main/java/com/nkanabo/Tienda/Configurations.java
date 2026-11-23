@@ -54,6 +54,6 @@ public class Configurations {
      */
     public String getDBLocation()
     {
-            return System.getProperty("user.home");
+            return AppPaths.dbDir().getAbsolutePath();
     }
    }

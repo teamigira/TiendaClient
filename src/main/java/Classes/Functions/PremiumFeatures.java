@@ -87,9 +87,17 @@ public final class PremiumFeatures {
         if (!zip.isFile()) {
             throw new IllegalArgumentException("Backup file not found: " + zipPath);
         }
+        if (!isValidBackup(zip)) {
+            throw new IllegalArgumentException("This file is not a Tienda backup: " + zip.getName());
+        }
         DBConnection dbc = DBConnection.getConnectionInstance();
         String dir = dbc.getDbDirectory();
         String name = dbc.getDbName();
+
+        // Keep a copy of the current data first, so a restore can be undone.
+        String stamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+        backupDatabase(new java.io.File(com.nkanabo.Tienda.AppPaths.backupsDir(),
+                "Tienda_before_restore_" + stamp + ".zip").getAbsolutePath());
 
         // Close the database cleanly so the file lock is released.
         try (Connection c = dbc.getConnection();
@@ -113,8 +121,7 @@ public final class PremiumFeatures {
      */
     public static java.io.File autoBackupDaily(int keep) {
         try {
-            java.io.File dir = new java.io.File(
-                    System.getProperty("user.home"), "TiendaBackups");
+            java.io.File dir = com.nkanabo.Tienda.AppPaths.backupsDir();
             if (!dir.exists() && !dir.mkdirs()) {
                 return null;
             }
@@ -124,11 +131,56 @@ public final class PremiumFeatures {
                 return null; // already backed up today
             }
             backupDatabase(target.getAbsolutePath());
+            if (!isValidBackup(target)) {
+                target.delete();
+                throw new java.io.IOException("Backup check failed for " + target);
+            }
             pruneBackups(dir, keep);
+            copyToExtraFolder(target, keep);
             return target;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * True if the file is a zip holding a non-empty Tienda database, i.e. it
+     * can be restored.
+     */
+    public static boolean isValidBackup(java.io.File zip) {
+        String want = com.nkanabo.Tienda.AppPaths.DB_NAME + ".mv.db";
+        try (java.util.zip.ZipFile z = new java.util.zip.ZipFile(zip)) {
+            java.util.zip.ZipEntry e = z.getEntry(want);
+            return e != null && e.getSize() > 0;
+        } catch (java.io.IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Copy a backup to the extra folder from settings (USB drive or cloud
+     * folder), if one is set and reachable, keeping the newest {@code keep}.
+     *
+     * @return true if copied
+     */
+    public static boolean copyToExtraFolder(java.io.File backup, int keep) {
+        String extra = Classes.Utilities.AppOptions.getExtraBackupDir();
+        if (extra.isEmpty()) {
+            return false;
+        }
+        java.io.File dir = new java.io.File(extra);
+        if (!dir.isDirectory()) {
+            return false; // USB drive not plugged in, etc.
+        }
+        try {
+            java.nio.file.Files.copy(backup.toPath(), new java.io.File(dir, backup.getName()).toPath(),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            pruneBackups(dir, keep);
+            return true;
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
