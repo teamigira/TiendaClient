@@ -5,7 +5,7 @@ Tienda POS: point of sale and stock management for shops (Java 21, Swing, H2).
 ## Build, run, test, package
 
 ```bash
-mvn test                              # 30 automated tests
+mvn test                              # automated tests
 ./run-tienda.sh --build               # run from source (local helper)
 mvn package                           # target/dist: app jar + lib/
 packaging/build-installer.sh          # Linux app image with bundled Java

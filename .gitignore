@@ -6,3 +6,8 @@ run-tienda.sh
 Tienda-Preferences.xml
 *.versionsBackup
 *.trace.db
+
+# Old local leftovers (kept on disk, not tracked)
+/Database/*.mv.db
+/WebContent/
+/Preferences.xml
