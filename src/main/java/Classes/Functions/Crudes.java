@@ -32,8 +32,20 @@ public class Crudes {
 
             Connection conna = DBConnection.getConnectionInstance().getConnection();
             Statement stmt;
-            // STEP 3: Execute a query 
+            // STEP 3: Execute a query
             stmt = conna.createStatement();
+
+            // Brand names are unique: skip if one already exists (prevents the
+            // duplicate "General" rows that used to be seeded on every startup).
+            try (java.sql.PreparedStatement chk = conna.prepareStatement(
+                    "SELECT 1 FROM Tienda.production_brands WHERE brand_name = ?")) {
+                chk.setString(1, brandname);
+                try (java.sql.ResultSet crs = chk.executeQuery()) {
+                    if (crs.next()) {
+                        return true; // already present
+                    }
+                }
+            }
 
             String sql
                     = "INSERT INTO Tienda.production_brands (brand_name)" + "VALUES ('" + brandname + "')";

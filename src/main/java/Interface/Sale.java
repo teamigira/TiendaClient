@@ -75,6 +75,243 @@ public class Sale extends javax.swing.JFrame {
         
         loadJtableValues();
         setTotal();
+        installOrderMenu();
+        installSaleLabels();
+    }
+
+    /** Optional note attached to the current order, printed on the receipt. */
+    private String orderComment = "";
+
+    /**
+     * QA fix: the Discount / Comments / Shipping / Administrator / Customers
+     * labels looked clickable (hand cursor) but had no listeners. Wire them.
+     */
+    private void installSaleLabels() {
+        addClick(discountlabel, this::applyLineDiscount);
+        addClick(commentslabel, this::editOrderComment);
+        addClick(shippinglabel, this::showShippingInfo);
+        addClick(adminlabel, this::backToDashboard);
+        addClick(customerslabel, this::openCustomers);
+    }
+
+    private void addClick(javax.swing.JLabel label, Runnable action) {
+        if (label == null) {
+            return;
+        }
+        label.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        label.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                action.run();
+            }
+        });
+    }
+
+    /** Apply a discount to the selected cart line. */
+    private void applyLineDiscount() {
+        int r = OrdersTable.getSelectedRow();
+        if (r < 0) {
+            JOptionPane.showMessageDialog(this, "Select a cart item first.");
+            return;
+        }
+        try {
+            int orderId = com.nkanabo.Tienda.Utilities.IntegerConverter(
+                    String.valueOf(ordersModel.getValueAt(r, 0)));
+            String name = String.valueOf(ordersModel.getValueAt(r, 2));
+            double qty = DoubleConverter(String.valueOf(ordersModel.getValueAt(r, 3)));
+            double price = DoubleConverter(String.valueOf(ordersModel.getValueAt(r, 4)));
+            String cur = String.valueOf(ordersModel.getValueAt(r, 5));
+            String in = JOptionPane.showInputDialog(this,
+                    "Discount amount for \"" + name + "\":", cur);
+            if (in == null) {
+                return;
+            }
+            double disc = DoubleConverter(in.trim());
+            Classes.Functions.Orders.updateOrder(orderId, name, qty, price, disc, "");
+            refreshCart();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Could not apply discount: " + ex.getMessage(),
+                    "Discount", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /** Capture a note that will be printed on the receipt footer. */
+    private void editOrderComment() {
+        String in = (String) JOptionPane.showInputDialog(this, "Order note (printed on receipt):",
+                "Comments", JOptionPane.PLAIN_MESSAGE, null, null, orderComment);
+        if (in != null) {
+            orderComment = in.trim();
+            JOptionPane.showMessageDialog(this, orderComment.isEmpty()
+                    ? "Note cleared." : "Note saved — it will appear on the receipt.");
+        }
+    }
+
+    private void showShippingInfo() {
+        JOptionPane.showMessageDialog(this,
+                "Shipping is not configured for this store (walk-in sales).\n"
+                + "Use the Customers screen to record delivery details if needed.",
+                "Shipping", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /** Return to the main dashboard. */
+    private void backToDashboard() {
+        try {
+            this.dispose();
+            new UIv2();
+        } catch (ClassNotFoundException | ParseException | SQLException ex) {
+            Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /** Open the Customers manager in a dialog. */
+    private void openCustomers() {
+        try {
+            javax.swing.JDialog d = new javax.swing.JDialog(this, "Customers", true);
+            d.setContentPane(new Interface.Customers.CustomersPanel());
+            d.setSize(820, 480);
+            d.setLocationRelativeTo(this);
+            d.setVisible(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Could not open customers: " + ex.getMessage(),
+                    "Customers", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Adds an "Order" menu bar (Hold / Complete / Reopen) to the Sale window.
+     * Done programmatically via {@code setJMenuBar} so the generated GroupLayout
+     * of the content pane is left untouched.
+     */
+    private void installOrderMenu() {
+        javax.swing.JMenuBar bar = new javax.swing.JMenuBar();
+        javax.swing.JMenu order = new javax.swing.JMenu("Order");
+
+        javax.swing.JMenuItem hold = new javax.swing.JMenuItem("Hold current order");
+        javax.swing.JMenuItem complete = new javax.swing.JMenuItem("Complete order (save)");
+        javax.swing.JMenu reopen = new javax.swing.JMenu("Reopen order");
+        javax.swing.JMenuItem reopenHeld = new javax.swing.JMenuItem("Reopen a held order…");
+        javax.swing.JMenuItem reopenDone = new javax.swing.JMenuItem("Reopen a completed order…");
+        reopen.add(reopenHeld);
+        reopen.add(reopenDone);
+
+        hold.addActionListener(e -> holdOrder());
+        complete.addActionListener(e -> completeOrder());
+        reopenHeld.addActionListener(e -> reopenHeldOrder());
+        reopenDone.addActionListener(e -> reopenCompletedOrder());
+
+        order.add(hold);
+        order.add(complete);
+        order.addSeparator();
+        order.add(reopen);
+        bar.add(order);
+        setJMenuBar(bar);
+    }
+
+    private void refreshCart() {
+        try {
+            loadJtableValues();
+            setTotal();
+        } catch (SQLException | ClassNotFoundException | ParseException ex) {
+            Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /** Park the current cart so a fresh sale can be started. */
+    private void holdOrder() {
+        if (!Classes.Functions.Orders.hasCartItems()) {
+            JOptionPane.showMessageDialog(this, "The cart is empty — nothing to hold.");
+            return;
+        }
+        String label = JOptionPane.showInputDialog(this,
+                "Hold this order under a name/note (optional):", "Hold order",
+                JOptionPane.PLAIN_MESSAGE);
+        if (label == null) {
+            return; // cancelled
+        }
+        String ref = Classes.Functions.Orders.holdCurrentCart(label);
+        if (ref != null) {
+            JOptionPane.showMessageDialog(this, "Order held. Reopen it later from Order ▸ Reopen.");
+            refreshCart();
+        } else {
+            JOptionPane.showMessageDialog(this, "Could not hold the order.");
+        }
+    }
+
+    /** Finalise the current cart (same as the Save action). */
+    private void completeOrder() {
+        if (!Classes.Functions.Orders.hasCartItems()) {
+            JOptionPane.showMessageDialog(this, "The cart is empty — nothing to complete.");
+            return;
+        }
+        saveLabelMouseClicked(null);
+    }
+
+    private void reopenHeldOrder() {
+        java.util.ArrayList<String[]> held = Classes.Functions.Orders.listHeldOrders();
+        if (held.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "There are no held orders.");
+            return;
+        }
+        String[] labels = new String[held.size()];
+        for (int i = 0; i < held.size(); i++) {
+            String[] h = held.get(i);
+            String name = h[1] == null || h[1].isEmpty() ? "(no name)" : h[1];
+            labels[i] = name + "  —  " + h[2] + " item(s)  —  total " + fmt(h[3]);
+        }
+        Object choice = JOptionPane.showInputDialog(this, "Pick a held order to reopen:",
+                "Reopen held order", JOptionPane.PLAIN_MESSAGE, null, labels, labels[0]);
+        if (choice == null) {
+            return;
+        }
+        int idx = java.util.Arrays.asList(labels).indexOf(choice.toString());
+        if (idx < 0) {
+            return;
+        }
+        if (Classes.Functions.Orders.reopenHeld(held.get(idx)[0])) {
+            JOptionPane.showMessageDialog(this, "Held order reopened into the cart.");
+            refreshCart();
+        } else {
+            JOptionPane.showMessageDialog(this, "Could not reopen that order.");
+        }
+    }
+
+    private void reopenCompletedOrder() {
+        java.util.ArrayList<String[]> done = Classes.Functions.Orders.listRecentCompleted(20);
+        if (done.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "There are no completed orders to reopen.");
+            return;
+        }
+        String[] labels = new String[done.size()];
+        for (int i = 0; i < done.size(); i++) {
+            String[] d = done.get(i);
+            labels[i] = "Receipt #" + d[0] + "  —  " + d[1] + " item(s)  —  " + d[2];
+        }
+        Object choice = JOptionPane.showInputDialog(this,
+                "Pick a completed order to reopen (its items return to the cart):",
+                "Reopen completed order", JOptionPane.PLAIN_MESSAGE, null, labels, labels[0]);
+        if (choice == null) {
+            return;
+        }
+        int idx = java.util.Arrays.asList(labels).indexOf(choice.toString());
+        if (idx < 0) {
+            return;
+        }
+        if (Classes.Functions.Orders.reopenCompleted(done.get(idx)[0])) {
+            JOptionPane.showMessageDialog(this, "Completed order reopened into the cart.");
+            refreshCart();
+        } else {
+            JOptionPane.showMessageDialog(this, "Could not reopen that order.");
+        }
+    }
+
+    private String fmt(String raw) {
+        try {
+            return new NumericalFormats().accountsFormat(Double.parseDouble(raw));
+        } catch (Exception e) {
+            return raw == null ? "0" : raw;
+        }
     }
 
     public double setProductPrice() throws SQLException, ClassNotFoundException {
@@ -124,6 +361,51 @@ public class Sale extends javax.swing.JFrame {
           UserSettings us = new UserSettings();
           NumericalFormats nf = new NumericalFormats();
           TotalLabel.setText(nf.accountsFormat(Total));
+    }
+
+    /**
+     * Build a printable receipt from the items currently in the cart table.
+     * Company / address / footer come from the last saved receipt settings (if
+     * any); the cashier is the logged-in user. Columns: 2=name, 3=qty, 4=price.
+     */
+    private Classes.Functions.Printers.ReceiptPrinter buildReceipt(String receiptNo) {
+        String company = "RECEIPT", address = "", footer = "Thank you for your business!";
+        try {
+            Classes.AbstractClasses.ReceiptDetails d =
+                    Classes.Functions.Printers.Receipts.getLastReceiptDetails();
+            if (d != null) {
+                if (d.getCompanyName() != null && !d.getCompanyName().trim().isEmpty()) {
+                    company = d.getCompanyName();
+                }
+                if (d.getAddress() != null) {
+                    address = d.getAddress();
+                }
+                if (d.getFooterMessage() != null && !d.getFooterMessage().trim().isEmpty()) {
+                    footer = d.getFooterMessage();
+                }
+            }
+        } catch (Exception ignore) {
+            // No saved receipt settings yet — use sensible defaults.
+        }
+        String cashier = Authentication.Sessions.LoggedUser != null
+                ? Authentication.Sessions.LoggedUser : "";
+        if (orderComment != null && !orderComment.isEmpty()) {
+            footer = footer + "\nNote: " + orderComment;
+        }
+        Classes.Functions.Printers.ReceiptPrinter receipt =
+                new Classes.Functions.Printers.ReceiptPrinter(
+                        company, address, footer, cashier, receiptNo, "Tsh");
+        double total = 0;
+        for (int i = 0; i < ordersModel.getRowCount(); i++) {
+            String name = String.valueOf(ordersModel.getValueAt(i, 2));
+            double qty = DoubleConverter(String.valueOf(ordersModel.getValueAt(i, 3)));
+            double price = DoubleConverter(String.valueOf(ordersModel.getValueAt(i, 4)));
+            receipt.addItem(name, qty, price);
+            total += qty * price;
+        }
+        receipt.total = total;
+        receipt.withSettings(); // printer, template & premium flag from settings
+        return receipt;
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -586,13 +868,8 @@ public class Sale extends javax.swing.JFrame {
     }//GEN-LAST:event_SearchProductFormFocusGained
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-        SearchEngine searchEngine = new SearchEngine();
-        try {
-            searchEngine.productsSearch("mal");
-        } catch (ClassNotFoundException | ParseException | SQLException ex) {
-            Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        // "Print" toggle — its state is read when the sale is saved; nothing to
+        // do on toggle. (Previously ran a stray product search here.)
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void SearchProductFormMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SearchProductFormMouseClicked
@@ -661,16 +938,22 @@ public class Sale extends javax.swing.JFrame {
                 boolean stockUpdate = false;
                 setTotal();
                 try {
-                    stockUpdate = Stocks.editStock(product_id, quantity);
-                    if( stockUpdate == true) {
-                        if (Orders.addOrderFromName(product_id, quantity, discount, backdated)) {
-                            JOptionPane.showMessageDialog(this, "Succesfully");
-                        }
-                    }
-                    else
-                        if (stockUpdate == false) {
+                    // Make sure the product actually resolves before judging stock,
+                    // so an unrecognised name says so instead of "out of stock".
+                    String resolved = Products.getProductId(product_id);
+                    if (resolved == null || resolved.equals("0")) {
+                        JOptionPane.showMessageDialog(this,
+                                "Product not found. Please pick it from the suggestions list.");
+                    } else {
+                        stockUpdate = Stocks.editStock(product_id, quantity);
+                        if (stockUpdate) {
+                            if (Orders.addOrderFromName(product_id, quantity, discount, backdated)) {
+                                JOptionPane.showMessageDialog(this, "Succesfully");
+                            }
+                        } else {
                             JOptionPane.showMessageDialog(this, "Item Out of stock");
                         }
+                    }
                 } catch (ClassNotFoundException ex) {
                     ex.printStackTrace();
                     Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
@@ -699,21 +982,28 @@ public class Sale extends javax.swing.JFrame {
                     
                     //Saving all orders that exists on the table.
                     //Initialising counter.
-                    int c =   ordersModel.getRowCount();  
+                    int c =   ordersModel.getRowCount();
+                    // Capture the receipt from the current cart BEFORE the items
+                    // are moved into the saved order (after saving they leave the cart).
+                    Classes.Functions.Printers.ReceiptPrinter receipt =
+                            buildReceipt(String.valueOf(randomNumber));
                     try {
                           for(int i=0; i<c; i++){
                         //The lists of Ids
                         String orderId = ordersModel.getValueAt(i, 0).toString();
                         String product_id = ordersModel.getValueAt(i, 1).toString();
-                        System.out.println(i+"  "+orderId+"   "+product_id+"   "+randomNumber);
                         Orders.saveOrderItem(orderId,product_id, randomNumber);
                         }
-                        
+
                             JOptionPane.showMessageDialog(this,
                                     "Order saved succesfully");
                             loadJtableValues();
                             salePanel.repaint();
                             salePanel.revalidate();
+                            // Honour the "Print" checkbox: show the receipt page.
+                            if (jCheckBox1.isSelected() && receipt != null) {
+                                receipt.showPreview(this);
+                            }
                     } catch (ParseException ex) {
                         Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
                     }

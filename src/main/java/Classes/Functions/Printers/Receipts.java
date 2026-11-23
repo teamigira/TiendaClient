@@ -21,9 +21,25 @@ import java.sql.ResultSet;
 public class Receipts {
 
     public static void saveReceiptDetails(boolean print, String printer, String company, String footer, String address,String template) throws SQLException {
+        // printer_name is NOT NULL — never let a blank selection break the save.
+        if (printer == null || printer.trim().isEmpty()) {
+            printer = "Default";
+        }
+        if (template == null) {
+            template = "";
+        }
         // Get other required data
         int salesId = getSalesId(); // Implement this method to get sales ID
         String createdBy = Sessions.LoggedUserId; // Assuming Sessions class has this method
+        // receipt_settings.created_by is an INT column; coerce the logged-in user
+        // id to a number (default 1) so saving printer settings no longer fails.
+        int createdById = 1;
+        try {
+            if (createdBy != null && createdBy.trim().matches("\\d+")) {
+                createdById = Integer.parseInt(createdBy.trim());
+            }
+        } catch (NumberFormatException ignore) {
+        }
         Date salesDate = new Date(); // Use appropriate method to get sales date
         Date orderDate = new Date(); // Use appropriate method to get order date
         Date createdDate = new Date(); // Use appropriate method to get created date
@@ -60,7 +76,7 @@ public class Receipts {
 
               
                 // Set parameters for receipt_settings table
-                preparedStatementReceiptSettings.setString(1, createdBy);
+                preparedStatementReceiptSettings.setInt(1, createdById);
                 preparedStatementReceiptSettings.setString(2, printer);
                 preparedStatementReceiptSettings.setBoolean(3, false); // Assuming automatically should be false by default
                 preparedStatementReceiptSettings.setString(4, template);

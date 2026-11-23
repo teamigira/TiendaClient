@@ -60,21 +60,19 @@ public class SearchEngine {
 
     public String[] productsSearch(String Search) throws ClassNotFoundException, ParseException, SQLException {
         ArrayList<Product> products = Products.listProductOnly();
-        System.out.println("calling search");
-        System.out.println(products.size());
-        List<Product> line = products.stream().filter(p -> (p.product_name.contains(Search))).toList();
-        System.out.println(line);
-        String[] ch = new String[line.size() + 1];
-        System.out.println("searching");
+        final String needle = Search == null ? "" : Search.trim().toLowerCase();
+        // Case-insensitive match so the product is found whatever case was typed,
+        // and no trailing empty slot (the old size+1 array left a blank entry
+        // that, if clicked, cleared the field and caused a false "out of stock").
+        List<Product> line = products.stream()
+                .filter(p -> p.product_name != null
+                        && p.product_name.toLowerCase().contains(needle))
+                .toList();
+        String[] ch = new String[line.size()];
         for (int i = 0; i < line.size(); i++) {
-            Product po = line.get(i);
-            ch[i] = po.product_name;
-            System.out.println("found product");
-            System.out.println(ch[i]);
+            ch[i] = line.get(i).product_name;
         }
-        System.out.println("nO PRODUCT");
         return ch;
-          
     }
     
         public String[] brandSearch(String Search) throws ClassNotFoundException, ParseException, SQLException {

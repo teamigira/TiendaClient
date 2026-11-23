@@ -131,6 +131,27 @@ public class DBConnection {
     }
 
     /**
+     * @return the directory that holds the database files (with {@code ~}
+     *         resolved to the user's home), used by backup/restore.
+     */
+    public String getDbDirectory() {
+        String base = url.get(); // e.g. "~/Tienda"
+        int slash = base.lastIndexOf('/');
+        String dir = slash >= 0 ? base.substring(0, slash) : ".";
+        if (dir.equals("~") || dir.startsWith("~/")) {
+            dir = System.getProperty("user.home") + dir.substring(1);
+        }
+        return dir;
+    }
+
+    /** @return the database name (the file base name, e.g. "Tienda"). */
+    public String getDbName() {
+        String base = url.get();
+        int slash = base.lastIndexOf('/');
+        return slash >= 0 ? base.substring(slash + 1) : base;
+    }
+
+    /**
      * Close Connection only if Connection is available otherwise do nothing
      *
      * @throws SQLException

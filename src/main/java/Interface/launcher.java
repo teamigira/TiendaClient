@@ -256,66 +256,30 @@ public class launcher extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
         notificationLabel("wait");
-        String box1 = key1.getText();
-        String box2 = key2.getText();
-        String box3 = key3.getText();
-        String box4 = key4.getText();
+        String typed = key1.getText() + key2.getText() + key3.getText() + key4.getText();
 
-        String app_keys = box1 + box2 + box3 + box4;
-        app_keys = encrypt(app_keys);
-
-        LocalDate d1 = LocalDate.now(ZoneId.of("Europe/Paris"));
-
-        long dateofExpiry;
         try {
-            //60000 is one day into milliseconds
-            dateofExpiry = milliConverter(String.valueOf(d1)) + 6000000;
-            Connection conn = getConnection();
-            Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM Tienda.system_app_key"
-                    + " where product_id = '" + app_keys + "'";
-            ResultSet rs = stmt.executeQuery(sql);
-            //STEP 4: Extract data from result set 
-            if (rs.next()) {
-                response.setText("");
-
-                //Retrieve by column name 
-                //Change to the next page after updating the
-                // activation status column
+            // Validate against this month's code (local for now; the online
+            // database check will be added behind LicenseManager.validate()).
+            int tier = Authentication.LicenseManager.validate(typed);
+            if (tier != Authentication.LicenseManager.TIER_INVALID) {
+                Authentication.LicenseManager.recordActivation(tier);
+                // Keep the legacy preference flag in sync for any old callers.
                 try {
-                    // STEP 3: Execute a query 
-                    String updatequery = "UPDATE Tienda.system_app_key set activation_status='1',"
-                            + "expire_date = '" + dateofExpiry + "'";
-                    int rsu = stmt.executeUpdate(updatequery);
-                    UserSettings uS = new UserSettings();
-                    uS.SetKey();
-                    this.dispose();
-                } catch (SQLException se) {
-                    se.printStackTrace();
+                    new UserSettings().SetKey();
+                } catch (Exception ignore) {
                 }
-                
+                response.setText("");
                 notificationLabel("complete");
                 this.dispose();
-
                 Login();
             } else {
                 notificationLabel("complete");
-                response.setText("Keys provided are invalid");
-                //prompt the user to enter the valid keys
+                response.setText("Invalid or expired code for this month");
+                // prompt the user to enter the valid keys
             }
-
-            // STEP 5: Clean-up environment 
-            rs.close();
-            // finally block used to close resources
-            stmt.close();
-            conn.close();
-        } catch (SQLException se) {
-            // Handle errors for JDBC
-            se.printStackTrace();
         } catch (Exception e) {
-            // Handle errors for Class.forName
             e.printStackTrace();
         }
     }//GEN-LAST:event_jButton1ActionPerformed

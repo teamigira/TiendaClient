@@ -106,6 +106,13 @@ public final class UIv2 extends javax.swing.JFrame {
 
     public static UIv2 Instance;
 
+    // Customers page (hand-built panel shown inside TablePanel's card area).
+    private Interface.Customers.CustomersPanel customersPanel;
+
+    // Reports page (charts; replaces the old statistics tables).
+    private Interface.Reports.ReportsPanel reportsPanel;
+    private Interface.Products.BrandsPanel brandsPanel;
+
     int productId;
 
     //Brands
@@ -251,10 +258,42 @@ public final class UIv2 extends javax.swing.JFrame {
         PresentsalesList = new ArrayList<>();
 
         usernameLabel.setText(LoggedUser + " ["+currentUserRole+"]");
+        // Visible licence tier badge so Premium is obvious in the UI.
+        try {
+            boolean prem = Authentication.LicenseManager.isPremium();
+            version.setText("Version 2.0.0  •  " + (prem ? "★ PREMIUM" : "Standard"));
+            version.setForeground(prem ? new java.awt.Color(0x2E7D32) : new java.awt.Color(0x9E9E9E));
+            // Replace the hard-coded "Premium until 21-Mar-2025" with the real expiry.
+            String expiry = Authentication.LicenseManager.expiryFormatted();
+            String tierName = Authentication.LicenseManager.tierName(
+                    Authentication.LicenseManager.currentTier());
+            jLabel1.setText(expiry.isEmpty()
+                    ? tierName : tierName + " until " + expiry);
+            jLabel1.setForeground(prem ? new java.awt.Color(0x2E7D32) : new java.awt.Color(0x616161));
+        } catch (Exception ignore) {
+        }
         String today = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
         todays.setText(String.valueOf(Calendar.getInstance().getTime()));
+        // Low-stock warnings on the notification indicator (click to see the list).
+        refreshStockAlerts();
+        SetEmailNotification.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                showStockAlerts();
+            }
+        });
         //Coloring the icons
         getActiveClass("");
+
+        //Premium features menu
+        installPremiumMenu();
+        //Wire up previously-dead top menu items (Register / Show / Cash)
+        wireMenus();
+        //Automatic daily backup (data safety; keeps the last 7)
+        try {
+            Classes.Functions.PremiumFeatures.autoBackupDaily(7);
+        } catch (Exception ignore) {
+        }
 
         //Brands
         brandlist = new ArrayList<>();
@@ -539,7 +578,7 @@ public final class UIv2 extends javax.swing.JFrame {
         }
         nonStock = new String[productlist.size()];
         for (int i = 0; i < productlist.size(); i++) {
-            System.out.println("Product name" + productlist.get(i).product_name);
+            // [perf] removed per-row debug print that slowed the products page
             nonStock[i] = productlist.get(i).product_name + " - Tsh " + productlist.get(i).list_price + " : " + productlist.get(i).productid;
             Object[] obj = {
                 productlist.get(i).productid,
@@ -791,6 +830,428 @@ public final class UIv2 extends javax.swing.JFrame {
     public static void setEmailNotification(String message) throws ParseException {
         SetEmailNotification.setVisible(true);
         SetEmailNotification.setText(message);
+    }
+
+    /** Days-ahead window for premium expiry alerts. */
+    private static final int EXPIRY_WINDOW_DAYS = 30;
+
+    /**
+     * Update the notification indicator with the current low-stock count. For
+     * premium users the expiring-soon count is appended (a premium-only alert).
+     */
+    public final void refreshStockAlerts() {
+        try {
+            java.util.List<Classes.Functions.StockAlerts.Alert> low =
+                    Classes.Functions.StockAlerts.low();
+            boolean premium = Authentication.LicenseManager.isPremium();
+            int expiring = premium
+                    ? Classes.Functions.StockAlerts.expiring(EXPIRY_WINDOW_DAYS).size() : 0;
+            SetEmailNotification.setVisible(true);
+            if (low.isEmpty() && expiring == 0) {
+                SetEmailNotification.setText(premium ? "All clear ★" : "Stock OK");
+                SetEmailNotification.setForeground(new java.awt.Color(0x2E7D32));
+            } else {
+                StringBuilder t = new StringBuilder("⚠ ");
+                t.append(low.size()).append(" low stock");
+                if (premium && expiring > 0) {
+                    t.append(" • ").append(expiring).append(" expiring");
+                }
+                SetEmailNotification.setText(t.toString());
+                SetEmailNotification.setForeground(new java.awt.Color(0xD84315));
+            }
+            SetEmailNotification.setToolTipText(premium
+                    ? "Alerts Center — low stock + expiry (Premium)"
+                    : "Click to see products running low");
+        } catch (Exception ignore) {
+        }
+    }
+
+    /**
+     * Alerts Center. Always shows products running low; for premium users it also
+     * lists products that have expired or expire within the next 30 days, and
+     * standard users see a short note on what Premium adds.
+     */
+    public void showStockAlerts() {
+        boolean premium = Authentication.LicenseManager.isPremium();
+        java.util.List<Classes.Functions.StockAlerts.Alert> low =
+                Classes.Functions.StockAlerts.low();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("LOW STOCK (≤ ")
+                .append((int) Classes.Utilities.AppOptions.getLowStockThreshold()).append(")\n");
+        if (low.isEmpty()) {
+            sb.append("  • None — all products above threshold.\n");
+        } else {
+            for (Classes.Functions.StockAlerts.Alert a : low) {
+                sb.append("  • ").append(a.name).append("  —  ")
+                        .append(a.quantity == Math.floor(a.quantity)
+                                ? String.valueOf((long) a.quantity) : String.valueOf(a.quantity))
+                        .append(" left\n");
+            }
+        }
+
+        sb.append("\n");
+        if (premium) {
+            java.util.List<Classes.Functions.StockAlerts.Expiry> exp =
+                    Classes.Functions.StockAlerts.expiring(EXPIRY_WINDOW_DAYS);
+            sb.append("★ EXPIRY ALERTS (Premium) — next ").append(EXPIRY_WINDOW_DAYS).append(" days\n");
+            if (exp.isEmpty()) {
+                sb.append("  • None expiring soon.\n");
+            } else {
+                for (Classes.Functions.StockAlerts.Expiry e : exp) {
+                    String when = e.daysLeft < 0
+                            ? "EXPIRED " + (-e.daysLeft) + "d ago"
+                            : (e.daysLeft == 0 ? "expires today" : "in " + e.daysLeft + "d");
+                    sb.append("  • ").append(e.name).append("  —  ")
+                            .append(e.dateText).append("  (").append(when).append(")\n");
+                }
+            }
+        } else {
+            sb.append("★ Upgrade to Premium to also get expiry alerts here\n")
+                    .append("  (products expiring or already expired).\n");
+        }
+
+        javax.swing.JTextArea ta = new javax.swing.JTextArea(sb.toString(), 22, 44);
+        ta.setEditable(false);
+        ta.setOpaque(false);
+        JOptionPane.showMessageDialog(this, new JScrollPane(ta),
+                premium ? "Alerts Center ★ Premium" : "Alerts Center",
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
+     * QA fix: wire top-menu items that were dead (no listener / empty dropdown).
+     *   • Brands ▸ Register  → opens the product registration screen
+     *   • Show               → quick navigation (Sales / Products / Reports / Customers)
+     *   • Cash               → today's cash summary
+     */
+    private void wireMenus() {
+        try {
+            // Brands ▸ Register was declared but never wired.
+            if (jMenuItem2 != null && jMenuItem2.getActionListeners().length == 0) {
+                jMenuItem2.addActionListener(e -> {
+                    try {
+                        Interface.Products.RegisterProduct.main(allCats);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+            }
+
+            // "Show" was an empty dropdown — give it quick navigation items.
+            if (showMenu != null && showMenu.getItemCount() == 0) {
+                javax.swing.JMenuItem s1 = new javax.swing.JMenuItem("Sales");
+                javax.swing.JMenuItem s2 = new javax.swing.JMenuItem("Products");
+                javax.swing.JMenuItem s3 = new javax.swing.JMenuItem("Reports");
+                javax.swing.JMenuItem s4 = new javax.swing.JMenuItem("Customers");
+                s1.addActionListener(e -> saleslabelMouseClicked(null));
+                s2.addActionListener(e -> ProductsLabelMenuMouseClicked(null));
+                s3.addActionListener(e -> statsMouseClicked(null));
+                s4.addActionListener(e -> customersMouseClicked(null));
+                showMenu.add(s1);
+                showMenu.add(s2);
+                showMenu.add(s3);
+                showMenu.add(s4);
+            }
+
+            // "Cash" was an empty dropdown — add a today's-cash summary.
+            if (CashMenu != null && CashMenu.getItemCount() == 0) {
+                javax.swing.JMenuItem cash = new javax.swing.JMenuItem("Today's cash summary");
+                cash.addActionListener(e -> showCashSummary());
+                CashMenu.add(cash);
+            }
+        } catch (Exception ignore) {
+        }
+    }
+
+    /** Shows the number of receipts and total value of sales completed today. */
+    private void showCashSummary() {
+        String today = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        String sql = "SELECT COUNT(DISTINCT o.customer_id) AS receipts, "
+                + "COALESCE(SUM(CAST(i.quantity AS DOUBLE) * p.list_price), 0) AS total "
+                + "FROM Tienda.sales_orders o "
+                + "JOIN Tienda.sales_order_items i ON i.order_id = o.order_id "
+                + "JOIN Tienda.production_products p ON i.item_id = p.code "
+                + "WHERE o.order_date = ?";
+        try (java.sql.Connection c = Database.DBConnection.getConnectionInstance().getConnection();
+             java.sql.PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, today);
+            try (java.sql.ResultSet rs = ps.executeQuery()) {
+                int receipts = 0;
+                double total = 0;
+                if (rs.next()) {
+                    receipts = rs.getInt("receipts");
+                    total = rs.getDouble("total");
+                }
+                Classes.Utilities.NumericalFormats nf = new Classes.Utilities.NumericalFormats();
+                JOptionPane.showMessageDialog(this,
+                        "Cash summary for today:\n\n"
+                        + "  Completed sales:  " + receipts + "\n"
+                        + "  Total takings:    " + nf.accountsFormat(total),
+                        "Cash — today", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Could not load cash summary: " + ex.getMessage(),
+                    "Cash", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Adds a "Premium ★" menu to the top menu bar. Each item is gated: premium
+     * users run the feature, standard users get an upgrade prompt.
+     */
+    private void installPremiumMenu() {
+        try {
+            javax.swing.JMenu premium = new javax.swing.JMenu("Premium ★");
+
+            javax.swing.JMenuItem expProducts = new javax.swing.JMenuItem("Export products to CSV…");
+            javax.swing.JMenuItem expSales = new javax.swing.JMenuItem("Export sales to CSV…");
+            javax.swing.JMenuItem backup = new javax.swing.JMenuItem("Backup database…");
+            javax.swing.JMenuItem restore = new javax.swing.JMenuItem("Restore database…");
+            javax.swing.JMenuItem analytics = new javax.swing.JMenuItem("Best-sellers analytics…");
+            javax.swing.JMenuItem loyalty = new javax.swing.JMenuItem("Customer loyalty…");
+
+            expProducts.addActionListener(e -> premiumExportProducts());
+            expSales.addActionListener(e -> premiumExportSales());
+            backup.addActionListener(e -> premiumBackup());
+            restore.addActionListener(e -> premiumRestore());
+            analytics.addActionListener(e -> premiumAnalytics());
+            loyalty.addActionListener(e -> premiumLoyalty());
+
+            premium.add(expProducts);
+            premium.add(expSales);
+            premium.addSeparator();
+            premium.add(backup);
+            premium.add(restore);
+            premium.addSeparator();
+            premium.add(analytics);
+            premium.add(loyalty);
+
+            if (jMenuBar1 != null) {
+                jMenuBar1.add(premium);
+                jMenuBar1.revalidate();
+                jMenuBar1.repaint();
+            }
+        } catch (Exception ignore) {
+        }
+    }
+
+    /** @return true if premium; otherwise shows an upgrade prompt and returns false. */
+    private boolean requirePremium(String feature) {
+        if (Authentication.LicenseManager.isPremium()) {
+            return true;
+        }
+        JOptionPane.showMessageDialog(this,
+                "\"" + feature + "\" is a Premium feature.\n\n"
+                + "Upgrade to Premium to unlock CSV exports, database backups\n"
+                + "and sales analytics.",
+                "Premium feature", JOptionPane.INFORMATION_MESSAGE);
+        return false;
+    }
+
+    /** Ask for a save path, defaulting the file name. */
+    private java.io.File chooseSaveFile(String title, String defaultName) {
+        javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
+        fc.setDialogTitle(title);
+        fc.setSelectedFile(new java.io.File(defaultName));
+        if (fc.showSaveDialog(this) != javax.swing.JFileChooser.APPROVE_OPTION) {
+            return null;
+        }
+        return fc.getSelectedFile();
+    }
+
+    private void premiumExportProducts() {
+        if (!requirePremium("Export products to CSV")) {
+            return;
+        }
+        java.io.File f = chooseSaveFile("Export products", "products.csv");
+        if (f == null) {
+            return;
+        }
+        try {
+            int n = Classes.Functions.PremiumFeatures.exportProductsCsv(f.getAbsolutePath());
+            JOptionPane.showMessageDialog(this, "Exported " + n + " product(s) to:\n" + f.getAbsolutePath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage(),
+                    "Export", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void premiumExportSales() {
+        if (!requirePremium("Export sales to CSV")) {
+            return;
+        }
+        java.io.File f = chooseSaveFile("Export sales", "sales.csv");
+        if (f == null) {
+            return;
+        }
+        try {
+            int n = Classes.Functions.PremiumFeatures.exportSalesCsv(f.getAbsolutePath());
+            JOptionPane.showMessageDialog(this, "Exported " + n + " sale line(s) to:\n" + f.getAbsolutePath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage(),
+                    "Export", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void premiumBackup() {
+        if (!requirePremium("Backup database")) {
+            return;
+        }
+        String stamp = new SimpleDateFormat("yyyyMMdd_HHmm").format(Calendar.getInstance().getTime());
+        java.io.File f = chooseSaveFile("Backup database", "Tienda_backup_" + stamp + ".zip");
+        if (f == null) {
+            return;
+        }
+        try {
+            Classes.Functions.PremiumFeatures.backupDatabase(f.getAbsolutePath());
+            JOptionPane.showMessageDialog(this, "Database backed up to:\n" + f.getAbsolutePath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Backup failed: " + ex.getMessage(),
+                    "Backup", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void premiumRestore() {
+        if (!requirePremium("Restore database")) {
+            return;
+        }
+        javax.swing.JFileChooser fc = new javax.swing.JFileChooser(
+                new java.io.File(System.getProperty("user.home"), "TiendaBackups"));
+        fc.setDialogTitle("Choose a backup (.zip) to restore");
+        fc.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Backup zip", "zip"));
+        if (fc.showOpenDialog(this) != javax.swing.JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        java.io.File f = fc.getSelectedFile();
+        int ok = JOptionPane.showConfirmDialog(this,
+                "This will REPLACE all current data with the backup:\n" + f.getName()
+                + "\n\nThe app will close afterwards and must be reopened.\nContinue?",
+                "Restore database", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (ok != JOptionPane.YES_OPTION) {
+            return;
+        }
+        try {
+            Classes.Functions.PremiumFeatures.restoreDatabase(f.getAbsolutePath());
+            JOptionPane.showMessageDialog(this,
+                    "Database restored. The app will now close — please reopen it.",
+                    "Restore complete", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Restore failed: " + ex.getMessage()
+                    + "\n\nIf the app is now unstable, please restart it.",
+                    "Restore", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void premiumLoyalty() {
+        if (!requirePremium("Customer loyalty")) {
+            return;
+        }
+        final javax.swing.table.DefaultTableModel model =
+                new javax.swing.table.DefaultTableModel(
+                        new String[]{"ID", "Customer", "Phone", "Points"}, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
+        };
+        final javax.swing.JTable table = new javax.swing.JTable(model);
+        table.setRowHeight(26);
+        Runnable reload = () -> {
+            model.setRowCount(0);
+            for (Classes.Functions.LoyaltyManager.Member m :
+                    Classes.Functions.LoyaltyManager.list()) {
+                model.addRow(new Object[]{m.id, m.name, m.phone, m.points});
+            }
+        };
+        reload.run();
+
+        javax.swing.JButton award = new javax.swing.JButton("Award points");
+        javax.swing.JButton redeem = new javax.swing.JButton("Redeem points");
+        javax.swing.JButton refresh = new javax.swing.JButton("Refresh");
+        award.addActionListener(ev -> loyaltyAdjust(table, model, true, reload));
+        redeem.addActionListener(ev -> loyaltyAdjust(table, model, false, reload));
+        refresh.addActionListener(ev -> reload.run());
+
+        javax.swing.JPanel bar = new javax.swing.JPanel();
+        bar.add(award);
+        bar.add(redeem);
+        bar.add(refresh);
+
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.BorderLayout(8, 8));
+        panel.add(new JScrollPane(table), java.awt.BorderLayout.CENTER);
+        panel.add(bar, java.awt.BorderLayout.SOUTH);
+        panel.setPreferredSize(new java.awt.Dimension(640, 420));
+
+        JOptionPane.showMessageDialog(this, panel, "Customer loyalty ★ Premium",
+                JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private void loyaltyAdjust(javax.swing.JTable table,
+            javax.swing.table.DefaultTableModel model, boolean award, Runnable reload) {
+        int r = table.getSelectedRow();
+        if (r < 0) {
+            JOptionPane.showMessageDialog(this, "Select a customer first.");
+            return;
+        }
+        String id = String.valueOf(model.getValueAt(r, 0));
+        String name = String.valueOf(model.getValueAt(r, 1));
+        String in = JOptionPane.showInputDialog(this,
+                (award ? "Points to award to " : "Points to redeem from ") + name + ":");
+        if (in == null) {
+            return;
+        }
+        int pts;
+        try {
+            pts = Integer.parseInt(in.trim());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter a whole number.");
+            return;
+        }
+        if (pts <= 0) {
+            return;
+        }
+        boolean ok = award
+                ? Classes.Functions.LoyaltyManager.addPoints(id, pts)
+                : Classes.Functions.LoyaltyManager.redeem(id, pts);
+        if (!ok && !award) {
+            JOptionPane.showMessageDialog(this, name + " does not have that many points.");
+        }
+        reload.run();
+    }
+
+    private void premiumAnalytics() {
+        if (!requirePremium("Best-sellers analytics")) {
+            return;
+        }
+        java.util.List<Classes.Functions.PremiumFeatures.TopSeller> top =
+                Classes.Functions.PremiumFeatures.topSellers(15);
+        Classes.Utilities.NumericalFormats nf = new Classes.Utilities.NumericalFormats();
+        StringBuilder sb = new StringBuilder("★ TOP SELLERS (by quantity)\n\n");
+        if (top.isEmpty()) {
+            sb.append("  No completed sales yet.\n");
+        } else {
+            int rank = 1;
+            for (Classes.Functions.PremiumFeatures.TopSeller t : top) {
+                sb.append(String.format("  %2d. %-28s  %6s sold   %s%n",
+                        rank++,
+                        t.product.length() > 28 ? t.product.substring(0, 28) : t.product,
+                        t.qty == Math.floor(t.qty) ? String.valueOf((long) t.qty) : String.valueOf(t.qty),
+                        nf.accountsFormat(t.revenue)));
+            }
+        }
+        javax.swing.JTextArea ta = new javax.swing.JTextArea(sb.toString(), 20, 54);
+        ta.setEditable(false);
+        ta.setOpaque(false);
+        ta.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.PLAIN, 13));
+        JOptionPane.showMessageDialog(this, new JScrollPane(ta),
+                "Best-sellers ★ Premium", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void getActiveClass(String label) {
@@ -2477,19 +2938,32 @@ public final class UIv2 extends javax.swing.JFrame {
         if (!stats.isEnabled()) {
             return; // Do nothing if the button is disabled
         }
+        if (reportsPanel == null) {
+            reportsPanel = new Interface.Reports.ReportsPanel();
+        } else {
+            reportsPanel.reload();
+        }
         TablePanel.removeAll();
-        TablePanel.add(DailyReportTablePanel);
+        TablePanel.add(reportsPanel);
         TablePanel.repaint();
         TablePanel.revalidate();
         getActiveClass("stats");
     }//GEN-LAST:event_statsMouseClicked
 
     private void customersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customersMouseClicked
-        // TODO add your handling code here:
         if (!customers.isEnabled()) {
             return; // Do nothing if the button is disabled
         }
-                getActiveClass("customers");
+        if (customersPanel == null) {
+            customersPanel = new Interface.Customers.CustomersPanel();
+        } else {
+            customersPanel.reload();
+        }
+        TablePanel.removeAll();
+        TablePanel.add(customersPanel);
+        TablePanel.repaint();
+        TablePanel.revalidate();
+        getActiveClass("customers");
     }//GEN-LAST:event_customersMouseClicked
 
     private void CancelLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CancelLabelMouseClicked
@@ -2529,14 +3003,28 @@ public final class UIv2 extends javax.swing.JFrame {
     }//GEN-LAST:event_CancelLabelMouseClicked
 
     private void EditLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditLabelMouseClicked
-        Boolean selected = ((Boolean) SellingModel.getValueAt(row, 0));
-        if (selected == true) {
-            try {
-                SaveSale editSale;
-                SaveSale.setMeUp(getProductDetails());
-            } catch (ClassNotFoundException | ParseException ex) {
-                Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        // Edit the selected sale line. Build the details fresh from the chosen
+        // row (the old code reused a list that kept growing on every click).
+        int r = SalesTable.getSelectedRow();
+        if (r < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Please select a sale row to edit first.",
+                    "Edit sale", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        try {
+            // EditSale.setMeUp expects: [id, name, price, quantity, discount]
+            ArrayList<String> details = new ArrayList<>();
+            details.add(String.valueOf(SellingModel.getValueAt(r, 1))); // order/product id
+            details.add(String.valueOf(SellingModel.getValueAt(r, 2))); // product name
+            details.add(String.valueOf(SellingModel.getValueAt(r, 4))); // list price
+            details.add(String.valueOf(SellingModel.getValueAt(r, 3))); // quantity
+            details.add(String.valueOf(SellingModel.getValueAt(r, 5))); // discount
+            Interface.Sales.EditSale.setMeUp(details);
+        } catch (ClassNotFoundException | ParseException ex) {
+            Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Could not open edit screen: " + ex.getMessage(),
+                    "Edit sale", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_EditLabelMouseClicked
 
@@ -2572,8 +3060,15 @@ public final class UIv2 extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowGainedFocus
 
     private void ExchangeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ExchangeLabelMouseClicked
-        // Calling the exchange JFrame
-        PrinterSettings.launch();
+        // Open the Exchange / Return screen (was wrongly opening Printer Settings).
+        try {
+            new Interface.Sales.ReturnProduct().setVisible(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Could not open the return/exchange screen: " + ex.getMessage(),
+                    "Exchange / Return", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_ExchangeLabelMouseClicked
 
     private void saleslabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saleslabelMouseEntered
@@ -2616,13 +3111,26 @@ public final class UIv2 extends javax.swing.JFrame {
     }//GEN-LAST:event_ProductsLabelMenuMouseClicked
 
     private void jMenuItem1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MouseClicked
-        // TODO add your handling code here:
-        //See all the brands.
+        showBrands();
     }//GEN-LAST:event_jMenuItem1MouseClicked
 
     private void BrandsMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BrandsMenuMouseClicked
-        // TODO add your handling code here:
+        showBrands();
     }//GEN-LAST:event_BrandsMenuMouseClicked
+
+    /** Show the Brands &amp; Categories manager in the main panel. */
+    private void showBrands() {
+        if (brandsPanel == null) {
+            brandsPanel = new Interface.Products.BrandsPanel();
+        } else {
+            brandsPanel.reload();
+        }
+        TablePanel.removeAll();
+        TablePanel.add(brandsPanel);
+        TablePanel.repaint();
+        TablePanel.revalidate();
+        getActiveClass("box");
+    }
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
@@ -2643,7 +3151,7 @@ public final class UIv2 extends javax.swing.JFrame {
         TablePanel.add(StocksTablePanel);
         TablePanel.repaint();
         TablePanel.revalidate();
-
+        getActiveClass("box"); // keep the Products icon highlighted consistently
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void InventoryLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InventoryLabelMouseClicked
@@ -2658,6 +3166,7 @@ public final class UIv2 extends javax.swing.JFrame {
         TablePanel.add(StocksTablePanel);
         TablePanel.repaint();
         TablePanel.revalidate();
+        getActiveClass("box"); // keep the Products icon highlighted consistently
     }//GEN-LAST:event_InventoryLabelMouseClicked
 
     private void newproducy1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newproducy1MouseClicked
@@ -2685,7 +3194,7 @@ public final class UIv2 extends javax.swing.JFrame {
         LoadRoles();
         LoadPermissions();
         LoadPermissionsRoles();
-
+        getActiveClass("admin"); // keep the Admin icon highlighted consistently
     }//GEN-LAST:event_permissionnRolesLabelMouseClicked
 
     private void newUserLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newUserLabelMouseClicked
@@ -2986,7 +3495,86 @@ public final class UIv2 extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteRowPermissisonLabelMouseClicked
 
     private void PrintReceiptMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PrintReceiptMouseClicked
+        // Print a receipt from the sales table. If any rows are ticked, only
+        // those are printed; otherwise the whole current list is used.
+        // Columns: 0=Select, 1=Order Id, 2=Product, 3=Quantity, 4=List price.
+        try {
+            int rows = SellingModel.getRowCount();
+            if (rows == 0) {
+                javax.swing.JOptionPane.showMessageDialog(SalesTable,
+                        "There are no sales to print.", "Print receipt",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            boolean anyTicked = false;
+            for (int i = 0; i < rows; i++) {
+                Object sel = SellingModel.getValueAt(i, 0);
+                if (sel instanceof Boolean && (Boolean) sel) {
+                    anyTicked = true;
+                    break;
+                }
+            }
 
+            String company = "RECEIPT", address = "", footer = "Thank you for your business!";
+            try {
+                Classes.AbstractClasses.ReceiptDetails d =
+                        Classes.Functions.Printers.Receipts.getLastReceiptDetails();
+                if (d != null) {
+                    if (d.getCompanyName() != null && !d.getCompanyName().trim().isEmpty()) {
+                        company = d.getCompanyName();
+                    }
+                    if (d.getAddress() != null) {
+                        address = d.getAddress();
+                    }
+                    if (d.getFooterMessage() != null && !d.getFooterMessage().trim().isEmpty()) {
+                        footer = d.getFooterMessage();
+                    }
+                }
+            } catch (Exception ignore) {
+            }
+            String cashier = Authentication.Sessions.LoggedUser != null
+                    ? Authentication.Sessions.LoggedUser : "";
+            String receiptNo = "";
+
+            Classes.Functions.Printers.ReceiptPrinter receipt =
+                    new Classes.Functions.Printers.ReceiptPrinter(
+                            company, address, footer, cashier, receiptNo, "Tsh");
+            double total = 0;
+            int added = 0;
+            for (int i = 0; i < rows; i++) {
+                if (anyTicked) {
+                    Object sel = SellingModel.getValueAt(i, 0);
+                    if (!(sel instanceof Boolean) || !((Boolean) sel)) {
+                        continue;
+                    }
+                }
+                if (receiptNo.isEmpty() && SellingModel.getValueAt(i, 1) != null) {
+                    receiptNo = String.valueOf(SellingModel.getValueAt(i, 1));
+                }
+                String name = String.valueOf(SellingModel.getValueAt(i, 2));
+                double qty = com.nkanabo.Tienda.Utilities.DoubleConverter(
+                        String.valueOf(SellingModel.getValueAt(i, 3)));
+                double price = com.nkanabo.Tienda.Utilities.DoubleConverter(
+                        String.valueOf(SellingModel.getValueAt(i, 4)));
+                receipt.addItem(name, qty, price);
+                total += qty * price;
+                added++;
+            }
+            if (added == 0) {
+                javax.swing.JOptionPane.showMessageDialog(SalesTable,
+                        "No rows selected to print.", "Print receipt",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            receipt.total = total;
+            receipt.withSettings(); // printer, template & premium flag from settings
+            receipt.showPreview(javax.swing.SwingUtilities.getWindowAncestor(SalesTable));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(SalesTable,
+                    "Could not print receipt: " + ex.getMessage(), "Print receipt",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_PrintReceiptMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

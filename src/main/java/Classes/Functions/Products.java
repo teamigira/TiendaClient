@@ -114,7 +114,7 @@ public class Products {
                             .getConnection();
             Statement stmt = conna.createStatement();
             for(int i=0; i<obj.length; i++){
-                System.out.println(obj[i]);
+                // [perf] System.out.println(obj[i]);
             }
             // STEP 1: Ensure if the product does not
             // exist
@@ -273,7 +273,7 @@ public class Products {
                         rs.getString("product_id"));
                 String product_name
                         = rs.getString("product_name");
-                System.out.println("product-name" + product_name);
+                // [perf] System.out.println("product-name" + product_name);
                 String brand_name
                         = rs.getString("brand_name");
                 String category_name
@@ -323,7 +323,7 @@ public class Products {
             while (rs.next()) {
                 int productid = Integer.parseInt(
                         rs.getString("product_id"));
-                System.out.println(productid);
+                // [perf] System.out.println(productid);
                 String product_name
                         = rs.getString("product_name");
                 String brand_name
@@ -527,19 +527,45 @@ public class Products {
     public static String getProductId(String name)
             throws SQLException,
             ClassNotFoundException {
-        Connection conna
-                = DBConnection.getConnectionInstance()
-                        .getConnection();
-        Statement stmt = conna.createStatement();
-        String id = "0";
-        String check
-                = "SELECT code FROM Tienda.production_products"
-                + " WHERE product_name = '" + name + "'";
-        ResultSet rs = stmt.executeQuery(check);
-        if (rs.next()) {
-            id = rs.getString("code");
+        // Resolve a product's stock code from its name. Uses a prepared
+        // statement (so names containing an apostrophe no longer break the
+        // query and silently look "out of stock"), and falls back to a
+        // case-insensitive match when it is unambiguous.
+        if (name == null) {
+            return "0";
         }
-        return id;
+        String n = name.trim();
+        Connection conna = DBConnection.getConnectionInstance().getConnection();
+
+        // 1) Exact match (what the autocomplete provides).
+        try (PreparedStatement ps = conna.prepareStatement(
+                "SELECT code FROM Tienda.production_products WHERE product_name = ?")) {
+            ps.setString(1, n);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("code");
+                }
+            }
+        }
+
+        // 2) Case-insensitive, only accepted when a single product matches
+        //    (avoids picking the wrong row when two names differ only by case).
+        try (PreparedStatement ps = conna.prepareStatement(
+                "SELECT code FROM Tienda.production_products WHERE UPPER(product_name) = UPPER(?)")) {
+            ps.setString(1, n);
+            try (ResultSet rs = ps.executeQuery()) {
+                String code = null;
+                int matches = 0;
+                while (rs.next()) {
+                    code = rs.getString("code");
+                    matches++;
+                }
+                if (matches == 1) {
+                    return code;
+                }
+            }
+        }
+        return "0";
     }
 
     public static boolean checkCodeValidity(String code) throws SQLException, ClassNotFoundException {

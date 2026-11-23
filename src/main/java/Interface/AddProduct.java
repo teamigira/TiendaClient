@@ -43,7 +43,7 @@ public class AddProduct extends javax.swing.JFrame {
 
         jLabel2.setText("Register Product");
 
-        productname.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        productname.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         productname.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 productnameActionPerformed(evt);
@@ -55,10 +55,10 @@ public class AddProduct extends javax.swing.JFrame {
             }
         });
 
-        categoriesCombo.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        categoriesCombo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         categoriesCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        brands.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        brands.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         brands.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         producttype.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -68,14 +68,14 @@ public class AddProduct extends javax.swing.JFrame {
             }
         });
 
-        retailprice.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        retailprice.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         retailprice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 retailpriceActionPerformed(evt);
             }
         });
 
-        listprice.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        listprice.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
 
         jToggleButton2.setText("Submit");
 

@@ -105,15 +105,15 @@ public class Login extends javax.swing.JFrame {
         Login.setFocusable(false);
         Login.setMaximumSize(null);
 
-        jLabel39.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        jLabel39.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel39.setText("User Login");
 
         user.setText("admin");
 
-        jLabel1.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel1.setText("User");
 
-        jLabel2.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Password");
 
         jButton1.setText("SUBMIT");
@@ -129,7 +129,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        errormsg.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        errormsg.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         errormsg.setForeground(new java.awt.Color(255, 51, 51));
 
         password.setText("12345");
@@ -349,6 +349,7 @@ public class Login extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         FlatGitHubIJTheme.setup();
+        Classes.Utilities.Theme.apply();
         //</editor-fold>
 
         /* Create and display the form */

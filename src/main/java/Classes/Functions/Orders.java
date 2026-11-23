@@ -140,7 +140,9 @@ public class Orders {
                 + " WHERE NOT EXISTS ("
                 + "     SELECT 1 FROM Tienda.sales_orders"
                 + "     WHERE Tienda.sales_order_items.order_id = Tienda.sales_orders.order_id"
-                + ")";
+                + ")"
+                + " AND (Tienda.sales_order_items.status IS NULL"
+                + "      OR Tienda.sales_order_items.status = 'CART')";
 
             // STEP 3: Execute a query 
 //            String sqlquery = "SELECT * FROM Tienda.sales_order_items"
@@ -408,5 +410,140 @@ public class Orders {
     return true;
 
    }
-   
+
+   // ===================================================================
+   // Hold / Reopen support (Phase 5)
+   // ===================================================================
+
+   /** True if there is at least one item in the active cart. */
+   public static boolean hasCartItems() {
+       String sql = "SELECT COUNT(*) FROM Tienda.sales_order_items i "
+               + "WHERE (i.status IS NULL OR i.status = 'CART') "
+               + "AND NOT EXISTS (SELECT 1 FROM Tienda.sales_orders o WHERE o.order_id = i.order_id)";
+       try (Connection c = DBConnection.getConnectionInstance().getConnection();
+            java.sql.PreparedStatement ps = c.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+           return rs.next() && rs.getInt(1) > 0;
+       } catch (SQLException e) {
+           e.printStackTrace();
+           return false;
+       }
+   }
+
+   /**
+    * Parks every item in the active cart under a new hold reference so the
+    * cashier can start a fresh sale and come back to this one later.
+    *
+    * @param label a human note (e.g. customer name) shown in the reopen list
+    * @return the hold reference, or {@code null} if nothing was held
+    */
+   public static String holdCurrentCart(String label) {
+       if (!hasCartItems()) {
+           return null;
+       }
+       String ref = "H" + System.currentTimeMillis();
+       String sql = "UPDATE Tienda.sales_order_items i "
+               + "SET status = 'HELD', hold_ref = ?, hold_label = ? "
+               + "WHERE (i.status IS NULL OR i.status = 'CART') "
+               + "AND NOT EXISTS (SELECT 1 FROM Tienda.sales_orders o WHERE o.order_id = i.order_id)";
+       try (Connection c = DBConnection.getConnectionInstance().getConnection();
+            java.sql.PreparedStatement ps = c.prepareStatement(sql)) {
+           ps.setString(1, ref);
+           ps.setString(2, label == null ? "" : label.trim());
+           return ps.executeUpdate() > 0 ? ref : null;
+       } catch (SQLException e) {
+           e.printStackTrace();
+           return null;
+       }
+   }
+
+   /**
+    * Lists the parked (held) sales, one row per hold reference.
+    *
+    * @return rows of {hold_ref, label, item count, total value}
+    */
+   public static ArrayList<String[]> listHeldOrders() {
+       ArrayList<String[]> out = new ArrayList<>();
+       String sql = "SELECT i.hold_ref, MAX(i.hold_label) AS label, COUNT(*) AS items, "
+               + "SUM(CAST(i.quantity AS DOUBLE) * p.list_price) AS total "
+               + "FROM Tienda.sales_order_items i "
+               + "JOIN Tienda.production_products p ON i.item_id = p.code "
+               + "WHERE i.status = 'HELD' AND i.hold_ref IS NOT NULL "
+               + "GROUP BY i.hold_ref ORDER BY i.hold_ref DESC";
+       try (Connection c = DBConnection.getConnectionInstance().getConnection();
+            java.sql.PreparedStatement ps = c.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+           while (rs.next()) {
+               out.add(new String[]{
+                   rs.getString("hold_ref"),
+                   rs.getString("label") == null ? "" : rs.getString("label"),
+                   rs.getString("items"),
+                   rs.getString("total")});
+           }
+       } catch (SQLException e) {
+           e.printStackTrace();
+       }
+       return out;
+   }
+
+   /** Returns a held sale's items to the active cart. */
+   public static boolean reopenHeld(String ref) {
+       String sql = "UPDATE Tienda.sales_order_items "
+               + "SET status = 'CART', hold_ref = NULL, hold_label = NULL "
+               + "WHERE hold_ref = ? AND status = 'HELD'";
+       try (Connection c = DBConnection.getConnectionInstance().getConnection();
+            java.sql.PreparedStatement ps = c.prepareStatement(sql)) {
+           ps.setString(1, ref);
+           return ps.executeUpdate() > 0;
+       } catch (SQLException e) {
+           e.printStackTrace();
+           return false;
+       }
+   }
+
+   /**
+    * Lists recently completed sales, one row per receipt number.
+    *
+    * @return rows of {receipt no (customer_id), item count, order date}
+    */
+   public static ArrayList<String[]> listRecentCompleted(int limit) {
+       ArrayList<String[]> out = new ArrayList<>();
+       String sql = "SELECT customer_id, COUNT(*) AS items, MAX(order_date) AS d "
+               + "FROM Tienda.sales_orders "
+               + "GROUP BY customer_id ORDER BY MAX(order_date) DESC, customer_id DESC "
+               + "LIMIT ?";
+       try (Connection c = DBConnection.getConnectionInstance().getConnection();
+            java.sql.PreparedStatement ps = c.prepareStatement(sql)) {
+           ps.setInt(1, limit);
+           try (ResultSet rs = ps.executeQuery()) {
+               while (rs.next()) {
+                   out.add(new String[]{
+                       rs.getString("customer_id"),
+                       rs.getString("items"),
+                       rs.getString("d")});
+               }
+           }
+       } catch (SQLException e) {
+           e.printStackTrace();
+       }
+       return out;
+   }
+
+   /**
+    * Reopens a completed sale: deletes its sales_orders rows so the items fall
+    * back into the active cart (the customer forgot something). Stock is left
+    * as-is since it was already deducted when the items were first added.
+    */
+   public static boolean reopenCompleted(String receiptNo) {
+       String sql = "DELETE FROM Tienda.sales_orders WHERE customer_id = ?";
+       try (Connection c = DBConnection.getConnectionInstance().getConnection();
+            java.sql.PreparedStatement ps = c.prepareStatement(sql)) {
+           ps.setString(1, receiptNo);
+           return ps.executeUpdate() > 0;
+       } catch (SQLException e) {
+           e.printStackTrace();
+           return false;
+       }
+   }
+
 }

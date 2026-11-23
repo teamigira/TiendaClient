@@ -38,6 +38,12 @@ public class OS {
             systemDB = "jdbc:h2:file:///Applications/Tienda.app/Contents/DB/Tienda;USER=root;PASSWORD=tazamaroad";
             baseUrl = "/Applications/Tienda.app/Contents/Resources/";
             hash = "/";
+        } else {
+            // Linux / other (added so the app can run under WSL for development)
+            systemPath = homeDir + "/Tienda/";
+            systemDB = "jdbc:h2:file:" + homeDir + "/Tienda/DB/Tienda;USER=root;PASSWORD=tazamaroad";
+            baseUrl = homeDir + "/Tienda/Resources/";
+            hash = "/";
         }
         return systemPath;
     }

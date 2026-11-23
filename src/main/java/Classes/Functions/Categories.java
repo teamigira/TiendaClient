@@ -24,8 +24,21 @@ public class Categories {
         try {
             Connection conn = DBConnection.getConnectionInstance().getConnection();
             Statement stmt;
-            // STEP 3: Execute a query 
+            // STEP 3: Execute a query
             stmt = conn.createStatement();
+
+            // Category names are unique: skip if one already exists (prevents the
+            // duplicate "General" rows that used to be seeded on every startup).
+            try (java.sql.PreparedStatement chk = conn.prepareStatement(
+                    "SELECT 1 FROM Tienda.production_categories WHERE category_name = ?")) {
+                chk.setString(1, categoryname);
+                try (java.sql.ResultSet crs = chk.executeQuery()) {
+                    if (crs.next()) {
+                        return true; // already present
+                    }
+                }
+            }
+
             String sql
                     = "INSERT INTO Tienda.production_categories (category_name)" + "VALUES ('" + categoryname + "')";
             int i = stmt.executeUpdate(sql);

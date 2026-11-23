@@ -1034,19 +1034,19 @@ public final class RegisterProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_DataMouseClicked
 
     private void TaxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TaxMouseClicked
-        // TODO add your handling code here:
+        new TaxDialog(this).setVisible(true);
     }//GEN-LAST:event_TaxMouseClicked
 
     private void SuppliesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SuppliesMouseClicked
-        // TODO add your handling code here:
+        new SuppliersDialog(this).setVisible(true);
     }//GEN-LAST:event_SuppliesMouseClicked
 
     private void OptionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OptionsMouseClicked
-        // TODO add your handling code here:
+        new OptionsDialog(this).setVisible(true);
     }//GEN-LAST:event_OptionsMouseClicked
 
     private void ExpirationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ExpirationMouseClicked
-        // TODO add your handling code here:
+        new ExpirationDialog(this).setVisible(true);
     }//GEN-LAST:event_ExpirationMouseClicked
 
     private void saveProductFormMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveProductFormMouseClicked

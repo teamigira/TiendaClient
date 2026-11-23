@@ -117,6 +117,7 @@ private static void makeFolder() {
         System.setProperty("sun.java2d.dpiaware", "false");
         System.setProperty("sun.java2d.uiScale", "1");
         FlatGitHubIJTheme.setup();
+        Classes.Utilities.Theme.apply();
 
 // create UI here...
         //Load user preferences
@@ -149,6 +150,12 @@ private static void makeFolder() {
             dBConnection.migrate();
         }
 
+        // Automatic daily backup at startup (data safety; keeps the last 7).
+        try {
+            Classes.Functions.PremiumFeatures.autoBackupDaily(7);
+        } catch (Exception ignore) {
+        }
+
         try {
             MasterData.InsertMasterData();
 
@@ -159,7 +166,11 @@ private static void makeFolder() {
         //returns true if authenticated.
         UserSettings usS = new UserSettings();
         usS.testKeys();
-        if (authenticateProduct() == true && usS.getKeysValidity() == true) {
+        // Daily activation: if a valid code was already entered today, go
+        // straight to login; otherwise show the activation screen. The old
+        // product-key/system_app_key check is retained in Auth for reference
+        // but is no longer the gate (see Authentication.LicenseManager).
+        if (Authentication.LicenseManager.isActivatedForToday()) {
             Login();
         } else {
             LaunchLicenseEntry();

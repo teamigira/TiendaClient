@@ -458,16 +458,7 @@ public class EditSale extends javax.swing.JFrame {
 
     public static void main(String[] args) throws ClassNotFoundException,
             ParseException {
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditSale.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+        // Keep the app's FlatLaf theme — do not switch to Nimbus here.
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 new EditSale().setVisible(true);

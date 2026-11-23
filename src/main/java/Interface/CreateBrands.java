@@ -41,7 +41,7 @@ public class CreateBrands extends javax.swing.JInternalFrame {
 
         jLabel1.setText("Register brand");
 
-        brandname.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        brandname.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         brandname.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 brandnameKeyReleased(evt);
