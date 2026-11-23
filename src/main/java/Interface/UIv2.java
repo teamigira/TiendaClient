@@ -1074,6 +1074,9 @@ public final class UIv2 extends javax.swing.JFrame {
             data.add(openBackups);
             data.addSeparator();
             data.add(printerOpts);
+            javax.swing.JMenuItem language = new javax.swing.JMenuItem("Language / Lugha…");
+            language.addActionListener(e -> chooseLanguage());
+            data.add(language);
 
             if (jMenuBar1 != null) {
                 jMenuBar1.add(data);
@@ -1162,6 +1165,24 @@ public final class UIv2 extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Backup failed: " + ex.getMessage(),
                     "Backup", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /** English or Kiswahili; applies from the next start. */
+    private void chooseLanguage() {
+        Object[] options = {"English", "Kiswahili"};
+        int current = Classes.Utilities.I18n.isKiswahili() ? 1 : 0;
+        int choice = JOptionPane.showOptionDialog(this, "Choose the language / Chagua lugha",
+                "Language / Lugha", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, options, options[current]);
+        if (choice < 0 || choice == current) {
+            return;
+        }
+        Classes.Utilities.I18n.setLanguage(choice == 1 ? Classes.Utilities.I18n.KISWAHILI
+                : Classes.Utilities.I18n.ENGLISH);
+        JOptionPane.showMessageDialog(this, choice == 1
+                ? "Funga Tienda kisha uifungue tena ili kutumia Kiswahili."
+                : "Close and reopen Tienda to switch to English.",
+                "Language / Lugha", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /** Paper width and cash drawer for the receipt printer. */

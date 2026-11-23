@@ -113,6 +113,8 @@ private static void makeFolder() {
         // Errors go to <data folder>/logs for support.
         Classes.Utilities.Log.start();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> Classes.Utilities.Log.error(e));
+        // Kiswahili interface, if chosen in Tools > Language.
+        Classes.Utilities.I18n.install();
         System.setProperty("sun.java2d.dpiaware", "false");
         System.setProperty("sun.java2d.uiScale", "1");
         FlatGitHubIJTheme.setup();

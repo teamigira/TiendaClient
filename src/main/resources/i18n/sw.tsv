@@ -1,0 +1,264 @@
+# English<TAB>Kiswahili. Matching ignores case, extra spaces and a trailing colon.
+# DRAFT translations: have a native speaker who knows shop language review them.
+# Menus and main window
+File	Faili
+Edit	Hariri
+View	Tazama
+Tools	Zana
+Options	Machaguo
+Settings	Mipangilio
+Quit	Funga programu
+Log Out	Toka
+Sales	Mauzo
+Products	Bidhaa
+Product	Bidhaa
+Reports	Ripoti
+Customers	Wateja
+Customer	Mteja
+Users	Watumiaji
+User	Mtumiaji
+Inventory	Stoo
+Statistics	Takwimu
+Suppliers	Wasambazaji
+Supplier	Msambazaji
+Brands	Chapa
+Brand	Chapa
+Category	Kundi
+Store	Duka
+Order	Oda
+Order (F4)	Oda (F4)
+New Sale - POS (F3)	Mauzo Mapya - POS (F3)
+New Product	Bidhaa Mpya
+New User	Mtumiaji Mpya
+Administrator (F6)	Msimamizi (F6)
+System Setup	Usanidi wa Mfumo
+Sales Setting	Mipangilio ya Mauzo
+Printer Settings	Mipangilio ya Printa
+PRINTER SETTINGS	MIPANGILIO YA PRINTA
+Roles & Permissions	Majukumu na Ruhusa
+Roles and Permission	Majukumu na Ruhusa
+Premium ★	Premium ★
+Today's cash summary	Muhtasari wa fedha za leo
+Export products to CSV…	Hamisha bidhaa kwenda CSV…
+Export sales to CSV…	Hamisha mauzo kwenda CSV…
+Backup database…	Hifadhi nakala ya data…
+Restore database…	Rudisha data kutoka nakala…
+Best-sellers analytics…	Uchambuzi wa bidhaa zinazouzwa zaidi…
+Customer loyalty…	Uaminifu wa wateja…
+Second backup folder (USB / cloud)…	Folda ya pili ya nakala (USB / wingu)…
+Open backups folder	Fungua folda ya nakala
+Receipt printer…	Printa ya risiti…
+Hold current order	Weka oda hii kando
+Reopen a held order…	Fungua oda iliyowekwa kando…
+Reopen a completed order…	Fungua oda iliyokamilika…
+Reopen order	Fungua oda tena
+Complete order (save)	Kamilisha oda (hifadhi)
+Click to enter or renew your licence key	Bofya kuweka au kuhuisha ufunguo wa leseni
+# Common buttons
+Save	Hifadhi
+Save (F2)	Hifadhi (F2)
+Cancel	Ghairi
+Close	Funga
+Delete	Futa
+Add	Ongeza
+Search	Tafuta
+Refresh	Onyesha upya
+Submit	Wasilisha
+SUBMIT	WASILISHA
+Next	Mbele
+Next >>	Mbele >>
+<< Prev	<< Nyuma
+Back	Nyuma
+Finish	Maliza
+Print	Chapisha
+Print Receipt	Chapisha Risiti
+Print Automatically	Chapisha moja kwa moja
+Register	Sajili
+Select	Chagua
+Show	Onyesha
+Clear	Futa
+CLEAR	FUTA
+Check	Kagua
+Copy	Nakili
+Download	Pakua
+Later	Baadaye
+Manage	Simamia
+Export	Hamisha
+Confirm	Thibitisha
+Confirmation	Uthibitisho
+Error	Hitilafu
+Set as default	Weka kama chaguo-msingi
+Deactivate	Zima
+Activate	Washa
+# Login and activation
+User Login	Ingia
+User Name	Jina la mtumiaji
+username	jina la mtumiaji
+Password	Nenosiri
+New password	Nenosiri jipya
+Repeat new password	Rudia nenosiri jipya
+Confirm  Password	Thibitisha nenosiri
+Change Password	Badilisha nenosiri
+Set a new password	Weka nenosiri jipya
+Credentials not correct / Suspended! Try again	Jina au nenosiri si sahihi, au akaunti imesimamishwa. Jaribu tena
+Could not check your login. Please try again.	Imeshindwa kukagua kuingia kwako. Tafadhali jaribu tena.
+Choose a new password to continue.	Chagua nenosiri jipya ili kuendelea.
+Activate Tienda POS	Washa Tienda POS
+Continue trial	Endelea na majaribio
+Code copied.	Msimbo umenakiliwa.
+1. Send us this computer's code:	1. Tutumie msimbo wa kompyuta hii:
+2. Paste the licence key we send you:	2. Bandika ufunguo wa leseni tutakaokutumia:
+Exit	Toka
+# Sale screen
+Code, Product name, Bar code scanner	Msimbo, jina la bidhaa au skana ya barcode
+Quantity	Idadi
+Qty	Idadi
+QTY.	IDADI
+Price	Bei
+Price:	Bei:
+Sale Price	Bei ya kuuza
+List price	Bei ya orodha
+Cost	Gharama
+Discount	Punguzo
+Discount (F3)	Punguzo (F3)
+Comments	Maoni
+Comments (F4)	Maoni (F4)
+comments	maoni
+Total	Jumla
+TOTAL	JUMLA
+Subtotal	Jumla ndogo
+Total Tax Inclusive	Jumla pamoja na kodi
+Total returns	Jumla ya marejesho
+Amount	Kiasi
+Cash	Taslimu
+Credit	Mkopo
+Paid By Cash	Imelipwa kwa taslimu
+Shipping (F9)	Usafirishaji (F9)
+Exchange/Return	Kubadilisha/Kurudisha
+Sold To:	Imeuzwa kwa:
+Sales Person:	Muuzaji:
+Sales Type:	Aina ya mauzo:
+Order #:	Oda #:
+Order Date:	Tarehe ya oda:
+Order Id	Namba ya oda
+Status	Hali
+Date	Tarehe
+DATE:	TAREHE:
+Item Out of stock	Bidhaa imeisha stoo
+Succesfully	Imefanikiwa
+Product not found. Please pick it from the suggestions list.	Bidhaa haikupatikana. Tafadhali ichague kwenye orodha ya mapendekezo.
+Select a cart item first.	Chagua bidhaa kwenye kikapu kwanza.
+The cart is empty — nothing to complete.	Kikapu kiko tupu — hakuna cha kukamilisha.
+The cart is empty — nothing to hold.	Kikapu kiko tupu — hakuna cha kuweka kando.
+Order held. Reopen it later from Order ▸ Reopen.	Oda imewekwa kando. Ifungue baadaye kupitia Oda ▸ Fungua.
+Held order reopened into the cart.	Oda iliyowekwa kando imerudishwa kwenye kikapu.
+Completed order reopened into the cart.	Oda iliyokamilika imerudishwa kwenye kikapu.
+There are no held orders.	Hakuna oda zilizowekwa kando.
+There are no completed orders to reopen.	Hakuna oda zilizokamilika za kufungua.
+Could not hold the order.	Imeshindwa kuweka oda kando.
+Could not reopen that order.	Imeshindwa kufungua oda hiyo.
+Product name to be returned	Jina la bidhaa inayorudishwa
+Quantity to be returned	Idadi inayorudishwa
+# Products
+Register Product	Sajili Bidhaa
+Code	Msimbo
+EAN/GTIN	EAN/GTIN
+Description	Maelezo
+Description:	Maelezo:
+Location	Mahali
+Stock Level	Kiwango cha stoo
+Minimum stock Limit	Kiwango cha chini cha stoo
+Unit of Measure	Kipimo
+Expiry date	Tarehe ya kuisha muda
+Expiration	Kuisha muda
+Products by expiry date (soonest first)	Bidhaa kwa tarehe ya kuisha muda (zinazoisha karibuni kwanza)
+Change price during sale	Badilisha bei wakati wa kuuza
+Do not Control stock	Usidhibiti stoo
+Click here to select the image of this product	Bofya hapa kuchagua picha ya bidhaa hii
+Image	Picha
+Kilograms	Kilo
+Liters	Lita
+Cubic Meters	Mita za ujazo
+Bundle	Kifurushi
+Free - (No cost)	Bure - (bila gharama)
+Brand name	Jina la chapa
+Category name	Jina la kundi
+Register brand	Sajili chapa
+Enter the Product Code	Weka msimbo wa bidhaa
+Select Product	Chagua bidhaa
+Fill the required fields	Jaza sehemu zinazohitajika
+Investment	Uwekezaji
+Total Investment	Jumla ya uwekezaji
+Profit	Faida
+# Customers, suppliers, tax
+Full name	Jina kamili
+Phone	Simu
+Phone No	Namba ya simu
+Email	Barua pepe
+Address	Anwani
+Contact	Mawasiliano
+Contact person	Mtu wa kuwasiliana
+Points	Pointi
+Award points	Toa pointi
+Redeem points	Tumia pointi
+Supplier name *	Jina la msambazaji *
+Tax	Kodi
+Tax name	Jina la kodi
+Tax name *	Jina la kodi *
+Rate (%)	Kiwango (%)
+Rate (%) *	Kiwango (%) *
+Use as default tax	Tumia kama kodi ya chaguo-msingi
+Select a customer first.	Chagua mteja kwanza.
+Select a customer to edit.	Chagua mteja wa kuhariri.
+Select a customer to delete.	Chagua mteja wa kufuta.
+Select a supplier to edit.	Chagua msambazaji wa kuhariri.
+Select a supplier to delete.	Chagua msambazaji wa kufuta.
+Select a tax rate first.	Chagua kiwango cha kodi kwanza.
+Select a row to edit.	Chagua mstari wa kuhariri.
+Select a row to delete.	Chagua mstari wa kufuta.
+No row is selected.	Hakuna mstari uliochaguliwa.
+Phone is required.	Simu inahitajika.
+Supplier name is required.	Jina la msambazaji linahitajika.
+Tax name is required.	Jina la kodi linahitajika.
+Enter at least a first or last name.	Weka angalau jina la kwanza au la mwisho.
+Customer no longer exists.	Mteja huyu hayupo tena.
+Rate must be a number, e.g. 18 or 18.5	Kiwango lazima kiwe namba, mfano 18 au 18.5
+Please enter a whole number.	Tafadhali weka namba kamili.
+# Users and roles
+Role	Jukumu
+Role Name	Jina la jukumu
+Role Name:	Jina la jukumu:
+Edit Role	Hariri jukumu
+Map Permission	Unganisha ruhusa
+Delete Role/Permission	Futa jukumu/ruhusa
+Select the role and then select permission	Chagua jukumu kisha uchague ruhusa
+Enter Role Details	Weka taarifa za jukumu
+Manager	Meneja
+Failed to update user status.	Imeshindwa kubadilisha hali ya mtumiaji.
+# Receipts and printer
+Select Printer	Chagua printa
+Select Template and click next	Chagua kiolezo kisha bofya Mbele
+Company Name:	Jina la kampuni:
+Footer Message:	Ujumbe wa chini:
+Premium Template	Kiolezo cha Premium
+Premium Template: needs a Premium licence	Kiolezo cha Premium: kinahitaji leseni ya Premium
+Receipt printer	Printa ya risiti
+Receipt paper width	Upana wa karatasi ya risiti
+80 mm paper (most shops)	Karatasi ya mm 80 (maduka mengi)
+58 mm paper (small printers)	Karatasi ya mm 58 (printa ndogo)
+Open the cash drawer after printing a receipt	Fungua droo ya pesa baada ya kuchapisha risiti
+Test cash drawer	Jaribu droo ya pesa
+Thank You!	Asante!
+THANK YOU	ASANTE
+# Data and backups
+Only an administrator can restore a backup.	Msimamizi pekee ndiye anayeweza kurudisha nakala.
+Options saved.	Machaguo yamehifadhiwa.
+Low-stock warning threshold	Kiwango cha tahadhari ya stoo kidogo
+Currency symbol	Alama ya sarafu
+Threshold must be a number.	Kiwango lazima kiwe namba.
+Threshold cannot be negative.	Kiwango hakiwezi kuwa hasi.
+Secondary rate must be a number.	Kiwango cha sarafu ya pili lazima kiwe namba.
+Update available	Toleo jipya linapatikana
+Download link	Kiungo cha kupakua
+Loading…	Inapakia…
+Days left	Siku zilizobaki
