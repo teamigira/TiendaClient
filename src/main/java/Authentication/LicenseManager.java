@@ -102,6 +102,16 @@ public final class LicenseManager {
      * @return the licence, or {@code null} (see {@link #lastError()})
      */
     public static Licence check(String key) {
+        try {
+            return check(key, publicKey());
+        } catch (Exception e) {
+            lastError = "This licence key is not valid.";
+            return null;
+        }
+    }
+
+    /** Package-private so tests can use a throwaway key pair. */
+    static Licence check(String key, PublicKey verifyWith) {
         lastError = "";
         if (key == null || key.trim().isEmpty()) {
             lastError = "Enter a licence key.";
@@ -116,7 +126,7 @@ public final class LicenseManager {
         try {
             payload = Base64.getUrlDecoder().decode(parts[1]);
             Signature v = Signature.getInstance("Ed25519");
-            v.initVerify(publicKey());
+            v.initVerify(verifyWith);
             v.update(payload);
             if (!v.verify(Base64.getUrlDecoder().decode(parts[2]))) {
                 lastError = "This licence key is not valid.";

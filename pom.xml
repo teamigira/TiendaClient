@@ -160,6 +160,14 @@
             <artifactId>jfreechart</artifactId>
             <version>1.5.4</version>
         </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -325,6 +333,18 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+                <configuration>
+                    <!-- Tests draw receipts and use a throwaway data folder. -->
+                    <systemPropertyVariables>
+                        <java.awt.headless>true</java.awt.headless>
+                        <tienda.data>${project.build.directory}/test-data</tienda.data>
+                        <java.util.prefs.userRoot>${project.build.directory}/test-prefs</java.util.prefs.userRoot>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>

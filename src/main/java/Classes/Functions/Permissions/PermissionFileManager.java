@@ -274,12 +274,8 @@ public class PermissionFileManager {
                 showPopupNotification(msg, NotificationManager.NotificationType.SUCCESS);
                 showConsoleNotification(msg, NotificationManager.NotificationType.SUCCESS);
                 return true;
-            } else {
-                String msg = "Failed to add permission to role.";
-                showPopupNotification(msg, NotificationManager.NotificationType.ERROR);
-                showConsoleNotification(msg, NotificationManager.NotificationType.ERROR);
-                return false;
             }
+            return true; // the role already had this permission
         } catch (SQLException e) {
             String errorMsg = "Error occurred while adding permission to role: " + e.getMessage();
             showPopupNotification(errorMsg, NotificationManager.NotificationType.ERROR);

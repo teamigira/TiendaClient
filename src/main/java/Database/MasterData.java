@@ -68,6 +68,12 @@ public class MasterData {
             //For new category add in in inserPermissions to save it also
             //insert into addPermissionForRole to assign them for administrator.
 
+            // Create the role first: insertPermissions also grants new
+            // permissions to it.
+            String roleName = "Administrator";
+            String description = "This role has full access and control over all functionalities and features of the system.";
+            insertRole(stmt, roleName, description);
+
             insertPermissions(stmt, usersPermissions, "users");
             insertPermissions(stmt, salesPermissions, "sales");
             insertPermissions(stmt, marketingPermissions, "marketing");
@@ -76,9 +82,6 @@ public class MasterData {
             insertPermissions(stmt, reportsPermissions, "reports");
 
 
-            String roleName = "Administrator";
-            String description = "This role has full access and control over all functionalities and features of the system.";
-            insertRole(stmt, roleName, description);
             addPermissionsForRole(roleName,usersPermissions);
             addPermissionsForRole(roleName, superPermissions);
             addPermissionsForRole(roleName, salesPermissions);
@@ -144,17 +147,19 @@ public class MasterData {
             // Prepare the permission insert query
             StringBuilder permissionInsertQuery = new StringBuilder("INSERT INTO Tienda.permissions (permission_name, category) VALUES ");
           
+            // Names and categories are fixed in the code above, not user input.
             for (int i = 0; i < permissionsToInsert.size(); i++) {
                 permissionInsertQuery.append("('").append(permissionsToInsert.get(i)).append("', '").append(category).append("')");
                 if (i < permissionsToInsert.size() - 1) {
-                      //Insert them for Administrator
-                    addPermissionsRole("Administrator",permissionsToInsert.get(i));
                     permissionInsertQuery.append(",");
                 }
             }
-    
-            // Execute the permission insert query
             stmt.executeUpdate(permissionInsertQuery.toString());
+
+            // Grant every new permission to Administrator (after inserting them).
+            for (String permission : permissionsToInsert) {
+                addPermissionsRole("Administrator", permission);
+            }
     
             // Notify user of successful insertion
             String successMessage = "Permissions inserted successfully.";
@@ -193,11 +198,8 @@ public class MasterData {
             // Notify user of successful insertion
             String successMessage = "Role '" + roleName + "' inserted successfully.";
             showConsoleNotification(successMessage, NotificationType.SUCCESS);
-        } else {
-            // Notify user that the role already exists
-            String infoMessage = "Role '" + roleName + "' already exists.";
-            showConsoleNotification(infoMessage, NotificationType.ERROR);
         }
+        // Already there on every start after the first: nothing to do.
     }
     
     
