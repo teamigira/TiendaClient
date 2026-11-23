@@ -3,13 +3,17 @@
 # Needs, on a Windows PC:
 #   - JDK 21 (jpackage comes with it), JAVA_HOME set
 #   - Maven on PATH
-#   - WiX Toolset 3.14 on PATH (https://github.com/wixtoolset/wix3/releases), used by jpackage for .msi
+#   - WiX Toolset 3.14, used by jpackage for .msi: either installed and on PATH, or the
+#     no-install zip (wix314-binaries.zip from https://github.com/wixtoolset/wix3/releases)
+#     unpacked to %USERPROFILE%\Tools\wix314 (picked up automatically below)
 #
 # Run from the project folder:  powershell -ExecutionPolicy Bypass -File packaging\build-installer.ps1
 # Optional signing: set $env:SIGN_PFX and $env:SIGN_PASSWORD (a code-signing certificate) first.
 
 $ErrorActionPreference = "Stop"
 Set-Location (Split-Path $PSScriptRoot -Parent)
+$wixZip = "$env:USERPROFILE\Tools\wix314"
+if (Test-Path "$wixZip\candle.exe") { $env:Path = "$wixZip;$env:Path" }
 
 [xml]$pom = Get-Content pom.xml
 $version = $pom.project.version
