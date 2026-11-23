@@ -72,6 +72,24 @@ public final class AppOptions {
         PREFS.put("extraBackupDir", v == null ? "" : v.trim());
     }
 
+    /** Receipt roll width: 80 (default) or 58 millimetres. */
+    public static int getPaperWidthMm() {
+        return PREFS.getInt("paperWidthMm", 80) == 58 ? 58 : 80;
+    }
+
+    public static void setPaperWidthMm(int mm) {
+        PREFS.putInt("paperWidthMm", mm == 58 ? 58 : 80);
+    }
+
+    /** Open the cash drawer (connected to the receipt printer) after each printed receipt. */
+    public static boolean isCashDrawerEnabled() {
+        return PREFS.getBoolean("cashDrawer", false);
+    }
+
+    public static void setCashDrawerEnabled(boolean on) {
+        PREFS.putBoolean("cashDrawer", on);
+    }
+
     public static String getCurrencySymbol() {
         return PREFS.get(KEY_CURRENCY, DEFAULT_CURRENCY);
     }

@@ -524,6 +524,25 @@ public class Products {
         return "0";
     }
 
+    /**
+     * The product name for a scanned or typed stock code / barcode (EAN/GTIN),
+     * or {@code null} if no product has it.
+     */
+    public static String findNameByBarcode(String code) throws SQLException, ClassNotFoundException {
+        if (code == null || code.trim().isEmpty()) {
+            return null;
+        }
+        Connection conna = DBConnection.getConnectionInstance().getConnection();
+        try (PreparedStatement ps = conna.prepareStatement(
+                "SELECT product_name FROM Tienda.production_products WHERE code = ? OR ean_gtin = ?")) {
+            ps.setString(1, code.trim());
+            ps.setString(2, code.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getString(1) : null;
+            }
+        }
+    }
+
     public static boolean checkCodeValidity(String code) throws SQLException, ClassNotFoundException {
         Connection conna
                 = DBConnection.getConnectionInstance()

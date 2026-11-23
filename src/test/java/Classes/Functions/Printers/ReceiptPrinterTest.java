@@ -15,8 +15,17 @@ class ReceiptPrinterTest {
         for (int n = 101; n <= 105; n++) {
             BufferedImage img = ReceiptPrinter.sample("Template " + n + ":", true, null, null, null).renderImage(1);
             assertTrue(img.getHeight() > 200, "template " + n);
-            assertEquals(226, img.getWidth());
+            assertEquals(204, img.getWidth());
         }
+    }
+
+    @Test
+    void narrowPaperScalesTheSameLayout() {
+        ReceiptPrinter wide = ReceiptPrinter.sample("Template 103:", true, null, null, null);
+        ReceiptPrinter narrow = ReceiptPrinter.sample("Template 103:", true, null, null, null);
+        narrow.paperWidth = ReceiptPrinter.WIDTH_58MM;
+        assertEquals(136, narrow.renderImage(1).getWidth());
+        assertTrue(narrow.renderImage(1).getHeight() < wide.renderImage(1).getHeight());
     }
 
     @Test

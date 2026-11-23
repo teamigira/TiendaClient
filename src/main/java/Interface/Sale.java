@@ -813,6 +813,25 @@ public class Sale extends javax.swing.JFrame {
     }//GEN-LAST:event_closelabelMouseClicked
 
     private void SearchProductFormKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchProductFormKeyReleased
+        // Barcode scanners type the code and press Enter: look it up by stock
+        // code or barcode and add the item straight away.
+        if (evt != null && evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            jPopupMenu1.setVisible(false);
+            String typed = SearchProductForm.getText().trim();
+            try {
+                String name = Products.findNameByBarcode(typed);
+                if (name != null) {
+                    SearchProductForm.setText(name);
+                }
+            } catch (SQLException | ClassNotFoundException ex) {
+                Classes.Utilities.Log.error(ex);
+            }
+            if (qtyfield.getText().trim().isEmpty()) {
+                qtyfield.setText("1");
+            }
+            SaveLabelMouseClicked(null);
+            return;
+        }
         // Search engine
         String Search = SearchProductForm.getText().trim();
         if (Search.equals("Code, Product name, Bar code scanner")) {

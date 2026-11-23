@@ -1055,7 +1055,9 @@ public final class UIv2 extends javax.swing.JFrame {
             premium.add(loyalty);
 
             // Data safety is for every licence: restore, second backup copy.
-            javax.swing.JMenu data = new javax.swing.JMenu("Data");
+            javax.swing.JMenu data = new javax.swing.JMenu("Tools");
+            javax.swing.JMenuItem printerOpts = new javax.swing.JMenuItem("Receipt printer…");
+            printerOpts.addActionListener(e -> receiptPrinterOptions());
             javax.swing.JMenuItem extra = new javax.swing.JMenuItem("Second backup folder (USB / cloud)…");
             javax.swing.JMenuItem openBackups = new javax.swing.JMenuItem("Open backups folder");
             extra.addActionListener(e -> chooseExtraBackupFolder());
@@ -1070,6 +1072,8 @@ public final class UIv2 extends javax.swing.JFrame {
             data.add(restore);
             data.add(extra);
             data.add(openBackups);
+            data.addSeparator();
+            data.add(printerOpts);
 
             if (jMenuBar1 != null) {
                 jMenuBar1.add(data);
@@ -1157,6 +1161,53 @@ public final class UIv2 extends javax.swing.JFrame {
             Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, "Backup failed: " + ex.getMessage(),
                     "Backup", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /** Paper width and cash drawer for the receipt printer. */
+    private void receiptPrinterOptions() {
+        javax.swing.JRadioButton w80 = new javax.swing.JRadioButton("80 mm paper (most shops)");
+        javax.swing.JRadioButton w58 = new javax.swing.JRadioButton("58 mm paper (small printers)");
+        javax.swing.ButtonGroup g = new javax.swing.ButtonGroup();
+        g.add(w80);
+        g.add(w58);
+        (Classes.Utilities.AppOptions.getPaperWidthMm() == 58 ? w58 : w80).setSelected(true);
+        javax.swing.JCheckBox drawer = new javax.swing.JCheckBox("Open the cash drawer after printing a receipt",
+                Classes.Utilities.AppOptions.isCashDrawerEnabled());
+        javax.swing.JButton test = new javax.swing.JButton("Test cash drawer");
+        test.addActionListener(e -> {
+            javax.print.PrintService ps = null;
+            try {
+                Classes.AbstractClasses.ReceiptSettings s =
+                        Classes.Functions.Printers.Receipts.getLastReceiptSettings();
+                String name = s == null ? null : s.getPrinterName();
+                for (javax.print.PrintService p : java.awt.print.PrinterJob.lookupPrintServices()) {
+                    if (name != null && name.equalsIgnoreCase(p.getName())) {
+                        ps = p;
+                    }
+                }
+            } catch (Exception ex) {
+                Classes.Utilities.Log.error(ex);
+            }
+            if (ps == null) {
+                ps = javax.print.PrintServiceLookup.lookupDefaultPrintService();
+            }
+            boolean ok = Classes.Functions.Printers.ReceiptPrinter.openCashDrawer(ps);
+            JOptionPane.showMessageDialog(this, ok
+                    ? "Drawer command sent to " + ps.getName() + "."
+                    : "Could not reach a receipt printer. Choose one in Printer settings first.",
+                    "Cash drawer", ok ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
+        });
+        javax.swing.JPanel form = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 4, 6));
+        form.add(new javax.swing.JLabel("Receipt paper width"));
+        form.add(w80);
+        form.add(w58);
+        form.add(drawer);
+        form.add(test);
+        if (JOptionPane.showConfirmDialog(this, form, "Receipt printer", JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION) {
+            Classes.Utilities.AppOptions.setPaperWidthMm(w58.isSelected() ? 58 : 80);
+            Classes.Utilities.AppOptions.setCashDrawerEnabled(drawer.isSelected());
         }
     }
 

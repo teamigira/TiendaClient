@@ -68,8 +68,15 @@ import javax.swing.JScrollPane;
  */
 public class ReceiptPrinter implements Printable {
 
-    /** Printable width in points: 80 mm thermal paper (~226 pt). */
-    private static final float PAPER_W = 226f;
+    /** Printable width in points of 80 mm rolls (72 mm print area). */
+    public static final float WIDTH_80MM = 204f;
+    /** Printable width in points of 58 mm rolls (48 mm print area). */
+    public static final float WIDTH_58MM = 136f;
+    /** Narrower paper is drawn at this width and scaled down, so layouts never cramp. */
+    private static final float MIN_LOGICAL_W = 190f;
+
+    /** Printable width in points; from the paper size in settings. */
+    public float paperWidth = paperWidthFromSettings();
     private static final DecimalFormat MONEY = new DecimalFormat("#,##0.##");
     private static final DateTimeFormatter STAMP = DateTimeFormatter.ofPattern("dd MMM yyyy  HH:mm");
 
@@ -214,6 +221,15 @@ public class ReceiptPrinter implements Printable {
      * used. Called once on a scratch image to measure, then for real.
      */
     private float draw(Graphics2D g, float w) {
+        float logical = Math.max(w, MIN_LOGICAL_W);
+        float k = w / logical;
+        if (k < 1f) {
+            g.scale(k, k);
+        }
+        return drawLogical(g, logical) * Math.min(1f, k);
+    }
+
+    private float drawLogical(Graphics2D g, float w) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -764,8 +780,11 @@ public class ReceiptPrinter implements Printable {
             g.setFont(f);
             FontMetrics fm = g.getFontMetrics();
             float base = y + fm.getAscent();
-            g.drawString(label, w / 2, base);
-            g.drawString(value, w - pad - fm.stringWidth(value), base);
+            float vw = fm.stringWidth(value);
+            // Start in the right half, but move left rather than overlap the value.
+            float lx = Math.max(pad, Math.min(w / 2, w - pad - vw - 8 - fm.stringWidth(label)));
+            g.drawString(label, lx, base);
+            g.drawString(value, w - pad - vw, base);
             y += lineH(f);
         }
 
@@ -862,7 +881,7 @@ public class ReceiptPrinter implements Printable {
 
     private float measure() {
         Graphics2D pg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).createGraphics();
-        float h = draw(pg, PAPER_W);
+        float h = draw(pg, paperWidth);
         pg.dispose();
         return h;
     }
@@ -870,14 +889,14 @@ public class ReceiptPrinter implements Printable {
     /** Render the receipt to an image; {@code scale} 2 gives a crisp preview. */
     public BufferedImage renderImage(double scale) {
         float h = measure();
-        int iw = (int) Math.ceil(PAPER_W * scale);
+        int iw = (int) Math.ceil(paperWidth * scale);
         int ih = (int) Math.ceil(h * scale);
         BufferedImage img = new BufferedImage(iw, ih, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, iw, ih);
         g.scale(scale, scale);
-        draw(g, PAPER_W);
+        draw(g, paperWidth);
         g.dispose();
         return img;
     }
@@ -951,14 +970,17 @@ public class ReceiptPrinter implements Printable {
             // No specific printer: an 80 mm roll page as long as the receipt.
             float h = measure();
             Paper paper = new Paper();
-            paper.setSize(PAPER_W + 4, h + 4);
-            paper.setImageableArea(2, 2, PAPER_W, h);
+            paper.setSize(paperWidth + 4, h + 4);
+            paper.setImageableArea(2, 2, paperWidth, h);
             pf.setPaper(paper);
             pf.setOrientation(PageFormat.PORTRAIT);
         }
         job.setPrintable(this, pf);
         try {
             job.print();
+            if (Classes.Utilities.AppOptions.isCashDrawerEnabled()) {
+                openCashDrawer(job.getPrintService());
+            }
             return true;
         } catch (PrinterException ex) {
             JOptionPane.showMessageDialog(null, "Printing failed: " + ex.getMessage(),
@@ -974,8 +996,42 @@ public class ReceiptPrinter implements Printable {
         }
         Graphics2D g2d = (Graphics2D) graphics;
         g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-        draw(g2d, (float) Math.min(PAPER_W, pageFormat.getImageableWidth()));
+        draw(g2d, (float) Math.min(paperWidth, pageFormat.getImageableWidth()));
         return PAGE_EXISTS;
+    }
+
+    // ---- cash drawer -------------------------------------------------
+
+    /**
+     * Pulse the cash drawer plugged into the receipt printer (ESC p 0 25 250,
+     * the standard ESC/POS drawer kick).
+     *
+     * @return true if the command was sent
+     */
+    public static boolean openCashDrawer(javax.print.PrintService service) {
+        if (service == null) {
+            return false;
+        }
+        byte[] kick = {0x1B, 0x70, 0x00, 0x19, (byte) 0xFA};
+        try {
+            javax.print.DocFlavor flavor = javax.print.DocFlavor.BYTE_ARRAY.AUTOSENSE;
+            if (!service.isDocFlavorSupported(flavor)) {
+                return false;
+            }
+            service.createPrintJob().print(new javax.print.SimpleDoc(kick, flavor, null), null);
+            return true;
+        } catch (Exception e) {
+            Classes.Utilities.Log.error(e);
+            return false;
+        }
+    }
+
+    private static float paperWidthFromSettings() {
+        try {
+            return Classes.Utilities.AppOptions.getPaperWidthMm() == 58 ? WIDTH_58MM : WIDTH_80MM;
+        } catch (Throwable e) {
+            return WIDTH_80MM;
+        }
     }
 
     // ---- helpers -------------------------------------------------------
