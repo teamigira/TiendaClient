@@ -50,7 +50,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.plaf.basic.BasicSeparatorUI;
-import static sun.jvm.hotspot.HelloWorld.e;
 import java.awt.CardLayout;
 import java.util.Date;
 

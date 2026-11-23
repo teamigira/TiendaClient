@@ -1,0 +1,60 @@
+TIENDA POS - END USER LICENCE AGREEMENT
+DRAFT - have a lawyer in Tanzania review this before you sell the software.
+
+This agreement is between Nkanabo ("we", "us") and the business or person
+installing Tienda POS ("you"). By installing or using Tienda POS you agree
+to these terms. If you do not agree, do not install or use it.
+
+1. LICENCE
+We grant you a non-exclusive, non-transferable licence to install and use
+Tienda POS on the computer named in your licence key, for the period and
+edition (Standard or Premium) stated in the key. During a free trial you may
+use the Standard edition for 14 days to evaluate it.
+
+2. RESTRICTIONS
+You may not: copy Tienda POS except for backups; install one licence on more
+computers than it allows; share, sell, rent or lend licence keys; reverse
+engineer, decompile or modify the software except where the law allows it;
+or remove notices of ownership.
+
+3. OWNERSHIP
+Tienda POS is licensed, not sold. We and our licensors keep all rights,
+title and intellectual property in the software. Third-party components are
+used under their own licences, listed in THIRD-PARTY-NOTICES.txt.
+
+4. YOUR DATA
+Your sales, stock, staff and customer records are stored on your computer
+and belong to you. Tienda POS does not send them to us. If an update check
+is turned on, the software contacts our server only to learn whether a newer
+version exists. You are responsible for backing up your data; Tienda POS
+makes a daily backup and can copy it to a second folder you choose. You are
+responsible for using customer information lawfully, including under the
+Personal Data Protection Act, 2022 of Tanzania.
+
+5. TAX AND FISCAL RULES
+Tienda POS is not a fiscal device (EFD/VFD) unless we tell you in writing
+that your edition is certified. You remain responsible for issuing fiscal
+receipts and meeting TRA requirements.
+
+6. SUPPORT AND UPDATES
+Support and updates are provided as described in your purchase terms. We
+may release updates that fix problems or add features.
+
+7. WARRANTY
+We will make reasonable efforts to correct defects you report during the
+licence period. Otherwise, to the extent the law allows, Tienda POS is
+provided "as is", without other warranties of any kind.
+
+8. LIMITATION OF LIABILITY
+To the extent the law allows, we are not liable for lost profits, lost
+data, or indirect or consequential damages. Our total liability is limited
+to the amount you paid for the licence in the 12 months before the claim.
+
+9. TERMINATION
+This licence ends automatically if you break these terms. When it ends you
+must stop using Tienda POS. Sections 3, 4, 8 and 10 continue to apply.
+
+10. GOVERNING LAW
+These terms are governed by the laws of the United Republic of Tanzania.
+
+Contact: [your business name, address, phone and email]

@@ -10,7 +10,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Optional;
 import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.output.CleanResult;
 import org.flywaydb.core.api.output.MigrateResult;
 import org.flywaydb.core.api.output.RepairResult;
 
@@ -164,20 +163,23 @@ public class DBConnection {
         return connection != null;
     }
 
+    /** Where the SQL migrations sit on the classpath (the build puts resources under resources/). */
+    private static final String MIGRATIONS = "classpath:resources/db/migration";
+
     public void repair() {
         String uri = "jdbc:h2:" + url.get() + "/Tienda";
         String user = username.get();
         String pass = password.get();
         String urlc = "jdbc:h2:" + url.get() + "/Tienda;DATABASE_TO_UPPER=false";
-        CleanResult flyway
-                = Flyway.configure()
-                        .dataSource(urlc, user, pass)
-                        .defaultSchema("Tienda")
-                        .schemas("Tienda")
-                        .baselineOnMigrate(true)
-                        .cleanDisabled(false)
-                        .load()
-                        .clean();
+        // Fix the migration history only (checksums, failed entries).
+        // This used to call clean(), which deletes every table.
+        Flyway.configure()
+                .dataSource(urlc, user, pass)
+                .locations(MIGRATIONS)
+                .defaultSchema("Tienda")
+                .schemas("Tienda")
+                .load()
+                .repair();
     }
     
     public void migrate() {
@@ -188,6 +190,7 @@ public class DBConnection {
         flyway = Flyway
                 .configure()
                 .dataSource(uri, user, pass)
+                .locations(MIGRATIONS)
                 .schemas("Tienda")
                 .defaultSchema("Tienda")
                 .baselineOnMigrate(true)

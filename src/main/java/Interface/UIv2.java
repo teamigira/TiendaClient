@@ -261,7 +261,8 @@ public final class UIv2 extends javax.swing.JFrame {
         // Visible licence tier badge so Premium is obvious in the UI.
         try {
             boolean prem = Authentication.LicenseManager.isPremium();
-            version.setText("Version 2.0.0  •  " + (prem ? "★ PREMIUM" : "Standard"));
+            version.setText("Version " + com.nkanabo.Tienda.AppInfo.VERSION + "  •  "
+                    + (prem ? "★ PREMIUM" : Authentication.LicenseManager.isTrial() ? "Trial" : "Standard"));
             version.setForeground(prem ? new java.awt.Color(0x2E7D32) : new java.awt.Color(0x9E9E9E));
             // Replace the hard-coded "Premium until 21-Mar-2025" with the real expiry.
             String expiry = Authentication.LicenseManager.expiryFormatted();
@@ -281,6 +282,23 @@ public final class UIv2 extends javax.swing.JFrame {
             });
         } catch (Exception ignore) {
         }
+        // Tell the owner about a newer version (if update.url is configured).
+        com.nkanabo.Tienda.UpdateChecker.checkInBackground(r -> java.awt.EventQueue.invokeLater(() -> {
+            Object[] options = {"Download", "Later"};
+            int choice = JOptionPane.showOptionDialog(this,
+                    "Tienda POS " + r.version + " is available (you have "
+                    + com.nkanabo.Tienda.AppInfo.VERSION + ")."
+                    + (r.notes.isEmpty() ? "" : "\n\n" + r.notes),
+                    "Update available", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                    null, options, options[0]);
+            if (choice == 0) {
+                try {
+                    java.awt.Desktop.getDesktop().browse(java.net.URI.create(r.url));
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, r.url, "Download link", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }));
         String today = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
         todays.setText(String.valueOf(Calendar.getInstance().getTime()));
         // Low-stock warnings on the notification indicator (click to see the list).

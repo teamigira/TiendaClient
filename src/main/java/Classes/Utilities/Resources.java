@@ -37,12 +37,23 @@ public class Resources {
             System.out.println("haipo"+resource);
             throw new IllegalArgumentException("file not found! " + fileName);
             
-        } else {
-
-            // failed if files have whitespaces or special characters
-            //return new File(resource.getFile());
-
+        } else if ("file".equals(resource.getProtocol())) {
             return new File(resource.toURI());
+        } else {
+            // Inside a jar (the installed app) there is no file to point at,
+            // so copy the resource to a cache folder once and return that.
+            File cached = new File(new File(com.nkanabo.Tienda.AppPaths.dataDir(),
+                    "cache" + File.separator + com.nkanabo.Tienda.AppInfo.VERSION), fileName);
+            if (!cached.isFile()) {
+                cached.getParentFile().mkdirs();
+                try (InputStream in = resource.openStream()) {
+                    java.nio.file.Files.copy(in, cached.toPath(),
+                            java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                } catch (java.io.IOException e) {
+                    throw new IllegalArgumentException("cannot read " + fileName, e);
+                }
+            }
+            return cached;
         }
 
     }
