@@ -16,6 +16,7 @@ VERSION=$(sed -n 's:.*<version>\(.*\)</version>.*:\1:p' pom.xml | head -1)
 echo "Building Tienda POS $VERSION ($TYPE)"
 mvn -B -q clean package -DskipTests
 
+cp packaging/THIRD-PARTY-NOTICES.txt packaging/EULA.txt target/dist/
 rm -rf target/installer
 mkdir -p target/installer
 ARGS=(

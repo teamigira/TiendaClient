@@ -1,0 +1,35 @@
+TIENDA POS - THIRD-PARTY NOTICES
+
+Tienda POS includes the following open-source components. Each is used under
+its own licence; the licence texts are available at the links given.
+
+Component                         Version    Licence
+--------------------------------  ---------  -------------------------------------------
+Java runtime (OpenJDK)            21         GPL v2 with Classpath Exception
+                                             https://openjdk.org/legal/gplv2+ce.html
+H2 Database                       2.2.224    MPL 2.0 or EPL 1.0
+                                             https://h2database.com/html/license.html
+Flyway Community                  10.11.0    Apache 2.0
+FlatLaf, FlatLaf IntelliJ Themes  3.4.1      Apache 2.0
+ZXing core and javase             3.4.1      Apache 2.0
+jai-imageio-core                  1.4.0      BSD-style (Sun) licence
+                                             https://github.com/jai-imageio/jai-imageio-core
+JFreeChart                        1.5.4      LGPL 2.1
+                                             https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+JSON-java (org.json)              20240303   Public domain
+Jackson (core, databind,          2.15.2     Apache 2.0
+  annotations, dataformat-toml)
+Gson                              2.10.1     Apache 2.0
+JCommander                        1.78       Apache 2.0
+
+Apache 2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+LGPL note (JFreeChart): JFreeChart is shipped unmodified as a separate jar in
+the app's lib folder; you may replace it with another compatible version.
+The JFreeChart source code is available from https://github.com/jfree/jfreechart.
+
+ICONS
+Interface icons by Icons8 (https://icons8.com). Icons8's free licence requires
+a visible link to icons8.com in the app; selling the app without that link
+requires a paid Icons8 licence. [Seller: buy the licence or keep the credit in
+the About screen.]

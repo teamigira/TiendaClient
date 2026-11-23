@@ -1077,6 +1077,10 @@ public final class UIv2 extends javax.swing.JFrame {
             javax.swing.JMenuItem language = new javax.swing.JMenuItem("Language / Lugha…");
             language.addActionListener(e -> chooseLanguage());
             data.add(language);
+            javax.swing.JMenuItem about = new javax.swing.JMenuItem("About Tienda POS");
+            about.addActionListener(e -> showAbout());
+            data.addSeparator();
+            data.add(about);
 
             if (jMenuBar1 != null) {
                 jMenuBar1.add(data);
@@ -1165,6 +1169,34 @@ public final class UIv2 extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Backup failed: " + ex.getMessage(),
                     "Backup", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /** Version, licence, data folder and credits (Icons8 requires a visible credit). */
+    private void showAbout() {
+        String tier = Authentication.LicenseManager.tierName(Authentication.LicenseManager.currentTier());
+        String who = Authentication.LicenseManager.customer();
+        javax.swing.JEditorPane text = new javax.swing.JEditorPane("text/html",
+                "<html><body style='font-family:sans-serif;width:360px'>"
+                + "<h2>" + com.nkanabo.Tienda.AppInfo.NAME + " " + com.nkanabo.Tienda.AppInfo.VERSION + "</h2>"
+                + "<p>Licence: <b>" + tier + "</b>" + (who.isEmpty() ? "" : " for " + who)
+                + (Authentication.LicenseManager.expiryFormatted().isEmpty() ? ""
+                        : ", until " + Authentication.LicenseManager.expiryFormatted()) + "<br>"
+                + "Computer code: " + Authentication.LicenseManager.machineCode() + "</p>"
+                + "<p>Data folder: " + com.nkanabo.Tienda.AppPaths.dataDir().getAbsolutePath() + "</p>"
+                + "<p>Icons by <a href='https://icons8.com'>Icons8</a>. Open-source components are listed "
+                + "in THIRD-PARTY-NOTICES.txt in the program folder.</p>"
+                + "<p>&copy; Nkanabo. All rights reserved.</p></body></html>");
+        text.setEditable(false);
+        text.setOpaque(false);
+        text.addHyperlinkListener(ev -> {
+            if (ev.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+                try {
+                    java.awt.Desktop.getDesktop().browse(ev.getURL().toURI());
+                } catch (Exception ignore) {
+                }
+            }
+        });
+        JOptionPane.showMessageDialog(this, text, "About Tienda POS", JOptionPane.PLAIN_MESSAGE);
     }
 
     /** English or Kiswahili; applies from the next start. */

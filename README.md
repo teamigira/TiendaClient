@@ -1,10 +1,30 @@
 # TiendaClient
 
+Tienda POS: point of sale and stock management for shops (Java 21, Swing, H2).
+
+## Build, run, test, package
+
+```bash
+mvn test                              # 30 automated tests
+./run-tienda.sh --build               # run from source (local helper)
+mvn package                           # target/dist: app jar + lib/
+packaging/build-installer.sh          # Linux app image with bundled Java
+packaging\build-installer.ps1         # Windows .msi (on Windows, needs WiX 3.14)
+```
+
+- Data folder: `%LOCALAPPDATA%\Tienda` (Windows), `~/.local/share/tienda` (Linux);
+  set `TIENDA_DATA` to use another. Holds `db/`, `backups/`, `logs/`.
+- Licences: signed keys made with `tools/licensing/TiendaLicenseTool.java`
+  (see `docs/SELLING.md`). No licence = 14-day trial.
+- Kiswahili: `src/main/resources/i18n/sw.tsv`.
+- Docs: `docs/USER_GUIDE.md` (customers), `docs/SELLING.md` (seller),
+  `docs/PRIVACY.md`, `packaging/EULA.txt`, `packaging/THIRD-PARTY-NOTICES.txt`.
+
 Tienda Client is a Java-based application designed for field operations. It serves as an environment for various functionalities within a business setting.
 
 ## Entry Point
 
-The project's entry point is at `Tienda.com.nkanabo.main`. Here, there is a thorough check to verify if the product is licensed. Following successful verification, normal authentication processes ensue.
+The entry point is `com.nkanabo.Tienda.Main`. It checks the licence (or trial) first. Following successful verification, normal authentication processes ensue.
 
 ## Modules
 

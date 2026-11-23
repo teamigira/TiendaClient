@@ -20,6 +20,7 @@ if ($LASTEXITCODE -ne 0) { throw "Maven build failed" }
 
 # Java modules the app uses (from jdeps) + locale data for Kiswahili formatting.
 $modules = "java.base,java.compiler,java.desktop,java.instrument,java.management,java.naming,java.net.http,java.prefs,java.scripting,java.sql,jdk.net,java.logging,java.xml,jdk.localedata,jdk.charsets,jdk.zipfs,jdk.crypto.ec,jdk.unsupported"
+Copy-Item packaging\THIRD-PARTY-NOTICES.txt, packaging\EULA.txt target\dist\
 $out = "target\installer"
 New-Item -ItemType Directory -Force -Path $out | Out-Null
 
