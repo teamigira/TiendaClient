@@ -50,14 +50,13 @@ public class Crudes {
             String sql = "INSERT INTO Tienda.production_brands (brand_name)VALUES (?)";
             int i = Database.Sql.prepare(stmt.getConnection(), sql, brandname).executeUpdate();
             if (i > 0) {
-                System.out.println(sql);
             } else {
                 return false;
             }
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -94,7 +93,6 @@ public class Crudes {
             // execute the rema
             /*End of batch reading*/
             if (i > 0) {
-                System.out.println(sql);
             } else {
                 return false;
             }
@@ -106,7 +104,7 @@ public class Crudes {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -131,7 +129,7 @@ public class Crudes {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -154,7 +152,7 @@ public class Crudes {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
 
@@ -178,7 +176,7 @@ public class Crudes {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
     }
@@ -201,7 +199,7 @@ public class Crudes {
             conna.close();
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         //return rowValues; 
     }
@@ -220,7 +218,7 @@ public class Crudes {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -237,7 +235,7 @@ public class Crudes {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return false;
     }

@@ -130,7 +130,7 @@ public class Sale extends javax.swing.JFrame {
             Classes.Functions.Orders.updateOrder(orderId, name, qty, price, disc, "");
             refreshCart();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, "Could not apply discount: " + ex.getMessage(),
                     "Discount", JOptionPane.ERROR_MESSAGE);
         }
@@ -173,7 +173,7 @@ public class Sale extends javax.swing.JFrame {
             d.setLocationRelativeTo(this);
             d.setVisible(true);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, "Could not open customers: " + ex.getMessage(),
                     "Customers", JOptionPane.ERROR_MESSAGE);
         }
@@ -955,7 +955,7 @@ public class Sale extends javax.swing.JFrame {
                         }
                     }
                 } catch (ClassNotFoundException ex) {
-                    ex.printStackTrace();
+                    Classes.Utilities.Log.error(ex);
                     Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
@@ -1008,11 +1008,10 @@ public class Sale extends javax.swing.JFrame {
                         Logger.getLogger(Sale.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
-                        System.out.println("Random number fail 687.Sale");
                 }
 
             } catch (SQLException | ClassNotFoundException ex) {
-                ex.printStackTrace();
+                Classes.Utilities.Log.error(ex);
             }
     }//GEN-LAST:event_saveLabelMouseClicked
 

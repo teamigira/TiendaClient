@@ -81,28 +81,24 @@ private static void makeFolder() {
     File tiendaDir = new File(systemPath);
     if (!tiendaDir.exists()) {
         tiendaDir.mkdirs();
-        System.out.println("Created Tienda folder at: " + tiendaDir.getAbsolutePath());
     }
 
     // Create the resources folder if it doesn't exist
     File resourcesDir = new File(systemPath, "resources");
     if (!resourcesDir.exists()) {
         resourcesDir.mkdirs();
-        System.out.println("Created resources folder at: " + resourcesDir.getAbsolutePath());
     }
 
     // Create the usergenerated folder if it doesn't exist
     File userGeneratedDir = new File(resourcesDir, "usergenerated");
     if (!userGeneratedDir.exists()) {
         userGeneratedDir.mkdirs();
-        System.out.println("Created usergenerated folder at: " + userGeneratedDir.getAbsolutePath());
     }
 
      // Create the barcodes folder if it doesn't exist
      File barcodesDir = new File(userGeneratedDir, "barcodes");
      if (!barcodesDir.exists()) {
         barcodesDir.mkdirs();
-         System.out.println("Created barcodesDir folder at: " + barcodesDir.getAbsolutePath());
      }
 }
 
@@ -114,6 +110,9 @@ private static void makeFolder() {
     public static void main(String[] args) throws IOException,
             SQLException, ClassNotFoundException, URISyntaxException, UnsupportedLookAndFeelException {
 
+        // Errors go to <data folder>/logs for support.
+        Classes.Utilities.Log.start();
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> Classes.Utilities.Log.error(e));
         System.setProperty("sun.java2d.dpiaware", "false");
         System.setProperty("sun.java2d.uiScale", "1");
         FlatGitHubIJTheme.setup();

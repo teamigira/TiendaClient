@@ -23,7 +23,6 @@ public class NotificationManager {
 
     public static void showConsoleNotification(String message, NotificationType type) {
         String prefix = "[" + type.toString() + "]";
-        System.out.println(prefix + " " + message);
     }
 
     private static int getDialogType(NotificationType type) {

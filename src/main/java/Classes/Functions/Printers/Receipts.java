@@ -125,7 +125,7 @@ public class Receipts {
                 receiptDetails = new ReceiptDetails(receiptId, salesId, companyName, footerMessage, address, createdBy, soldTo, null, null, created, barcode);
             }
         } catch (SQLException se) {
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return receiptDetails;
     }
@@ -147,7 +147,7 @@ public class Receipts {
                 receiptSettings = new ReceiptSettings(createdBy, printerName, automatically, template);
             }
         } catch (SQLException se) {
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return receiptSettings;
     }

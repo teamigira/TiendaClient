@@ -2854,7 +2854,6 @@ public class PrinterSettings extends javax.swing.JFrame implements ItemListener 
         this.clickcount += 1;
     }
 
-    System.out.println(clickcount);
     }//GEN-LAST:event_frontMouseClicked
 
     private void backMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backMouseClicked
@@ -2878,7 +2877,6 @@ public class PrinterSettings extends javax.swing.JFrame implements ItemListener 
                 this.clickcount -= 1;
             }
         }
-        System.out.println(clickcount);
     }//GEN-LAST:event_backMouseClicked
 
     private void savebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savebuttonActionPerformed
@@ -2907,7 +2905,6 @@ public class PrinterSettings extends javax.swing.JFrame implements ItemListener 
      */
     public void printerSelector() {
         List<String> printers = getAvailablePrinters();
-        System.out.println("Available Printers:");
         for (String printer : printers) {
             PrinterComboBox.addItem(printer);
         }
@@ -2915,25 +2912,19 @@ public class PrinterSettings extends javax.swing.JFrame implements ItemListener 
 
     public final void loadPrinterSettings() throws SQLException,
             ClassNotFoundException, ParseException {
-            System.out.println("You are at the right place");
             PrinterSettings = getLastReceiptSettings();
             lasttReceipts = getLastReceiptDetails();
             // Print out the details
-            System.out.println("Receipt Details:");
             int Receipt_ID = lasttReceipts.getReceiptId();
             //generate bar code
-            System.out.println("Sales ID: " + lasttReceipts.getSalesId());
             String created_date = lasttReceipts.getCreatedDate();
             String Company = lasttReceipts.getCompanyName();
             String Footer = lasttReceipts.getFooterMessage();
             String addres = lasttReceipts.getAddress();
-            System.out.println("Created By: " + lasttReceipts.getCreatedBy());
             String Sold_To  = lasttReceipts.getSoldTo();
             
             String barcode = lasttReceipts.getBarcode();
-            System.out.println("ee0000"+barcode);
             generateCode(barcode);
-            System.out.println("hre++++++++++++"+barcode);
             
             //Address Labels
             Address4.setText(addres);
@@ -2979,13 +2970,8 @@ public class PrinterSettings extends javax.swing.JFrame implements ItemListener 
             Barcode3.setIcon(icon);
 
         // Print out the settings
-            System.out.println("\nReceipt Settings:");
-            System.out.println("Created By: " + PrinterSettings.getCreatedBy());
-            System.out.println("Printer Name: " + PrinterSettings.getPrinterName());
-            System.out.println("Automatically: " + PrinterSettings.isAutomatically());
             String selectedtemplate = PrinterSettings.getTemplate();
         
-         System.out.println("++++++++++++++++: " + selectedtemplate);
         switch (selectedtemplate) {
             case "Template 101:":
                 showPrinout101();

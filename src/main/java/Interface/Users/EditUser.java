@@ -584,7 +584,7 @@ public class EditUser extends javax.swing.JFrame {
             this.dispose();
         } catch (Exception e) {
             // Handle any exceptions or display error messages
-            e.printStackTrace();
+            Classes.Utilities.Log.error(e);
         }
     }//GEN-LAST:event_SaveLabelMouseClicked
 

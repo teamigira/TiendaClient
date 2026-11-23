@@ -33,7 +33,7 @@ public class ConsoleFrame extends JFrame {
             ImageIcon icon = new ImageIcon(filepath);
             setIconImage(icon.getImage());
         } catch (URISyntaxException ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
 
         textArea = new JTextArea();
@@ -52,7 +52,7 @@ public class ConsoleFrame extends JFrame {
             try {
                 Thread.sleep(5); // Adjust the delay time as needed
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Classes.Utilities.Log.error(e);
             }
             SwingUtilities.invokeLater(() -> textArea.append(String.valueOf(text.charAt(index))));
         }
@@ -86,10 +86,5 @@ public class ConsoleFrame extends JFrame {
         new ConsoleFrame();
         // Example console messages
         // Simulate some console output
-    System.out.println("System setup started...");
-    System.out.println("Loading configuration...");
-    System.out.println("Connecting to database...");
-    System.out.println("Database connection successful.");
-    System.out.println("Initializing components...");
     }
 }

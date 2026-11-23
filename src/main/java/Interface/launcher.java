@@ -280,7 +280,7 @@ public class launcher extends javax.swing.JFrame {
                 // prompt the user to enter the valid keys
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Classes.Utilities.Log.error(e);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

@@ -629,7 +629,7 @@ public final class UIv2 extends javax.swing.JFrame {
         try {
             stockproductlist = listStockProducts();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
@@ -960,7 +960,7 @@ public final class UIv2 extends javax.swing.JFrame {
                     try {
                         Interface.Products.RegisterProduct.main(allCats);
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        Classes.Utilities.Log.error(ex);
                     }
                 });
             }
@@ -1018,7 +1018,7 @@ public final class UIv2 extends javax.swing.JFrame {
                         "Cash — today", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, "Could not load cash summary: " + ex.getMessage(),
                     "Cash", JOptionPane.ERROR_MESSAGE);
         }
@@ -1117,7 +1117,7 @@ public final class UIv2 extends javax.swing.JFrame {
             int n = Classes.Functions.PremiumFeatures.exportProductsCsv(f.getAbsolutePath());
             JOptionPane.showMessageDialog(this, "Exported " + n + " product(s) to:\n" + f.getAbsolutePath());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage(),
                     "Export", JOptionPane.ERROR_MESSAGE);
         }
@@ -1135,7 +1135,7 @@ public final class UIv2 extends javax.swing.JFrame {
             int n = Classes.Functions.PremiumFeatures.exportSalesCsv(f.getAbsolutePath());
             JOptionPane.showMessageDialog(this, "Exported " + n + " sale line(s) to:\n" + f.getAbsolutePath());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage(),
                     "Export", JOptionPane.ERROR_MESSAGE);
         }
@@ -1154,7 +1154,7 @@ public final class UIv2 extends javax.swing.JFrame {
             Classes.Functions.PremiumFeatures.backupDatabase(f.getAbsolutePath());
             JOptionPane.showMessageDialog(this, "Database backed up to:\n" + f.getAbsolutePath());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, "Backup failed: " + ex.getMessage(),
                     "Backup", JOptionPane.ERROR_MESSAGE);
         }
@@ -1216,7 +1216,7 @@ public final class UIv2 extends javax.swing.JFrame {
                     "Restore complete", JOptionPane.INFORMATION_MESSAGE);
             System.exit(0);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, "Restore failed: " + ex.getMessage()
                     + "\n\nIf the app is now unstable, please restart it.",
                     "Restore", JOptionPane.ERROR_MESSAGE);
@@ -3060,7 +3060,7 @@ public final class UIv2 extends javax.swing.JFrame {
                 PresentsalesList.remove(row);
                 SellingModel.setRowCount(0);
             } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
+                Classes.Utilities.Log.error(ex);
             }
 
             for (int i = 0; i < PresentsalesList.size(); i++) {
@@ -3138,7 +3138,7 @@ public final class UIv2 extends javax.swing.JFrame {
         try {
             new Interface.Sales.ReturnProduct().setVisible(true);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this,
                     "Could not open the return/exchange screen: " + ex.getMessage(),
                     "Exchange / Return", JOptionPane.ERROR_MESSAGE);
@@ -3644,7 +3644,7 @@ public final class UIv2 extends javax.swing.JFrame {
             receipt.withSettings(); // printer, template & premium flag from settings
             receipt.showPreview(javax.swing.SwingUtilities.getWindowAncestor(SalesTable));
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             javax.swing.JOptionPane.showMessageDialog(SalesTable,
                     "Could not print receipt: " + ex.getMessage(), "Print receipt",
                     javax.swing.JOptionPane.ERROR_MESSAGE);
@@ -3680,7 +3680,6 @@ public final class UIv2 extends javax.swing.JFrame {
           try {
             // TODO add your handling code here:
             addtestUsers();
-            System.out.println("nimeita");
             showPopupNotification("Added test users", NotificationType.ERROR);
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(UIv2.class.getName()).log(Level.SEVERE, null, ex);

@@ -36,7 +36,7 @@ public class SoundPlayer {
                 line.drain();
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
     }
 }

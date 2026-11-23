@@ -66,7 +66,7 @@ public class Orders {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -90,7 +90,7 @@ public class Orders {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -109,7 +109,7 @@ public class Orders {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
 
@@ -164,7 +164,7 @@ public class Orders {
             
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
     }
@@ -202,7 +202,7 @@ public class Orders {
             
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;  
     }
@@ -224,7 +224,7 @@ public class Orders {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -254,7 +254,7 @@ public class Orders {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -288,7 +288,7 @@ public class Orders {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -322,7 +322,7 @@ public class Orders {
 
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
 
         }
         return true;
@@ -373,15 +373,13 @@ public class Orders {
 
         // Check if the insertion was successful
         if (rowsAffected > 0) {
-            System.out.println("Insertion successful: " + sql);
         } else {
-            System.out.println("Insertion failed: " + sql);
             return false;
         }
 
     } catch (SQLException se) {
         // Handle SQL exceptions
-        se.printStackTrace();
+        Classes.Utilities.Log.error(se);
         return false;
     }
     return true;
@@ -402,7 +400,7 @@ public class Orders {
             ResultSet rs = ps.executeQuery()) {
            return rs.next() && rs.getInt(1) > 0;
        } catch (SQLException e) {
-           e.printStackTrace();
+           Classes.Utilities.Log.error(e);
            return false;
        }
    }
@@ -429,7 +427,7 @@ public class Orders {
            ps.setString(2, label == null ? "" : label.trim());
            return ps.executeUpdate() > 0 ? ref : null;
        } catch (SQLException e) {
-           e.printStackTrace();
+           Classes.Utilities.Log.error(e);
            return null;
        }
    }
@@ -458,7 +456,7 @@ public class Orders {
                    rs.getString("total")});
            }
        } catch (SQLException e) {
-           e.printStackTrace();
+           Classes.Utilities.Log.error(e);
        }
        return out;
    }
@@ -473,7 +471,7 @@ public class Orders {
            ps.setString(1, ref);
            return ps.executeUpdate() > 0;
        } catch (SQLException e) {
-           e.printStackTrace();
+           Classes.Utilities.Log.error(e);
            return false;
        }
    }
@@ -501,7 +499,7 @@ public class Orders {
                }
            }
        } catch (SQLException e) {
-           e.printStackTrace();
+           Classes.Utilities.Log.error(e);
        }
        return out;
    }
@@ -518,7 +516,7 @@ public class Orders {
            ps.setString(1, receiptNo);
            return ps.executeUpdate() > 0;
        } catch (SQLException e) {
-           e.printStackTrace();
+           Classes.Utilities.Log.error(e);
            return false;
        }
    }

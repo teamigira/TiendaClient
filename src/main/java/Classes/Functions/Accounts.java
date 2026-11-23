@@ -40,7 +40,6 @@ public class Accounts {
                 String mysql = "INSERT INTO accounts (amount,date)VALUES (?,?)";
                 int i = Database.Sql.prepare(stmt.getConnection(), mysql, amount, milliConverter(today)).executeUpdate();
                 if (i > 0) {
-                    System.out.println(mysql);
                 } else {
                     return false;
                 }
@@ -79,7 +78,7 @@ public class Accounts {
             }
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
     }

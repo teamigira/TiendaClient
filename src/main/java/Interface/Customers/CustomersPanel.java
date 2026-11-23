@@ -120,7 +120,7 @@ public class CustomersPanel extends JPanel {
             }
             countLabel.setText(rows.size() + " customer(s)");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, "Could not load customers:\n"
                     + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -162,7 +162,7 @@ public class CustomersPanel extends JPanel {
                 reload();
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -184,7 +184,7 @@ public class CustomersPanel extends JPanel {
                 Customers.delete(id);
                 reload();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Classes.Utilities.Log.error(ex);
                 JOptionPane.showMessageDialog(this, "Could not delete:\n" + ex.getMessage(),
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -295,7 +295,7 @@ public class CustomersPanel extends JPanel {
                 saved = true;
                 dispose();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Classes.Utilities.Log.error(ex);
                 JOptionPane.showMessageDialog(this, "Could not save:\n" + ex.getMessage(),
                         "Error", JOptionPane.ERROR_MESSAGE);
             }

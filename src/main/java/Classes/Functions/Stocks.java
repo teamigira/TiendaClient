@@ -60,7 +60,7 @@ public class Stocks {
                 // Handle the result as needed
             } catch (SQLException e) {
                 // Handle any SQL exceptions
-                e.printStackTrace();
+                Classes.Utilities.Log.error(e);
             }
 
         return true;
@@ -82,7 +82,7 @@ public class Stocks {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return remainder;
     }
@@ -108,7 +108,6 @@ public class Stocks {
             String sql = "UPDATE Tienda.production_stocks SET quantity =? WHERE product_id=?";
             int i = Database.Sql.prepare(stmt.getConnection(), sql, count, id).executeUpdate();
             if (i > 0) {
-                System.out.println(sql);
             } else {
                 return false;
             }
@@ -116,7 +115,7 @@ public class Stocks {
             // STEP 4: Clean-up environment
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -141,10 +140,9 @@ public class Stocks {
             Database.Sql.prepare(stmt.getConnection(), sql2, quantity, id).executeUpdate();
             }catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
             if (i > 0) {
-                System.out.println(sql2);
             } else {
                 return false;
             }
@@ -152,7 +150,7 @@ public class Stocks {
             // STEP 4: Clean-up environment
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -176,7 +174,7 @@ public class Stocks {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
     }
@@ -197,9 +195,7 @@ public class Stocks {
                 String sql = "UPDATE production_stocks SET quantity = quantity+CAST(? AS DOUBLE PRECISION)-CAST(? AS DOUBLE PRECISION) WHERE product_id=?";
                 int i = Database.Sql.prepare(stmt.getConnection(), sql, Sales, quantity, productCode).executeUpdate();
                 if (i > 0) {
-                    System.out.println("Success " + sql);
                 } else {
-                    System.out.println("Failed " + sql);
                     return false;
                 }
             } catch (SQLException me) {
@@ -229,7 +225,7 @@ public class Stocks {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }

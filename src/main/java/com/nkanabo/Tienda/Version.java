@@ -50,7 +50,6 @@ public class Version {
        } 
     }
     catch(SQLException e){
-        System.out.println(e);
     }
         return null;
     }

@@ -97,10 +97,10 @@ public class MasterData {
             conn.close();
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         } catch (Exception e) {
             // Handle errors for Class.forName
-            e.printStackTrace();
+            Classes.Utilities.Log.error(e);
         } finally {
             // finally block used to close resources 
             try {
@@ -108,7 +108,7 @@ public class MasterData {
                     stmt.close();
                 }
             } catch (SQLException se2) {
-                se2.printStackTrace();
+                Classes.Utilities.Log.error(se2);
             } // nothing we can do 
 
             try {
@@ -116,7 +116,7 @@ public class MasterData {
                     conn.close();
                 }
             } catch (SQLException se) {
-                se.printStackTrace();
+                Classes.Utilities.Log.error(se);
             } // end finally try 
         } // end try 
         

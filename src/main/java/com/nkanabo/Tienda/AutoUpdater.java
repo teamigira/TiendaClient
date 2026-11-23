@@ -41,7 +41,6 @@ public class AutoUpdater {
             fileOutputStream.close();
             
             // Success message
-            System.out.println("File downloaded successfully.");
             
             // Replace the existing local executable file with the downloaded one
             replaceExecutable(tempFile, localFilePath);
@@ -63,7 +62,6 @@ public class AutoUpdater {
                 // Delete the temporary file
                 Files.deleteIfExists(tempFile);
                 
-                System.out.println("File replaced successfully.");
             } else {
                 System.err.println("Unsupported operating system for automatic update.");
             }

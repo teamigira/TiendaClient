@@ -66,21 +66,18 @@ public class AudioPlayer implements LineListener {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    Classes.Utilities.Log.error(ex);
                 }
             }
              
             audioClip.close();
              
         } catch (UnsupportedAudioFileException ex) {
-            System.out.println("The specified audio file is not supported.");
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         } catch (LineUnavailableException ex) {
-            System.out.println("Audio line for playing back is unavailable.");
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         } catch (IOException ex) {
-            System.out.println("Error playing the audio file.");
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
          
     }
@@ -93,11 +90,9 @@ public class AudioPlayer implements LineListener {
         LineEvent.Type type = event.getType();
          
         if (type == LineEvent.Type.START) {
-            System.out.println("Playback started.");
              
         } else if (type == LineEvent.Type.STOP) {
             playCompleted = true;
-            System.out.println("Playback completed.");
         }
  
     }
@@ -119,7 +114,6 @@ public class AudioPlayer implements LineListener {
          File file1 = Paths.get(resource1.toURI()).toFile(); // return a file
          String filepath1 = file1.getAbsolutePath();
          player.play(filepath1);
-         System.out.println(filepath1);
          break;
 
 

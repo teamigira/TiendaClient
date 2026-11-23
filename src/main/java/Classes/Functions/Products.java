@@ -78,7 +78,6 @@ public class Products {
                 
               
                 if (i > 0) {
-                    System.out.println("Inserted product details successfully");
                 } else {
                     return false;
                 }
@@ -87,7 +86,7 @@ public class Products {
 
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -161,7 +160,7 @@ public class Products {
 
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -187,7 +186,7 @@ public class Products {
             // STEP 4: Clean-up environment
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -212,7 +211,7 @@ public class Products {
 
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -264,7 +263,7 @@ public class Products {
             }
             // STEP 4: Clean-up environment
         } catch (SQLException se) {
-                   se.printStackTrace();
+                   Classes.Utilities.Log.error(se);
         }
         return list;
     }
@@ -319,7 +318,7 @@ public class Products {
             // STEP 4: Clean-up environment
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
 }
@@ -377,7 +376,7 @@ public class Products {
             // STEP 4: Clean-up environment
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
     }
@@ -403,7 +402,7 @@ public class Products {
             // STEP 4: Clean-up environment
         } catch (SQLException se) {
             // Handle errors for JDBC
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }

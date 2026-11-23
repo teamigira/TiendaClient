@@ -88,7 +88,7 @@ public class BrandsPanel extends JPanel {
                 brandModel.addRow(new Object[]{rs.getString("brand_id"), rs.getString("brand_name")});
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
     }
 
@@ -102,7 +102,7 @@ public class BrandsPanel extends JPanel {
                 catModel.addRow(new Object[]{rs.getString("category_id"), rs.getString("category_name")});
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
     }
 
@@ -209,7 +209,7 @@ public class BrandsPanel extends JPanel {
     }
 
     private void error(Exception ex) {
-        ex.printStackTrace();
+        Classes.Utilities.Log.error(ex);
         JOptionPane.showMessageDialog(this, "Operation failed: " + ex.getMessage(),
                 "Error", JOptionPane.ERROR_MESSAGE);
     }

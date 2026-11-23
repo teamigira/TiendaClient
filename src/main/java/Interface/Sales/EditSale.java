@@ -386,7 +386,6 @@ public class EditSale extends javax.swing.JFrame {
             try {
                 //                for(String item:searchEngine.ProductsearchSuggestions(Search)){
                 for (String item : searchEngine.productsSearch(Search)) {
-                    System.out.println("selected item" + item);
                     mod.addElement(item);
                 }
             } catch (ClassNotFoundException | ParseException | SQLException ex) {
@@ -423,7 +422,6 @@ public class EditSale extends javax.swing.JFrame {
             String day = backdate.toString();
         try {
             SimpleDateFormat dcn = new SimpleDateFormat("yyyy-MM-dd");
-            System.out.println(backdate);
 //          String backdated = dcn.format(backdate);
             int iid = IntegerConverter(id);
             Stocks.editStockFromOrdersEd(iid, name, qty);

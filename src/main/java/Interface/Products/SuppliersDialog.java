@@ -205,7 +205,7 @@ public class SuppliersDialog extends JDialog {
     }
 
     private void error(Exception ex) {
-        ex.printStackTrace();
+        Classes.Utilities.Log.error(ex);
         JOptionPane.showMessageDialog(this, "Operation failed: " + ex.getMessage(),
                 "Error", JOptionPane.ERROR_MESSAGE);
     }

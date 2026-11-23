@@ -52,7 +52,7 @@ public final class LoyaltyManager {
                         rs.getInt("loyalty_points")));
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
         return out;
     }
@@ -68,7 +68,7 @@ public final class LoyaltyManager {
             ps.setString(2, customerId);
             return ps.executeUpdate() > 0;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             return false;
         }
     }
@@ -88,7 +88,7 @@ public final class LoyaltyManager {
             ps.setInt(3, points);
             return ps.executeUpdate() > 0;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             return false;
         }
     }

@@ -42,7 +42,6 @@ public class Categories {
             String sql = "INSERT INTO Tienda.production_categories (category_name)VALUES (?)";
             int i = Database.Sql.prepare(stmt.getConnection(), sql, categoryname).executeUpdate();
             if (i > 0) {
-                System.out.println(sql);
             } else {
                 return false;
             }
@@ -52,7 +51,7 @@ public class Categories {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -75,7 +74,7 @@ public class Categories {
          
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
     }
@@ -98,7 +97,7 @@ public class Categories {
 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
 
@@ -122,7 +121,7 @@ public class Categories {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
     }
@@ -144,7 +143,7 @@ public class Categories {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
     }
@@ -165,7 +164,7 @@ public class Categories {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
 

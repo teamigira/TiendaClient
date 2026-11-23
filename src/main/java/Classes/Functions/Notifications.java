@@ -49,7 +49,7 @@ public class Notifications {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
    }
@@ -137,7 +137,7 @@ public class Notifications {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
     }
@@ -157,7 +157,7 @@ public class Notifications {
             // STEP 4: Clean-up environment 
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return true;
 

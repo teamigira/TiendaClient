@@ -59,7 +59,7 @@ public final class StockAlerts {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
         return out;
     }
@@ -116,7 +116,7 @@ public final class StockAlerts {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
         out.sort((a, b) -> Long.compare(a.daysLeft, b.daysLeft));
         return out;

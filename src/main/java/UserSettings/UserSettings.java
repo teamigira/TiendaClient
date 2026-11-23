@@ -36,7 +36,6 @@ public class UserSettings {
      
     public void testKeys(){
           //myprefs.remove("sounds");
-          System.out.println("The current status" +myprefs.get("product_key", "root"));
     }
     
     public boolean getKeysValidity(){

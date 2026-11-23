@@ -139,7 +139,7 @@ public final class PremiumFeatures {
             copyToExtraFolder(target, keep);
             return target;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             return null;
         }
     }
@@ -179,7 +179,7 @@ public final class PremiumFeatures {
             pruneBackups(dir, keep);
             return true;
         } catch (java.io.IOException e) {
-            e.printStackTrace();
+            Classes.Utilities.Log.error(e);
             return false;
         }
     }
@@ -232,7 +232,7 @@ public final class PremiumFeatures {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
         return out;
     }

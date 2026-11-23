@@ -495,7 +495,6 @@ public class ReturnProduct extends javax.swing.JFrame {
                 this.clickcount += 1;
             }
         }
-        System.out.println(clickcount);
     }//GEN-LAST:event_frontMouseClicked
 
     private void backMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backMouseClicked
@@ -519,7 +518,6 @@ public class ReturnProduct extends javax.swing.JFrame {
                 this.clickcount -= 1;
             }
         }
-         System.out.println(clickcount);
     }//GEN-LAST:event_backMouseClicked
 
     /**
@@ -539,7 +537,6 @@ public class ReturnProduct extends javax.swing.JFrame {
         }
         ReturnList = listOrders();
         for (int i = 0; i < ReturnList.size(); i++) {
-            System.out.println("Present sale" + ReturnList.get(i).product);
             Object[] obj = {
                 ReturnList.get(i).selected,
                 (ReturnList.get(i).orderid).toUpperCase(),

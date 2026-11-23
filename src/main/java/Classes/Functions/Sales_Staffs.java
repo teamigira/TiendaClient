@@ -73,7 +73,7 @@ public class Sales_Staffs {
             }
         } catch (SQLException se) {
             // Handle SQL exceptions
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
             // Show failure notification
             showPopupNotification("An error occurred while adding staff. Please try again.", NotificationType.ERROR);
             showConsoleNotification("An error occurred while adding staff. Please try again.", NotificationType.ERROR);
@@ -129,7 +129,6 @@ public class Sales_Staffs {
             }
 
             // Print the total number of rows affected
-            System.out.println("Total rows affected: " + rowsAffected);
 
             // Close the prepared statement
             pstmt.close();
@@ -139,7 +138,7 @@ public class Sales_Staffs {
             return rowsAffected > 0;
         } catch (SQLException se) {
             // Handle SQL exceptions
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
             return false;
         }
     }
@@ -173,7 +172,7 @@ public class Sales_Staffs {
             // STEP 4: Clean-up environment
         } catch (SQLException se) {
             // Handle errors for JDBC 
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         }
         return list;
     }
@@ -277,7 +276,7 @@ public class Sales_Staffs {
             return rowsAffected > 0; // Return true if rows were affected
         } catch (SQLException ex) {
             // Handle exceptions
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
             return false; // Return false if an error occurred
         }
 

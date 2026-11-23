@@ -49,9 +49,7 @@ public class BarcodeGenerator {
             directory.mkdirs(); // This will create the directory and any necessary parent directories
             // Save the image to the file
             ImageIO.write(image, "png", new File(filePath));
-            System.out.println("Barcode image saved successfully at: " + filePath);
         } catch (IOException e) {
-            System.out.println("Error saving barcode image: " + e.getMessage());
         }
     }
     
@@ -84,9 +82,7 @@ public class BarcodeGenerator {
 
         try {
             generateBarcode(CodeText, width, height, filePath);
-            System.out.println("Barcode image generated successfully.");
         } catch (IOException | WriterException e) {
-            System.out.println("Error generating barcode image: " + e.getMessage());
         }
     }
 }

@@ -42,7 +42,6 @@ public class Encrpytion {
       return Base64.getEncoder()
           .encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
     } catch (Exception e) {
-      System.out.println("Error while encrypting: " + e.toString());
     }
     return null;
   }
@@ -62,7 +61,6 @@ public class Encrpytion {
       cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
       return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
     } catch (Exception e) {
-      System.out.println("Error while decrypting: " + e.toString());
     }
     return null;
   }

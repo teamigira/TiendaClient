@@ -102,7 +102,7 @@ public class ReportsPanel extends JPanel {
                     buildKpis(s);
                     buildCharts(s);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    Classes.Utilities.Log.error(ex);
                     JOptionPane.showMessageDialog(ReportsPanel.this,
                             "Could not build reports:\n" + ex.getMessage(),
                             "Error", JOptionPane.ERROR_MESSAGE);

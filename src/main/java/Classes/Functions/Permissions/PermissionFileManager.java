@@ -65,18 +65,12 @@ public class PermissionFileManager {
             String category = mapping.getCategory();
 
             // Print or process the properties as needed
-            System.out.println("Role ID: " + roleId);
-            System.out.println("Permission ID: " + permissionId);
-            System.out.println("Role Name: " + roleName);
-            System.out.println("Permission Name: " + permissionName);
-            System.out.println("Category: " + category);
         }
 
         // Populate the rolePermissionsMap
         for (RolePermissionMapping mapping : rolePermissions) {
             String roleName = mapping.getRoleName();
             String permissionName = mapping.getPermissionName();
-            System.out.println("LINE 365 -->rOLE" + roleName + "Has ->" + permissionName);
             // Add the permission to the list associated with the role
             rolePermissionsMap.computeIfAbsent(roleName, k -> new ArrayList<>()).add(permissionName);
         }
@@ -107,10 +101,8 @@ public class PermissionFileManager {
         List<String> permissions = rolePermissionsMap.get(role);
         // Loop through the permissions list and print each permission
         for (String permit : permissions) {
-            System.out.println("Permission: " + permit);
         }
 
-        System.out.println(permissions.contains(permission));
         // Check if the permission exists in the list
         return permissions != null && permissions.contains(permission);
     }
@@ -313,7 +305,6 @@ public class PermissionFileManager {
         try {
             Connection connection = DBConnection.getConnectionInstance().getConnection();
             int id = getPermissionId(selectedNode);
-            System.out.println(id + " that is the ID" + selectedNode);
             PreparedStatement statement = connection.prepareStatement("DELETE FROM Tienda.role_permissions WHERE permission_id = ?");
             statement.setInt(1, id); // Permission ID
             int rowsAffected = statement.executeUpdate();

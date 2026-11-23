@@ -55,11 +55,9 @@ public final class Utilities {
             try {
                 return Integer.parseInt(z.trim());
             } catch (NumberFormatException pe) {
-                System.out.println(pe);
             }
         }
         else {
-            System.out.println("no value provided.");
         }
         return s;
     }
@@ -70,11 +68,9 @@ public final class Utilities {
             try {
                 return Double.parseDouble(z.trim());
             } catch (NumberFormatException pe) {
-                System.out.println(pe);
             }
         }
         else {
-            System.out.println("no value provided.");
         }
         return s;
     }
@@ -120,14 +116,9 @@ public final class Utilities {
             Date d2 = sdformat.parse(date2);
 
             LocalDate d3 = LocalDate.now(ZoneId.systemDefault());
-            System.out.println("The date 1 is: " + sdformat.format(d1));
-            System.out.println("The date 2 is: " + sdformat.format(d2));
             if (d1.compareTo(d2) > 0) {
-                System.out.println(d2 + "Date 1 occurs after Date 2" + d1);
             } else if (d1.compareTo(d2) < 0) {
-                System.out.println(d2 + "Date 1 occurs before Date 2" + d1);
             } else if (d1.compareTo(d2) == 0) {
-                System.out.println(d2 + "Both dates are equal" + d1);
             }
         } catch (ParseException ex) {
             Logger.getLogger(Utilities.class.getName()).log(Level.SEVERE, null, ex);

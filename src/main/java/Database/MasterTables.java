@@ -52,14 +52,14 @@ public class MasterTables {
                 stmt.close();
             }
         } catch (SQLException se2) {
-            se2.printStackTrace();
+            Classes.Utilities.Log.error(se2);
         } // nothing we can do
         try {
             if (conn != null) {
                 conn.close();
             }
         } catch (SQLException se) {
-            se.printStackTrace();
+            Classes.Utilities.Log.error(se);
         } // end finally try
     } // end try
 }

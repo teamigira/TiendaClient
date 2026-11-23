@@ -1190,7 +1190,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
             } catch (ClassNotFoundException | ParseException | SQLException ex) {
                 Logger.getLogger(RegisterProduct.class.getName())
                         .log(Level.SEVERE, null, ex);
-                ex.printStackTrace();
+                Classes.Utilities.Log.error(ex);
             }
             jPopupMenu1.show(brandname, 0, brandname.getHeight());
         }
@@ -1281,7 +1281,6 @@ public final class RegisterProduct extends javax.swing.JFrame {
         File theDir = new File(getSystemPath() + hash + filefolder + hash);
         if (!theDir.exists()) {
             theDir.mkdirs();
-            System.out.println("Created images folder in ");
         }
     }
 
@@ -1296,7 +1295,7 @@ public final class RegisterProduct extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null,
         "Failed to save Image" + e);
              */
-            e.printStackTrace();
+            Classes.Utilities.Log.error(e);
 
         }
         /*

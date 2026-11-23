@@ -109,7 +109,7 @@ public class ExpirationDialog extends JDialog {
                     date.format(DateTimeFormatter.ISO_LOCAL_DATE), days, status});
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Classes.Utilities.Log.error(ex);
         }
         sortSoonestFirst();
         if (model.getRowCount() == 0) {
